@@ -4,6 +4,9 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export type Language = 'en' | 'zh';
 
+// 你的 X (Twitter) 用户名，点击将直接唤起一键关注
+export const X_HANDLE = 'dceniac';
+
 export const DICTIONARY = {
   en: {
     nav: {
@@ -12,6 +15,7 @@ export const DICTIONARY = {
       submit: 'Submit Tool',
       submitAlert: 'Tool Submission: Form coming soon with 24h featured review!',
       edgeLive: 'Edge Live',
+      followX: `Follow @${X_HANDLE}`,
     },
     hero: {
       badge: 'AI-POWERED SOLOPRENEUR STACK',
@@ -54,8 +58,6 @@ export const DICTIONARY = {
     },
     footer: {
       copyright: 'BuilderStack © 2026. Made for Solo Creators.',
-      hostedOn: 'Hosted on Cloudflare Pages',
-      followX: 'Follow on X',
     },
   },
   zh: {
@@ -65,6 +67,7 @@ export const DICTIONARY = {
       submit: '提交收录',
       submitAlert: '提交收录：后续可接入表单，支持免费提交或付费 24 小时极速审核置顶！',
       edgeLive: '全球边缘在线',
+      followX: `关注 @${X_HANDLE}`,
     },
     hero: {
       badge: 'AI-POWERED SOLOPRENEUR STACK',
@@ -107,8 +110,6 @@ export const DICTIONARY = {
     },
     footer: {
       copyright: 'BuilderStack © 2026. 专为超级个体与创造者打造。',
-      hostedOn: '托管于 Cloudflare Pages',
-      followX: '关注 X (Twitter)',
     },
   },
 };
@@ -125,13 +126,11 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [lang, setLangState] = useState<Language>('en');
 
   useEffect(() => {
-    // 优先读取本地持久化设置
     const saved = localStorage.getItem('builderstack_lang') as Language;
     if (saved && (saved === 'en' || saved === 'zh')) {
       setLangState(saved);
       return;
     }
-    // 否则检测浏览器系统语言，如果是中文用户默认中文，否则默认英文
     if (typeof navigator !== 'undefined') {
       const browserLang = navigator.language.toLowerCase();
       if (browserLang.startsWith('zh')) {

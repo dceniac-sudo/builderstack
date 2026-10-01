@@ -178,31 +178,11 @@ function HomeContent() {
         )}
       </main>
 
-      {/* 底部 Footer */}
-      <footer className="border-t border-white/5 bg-zinc-950 py-10 text-xs text-zinc-500 font-mono">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-amber-500/80" />
-            <span>{t.footer.copyright}</span>
-          </div>
-          <div className="flex items-center gap-6">
-            <a
-              href="https://pages.cloudflare.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-zinc-300 transition-colors"
-            >
-              {t.footer.hostedOn}
-            </a>
-            <a
-              href="https://twitter.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-amber-400 transition-colors"
-            >
-              {t.footer.followX}
-            </a>
-          </div>
+      {/* 底部 Footer (极简纯净版) */}
+      <footer className="border-t border-white/5 bg-zinc-950/80 py-8 text-xs text-zinc-500 font-mono text-center">
+        <div className="max-w-7xl mx-auto px-4 flex items-center justify-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-500/80" />
+          <span>{t.footer.copyright}</span>
         </div>
       </footer>
 

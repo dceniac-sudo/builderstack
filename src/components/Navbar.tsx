@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Search, Github, Twitter, Sparkles } from 'lucide-react';
+import { Search, Github, Sparkles } from 'lucide-react';
 import { LanguageToggle } from '@/components/LanguageToggle';
-import { useI18n } from '@/lib/i18n';
+import { useI18n, X_HANDLE } from '@/lib/i18n';
 
 interface NavbarProps {
   onOpenSearch: () => void;
@@ -12,6 +12,21 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   const { t } = useI18n();
+
+  // 触发 X 官方关注小弹窗
+  const handleFollowClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const url = `https://twitter.com/intent/follow?screen_name=${X_HANDLE}`;
+    const width = 550;
+    const height = 650;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+    window.open(
+      url,
+      'FollowOnX',
+      `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=no, width=${width}, height=${height}, top=${top}, left=${left}`
+    );
+  };
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-white/5 bg-zinc-950/80 backdrop-blur-xl">
@@ -51,26 +66,38 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           </kbd>
         </button>
 
-        {/* 右侧：多语言切换器 + 外链与提交 */}
+        {/* 右侧：X 一键关注胶囊 + 多语言 + GitHub */}
         <div className="flex items-center gap-1.5 sm:gap-2.5">
+          {/* 核心杀手锏：X 官方一键关注胶囊按钮 */}
+          <a
+            href={`https://twitter.com/intent/follow?screen_name=${X_HANDLE}`}
+            onClick={handleFollowClick}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={`Follow @${X_HANDLE} on X`}
+            className="flex items-center gap-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800/90 text-zinc-100 hover:text-white px-3 py-1.5 text-xs font-medium border border-white/10 hover:border-amber-500/40 shadow-sm transition-all duration-200 hover:shadow-amber-500/10 hover:shadow-md group active:scale-95"
+          >
+            {/* 𝕏 经典标志 */}
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              className="w-3.5 h-3.5 fill-current text-zinc-300 group-hover:text-amber-400 transition-colors"
+            >
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+            <span className="font-mono text-[11px] font-semibold">{t.nav.followX}</span>
+          </a>
+
           {/* 多语言切换按钮 */}
           <LanguageToggle />
 
-          <a
-            href="https://twitter.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Follow on X / Twitter"
-            className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-900 border border-transparent hover:border-zinc-800 transition-colors hidden xs:flex"
-          >
-            <Twitter className="w-4 h-4" />
-          </a>
+          {/* GitHub 仓库外链 */}
           <a
             href="https://github.com/dceniac-sudo/builderstack"
             target="_blank"
             rel="noopener noreferrer"
             title="GitHub Repository"
-            className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-900 border border-transparent hover:border-zinc-800 transition-colors"
+            className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-900 border border-transparent hover:border-zinc-800 transition-colors hidden sm:flex"
           >
             <Github className="w-4 h-4" />
           </a>
@@ -82,7 +109,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               e.preventDefault();
               alert(t.nav.submitAlert);
             }}
-            className="hidden sm:inline-flex items-center gap-1.5 rounded-lg bg-zinc-100 hover:bg-white text-zinc-950 font-medium px-3 py-1.5 text-xs transition-transform active:scale-95 shadow-sm"
+            className="hidden lg:inline-flex items-center gap-1.5 rounded-lg bg-zinc-100 hover:bg-white text-zinc-950 font-medium px-3 py-1.5 text-xs transition-transform active:scale-95 shadow-sm"
           >
             <Sparkles className="w-3.5 h-3.5 text-amber-600" />
             <span>{t.nav.submit}</span>
