@@ -56,7 +56,6 @@ export const DICTIONARY = {
       copyright: 'BuilderStack © 2026. Made for Solo Creators.',
       hostedOn: 'Hosted on Cloudflare Pages',
       followX: 'Follow on X',
-      youtube: 'YouTube',
     },
   },
   zh: {
@@ -110,7 +109,6 @@ export const DICTIONARY = {
       copyright: 'BuilderStack © 2026. 专为超级个体与创造者打造。',
       hostedOn: '托管于 Cloudflare Pages',
       followX: '关注 X (Twitter)',
-      youtube: 'YouTube',
     },
   },
 };

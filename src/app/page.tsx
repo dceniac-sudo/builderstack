@@ -202,14 +202,6 @@ function HomeContent() {
             >
               {t.footer.followX}
             </a>
-            <a
-              href="https://youtube.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-red-400 transition-colors"
-            >
-              {t.footer.youtube}
-            </a>
           </div>
         </div>
       </footer>
