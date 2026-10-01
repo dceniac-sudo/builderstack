@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Search, Github, Sparkles } from 'lucide-react';
+import { Search, Sparkles } from 'lucide-react';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { useI18n, X_HANDLE } from '@/lib/i18n';
 
@@ -91,16 +91,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           {/* 多语言切换按钮 */}
           <LanguageToggle />
 
-          {/* GitHub 仓库外链 */}
-          <a
-            href="https://github.com/dceniac-sudo/builderstack"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="GitHub Repository"
-            className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-900 border border-transparent hover:border-zinc-800 transition-colors hidden sm:flex"
-          >
-            <Github className="w-4 h-4" />
-          </a>
 
           {/* 提交收录按钮 */}
           <a
