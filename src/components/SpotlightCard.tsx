@@ -3,6 +3,7 @@
 import React, { useRef, useState } from 'react';
 import { ExternalLink, Star, Terminal, Sparkles } from 'lucide-react';
 import { ToolItem } from '@/types/tool';
+import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
 interface SpotlightCardProps {
@@ -14,6 +15,7 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({ tool, onSelect }) 
   const cardRef = useRef<HTMLDivElement>(null);
   const [coords, setCoords] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
+  const { lang, t } = useI18n();
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
@@ -23,6 +25,8 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({ tool, onSelect }) 
       y: e.clientY - rect.top,
     });
   };
+
+  const tagline = lang === 'en' ? (tool.taglineEn || tool.tagline) : tool.tagline;
 
   return (
     <div
@@ -74,7 +78,7 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({ tool, onSelect }) 
               {tool.featured && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium text-amber-400 border border-amber-500/20">
                   <Sparkles className="w-2.5 h-2.5" />
-                  精选
+                  {t.card.featured}
                 </span>
               )}
             </div>
@@ -82,7 +86,7 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({ tool, onSelect }) 
             {/* 核心杀手锏：商业替代标注 (Alt Badge) */}
             {tool.alternativeTo && (
               <div className="inline-flex items-center gap-1 text-[11px] font-mono text-zinc-400 bg-zinc-900/90 border border-zinc-800 rounded-md px-2 py-0.5">
-                <span className="text-amber-500 font-semibold">⚡ Alt to:</span>
+                <span className="text-amber-500 font-semibold">{t.card.altTo}</span>
                 <span className="text-zinc-200">{tool.alternativeTo}</span>
               </div>
             )}
@@ -94,7 +98,7 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({ tool, onSelect }) 
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
-            title="直达官网"
+            title={t.card.visit}
             className="rounded-lg p-2 text-zinc-400 hover:text-white hover:bg-zinc-800/80 transition-colors border border-transparent hover:border-zinc-700"
           >
             <ExternalLink className="w-4 h-4" />
@@ -103,7 +107,7 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({ tool, onSelect }) 
 
         {/* 中部介绍 */}
         <p className="text-sm text-zinc-400 leading-relaxed mb-4 line-clamp-2">
-          {tool.tagline}
+          {tagline}
         </p>
 
         {/* 底部元数据: 标签、Stars 与定价模式 */}
@@ -129,9 +133,9 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({ tool, onSelect }) 
               </span>
             )}
             {tool.selfHostCommand && (
-              <span className="inline-flex items-center gap-0.5 text-emerald-400/90" title="支持本地 Docker 一键跑起">
+              <span className="inline-flex items-center gap-0.5 text-emerald-400/90" title="Self-hostable via Docker">
                 <Terminal className="w-3 h-3" />
-                Self-host
+                {t.card.selfHost}
               </span>
             )}
           </div>

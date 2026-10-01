@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, Star, ExternalLink, ArrowRight } from 'lucide-react';
+import { Search, X, Star, ArrowRight } from 'lucide-react';
 import { ToolItem } from '@/types/tool';
+import { useI18n } from '@/lib/i18n';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
 }) => {
   const [query, setQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
+  const { lang, t } = useI18n();
 
   useEffect(() => {
     if (isOpen) {
@@ -35,9 +37,6 @@ export const SearchModal: React.FC<SearchModalProps> = ({
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
         if (isOpen) onClose();
-        else {
-          // 在父组件里打开
-        }
       }
       if (e.key === 'Escape' && isOpen) {
         onClose();
@@ -55,9 +54,11 @@ export const SearchModal: React.FC<SearchModalProps> = ({
     return (
       tool.name.toLowerCase().includes(q) ||
       tool.tagline.toLowerCase().includes(q) ||
+      (tool.taglineEn && tool.taglineEn.toLowerCase().includes(q)) ||
       tool.description.toLowerCase().includes(q) ||
+      (tool.descriptionEn && tool.descriptionEn.toLowerCase().includes(q)) ||
       (tool.alternativeTo && tool.alternativeTo.toLowerCase().includes(q)) ||
-      tool.tags.some((t) => t.toLowerCase().includes(q))
+      tool.tags.some((tag) => tag.toLowerCase().includes(q))
     );
   });
 
@@ -88,7 +89,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="搜索任何工具、替代对象（如 Zapier, Notion）、或标签（Docker, Local AI）..."
+              placeholder={t.search.placeholder}
               className="flex-1 bg-transparent text-sm text-zinc-100 placeholder-zinc-500 outline-none"
             />
             {query && (
@@ -108,48 +109,51 @@ export const SearchModal: React.FC<SearchModalProps> = ({
           <div className="max-h-[60vh] overflow-y-auto p-2 divide-y divide-zinc-900/60">
             {filtered.length === 0 ? (
               <div className="p-8 text-center text-sm text-zinc-500">
-                未找到与 &quot;{query}&quot; 相关的工具，你可以试着搜索 &quot;Notion&quot; 或 &quot;Docker&quot;
+                {t.search.noResult} &quot;{query}&quot;。{t.search.trySearching}
               </div>
             ) : (
-              filtered.map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => {
-                    onSelectTool(item);
-                    onClose();
-                  }}
-                  className="flex items-center justify-between p-3 rounded-xl hover:bg-zinc-900/80 cursor-pointer transition-colors group"
-                >
-                  <div className="flex-1 min-w-0 pr-4">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-semibold text-zinc-100 group-hover:text-amber-400 text-sm">
-                        {item.name}
-                      </span>
-                      {item.alternativeTo && (
-                        <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-1.5 py-0.2 rounded border border-amber-500/20">
-                          Alt: {item.alternativeTo}
+              filtered.map((item) => {
+                const tagline = lang === 'en' ? (item.taglineEn || item.tagline) : item.tagline;
+                return (
+                  <div
+                    key={item.id}
+                    onClick={() => {
+                      onSelectTool(item);
+                      onClose();
+                    }}
+                    className="flex items-center justify-between p-3 rounded-xl hover:bg-zinc-900/80 cursor-pointer transition-colors group"
+                  >
+                    <div className="flex-1 min-w-0 pr-4">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-semibold text-zinc-100 group-hover:text-amber-400 text-sm">
+                          {item.name}
+                        </span>
+                        {item.alternativeTo && (
+                          <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-1.5 py-0.2 rounded border border-amber-500/20">
+                            Alt: {item.alternativeTo}
+                          </span>
+                        )}
+                        <span className="text-[10px] font-mono text-zinc-500">
+                          {item.pricing}
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-400 truncate">
+                        {tagline}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      {item.stars && (
+                        <span className="hidden sm:flex items-center gap-1 text-[11px] font-mono text-zinc-500">
+                          <Star className="w-3 h-3 text-amber-500 fill-amber-500/20" />
+                          {item.stars}
                         </span>
                       )}
-                      <span className="text-[10px] font-mono text-zinc-500">
-                        {item.pricing}
-                      </span>
+                      <ArrowRight className="w-4 h-4 text-zinc-600 group-hover:text-zinc-200 transition-colors" />
                     </div>
-                    <p className="text-xs text-zinc-400 truncate">
-                      {item.tagline}
-                    </p>
                   </div>
-
-                  <div className="flex items-center gap-2">
-                    {item.stars && (
-                      <span className="hidden sm:flex items-center gap-1 text-[11px] font-mono text-zinc-500">
-                        <Star className="w-3 h-3 text-amber-500 fill-amber-500/20" />
-                        {item.stars}
-                      </span>
-                    )}
-                    <ArrowRight className="w-4 h-4 text-zinc-600 group-hover:text-zinc-200 transition-colors" />
-                  </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </motion.div>

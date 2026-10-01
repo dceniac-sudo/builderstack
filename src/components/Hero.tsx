@@ -2,12 +2,15 @@
 
 import React from 'react';
 import { ShieldCheck, Zap, Globe, Sparkles } from 'lucide-react';
+import { useI18n } from '@/lib/i18n';
 
 interface HeroProps {
   totalTools: number;
 }
 
 export const Hero: React.FC<HeroProps> = ({ totalTools }) => {
+  const { t } = useI18n();
+
   return (
     <section className="relative pt-12 pb-8 sm:pt-16 sm:pb-12 text-center overflow-hidden">
       {/* 背景微弱光晕效果 */}
@@ -18,40 +21,39 @@ export const Hero: React.FC<HeroProps> = ({ totalTools }) => {
         <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-zinc-900/80 px-3.5 py-1 text-xs text-zinc-300 shadow-sm mb-6">
           <Sparkles className="w-3.5 h-3.5 text-amber-400" />
           <span className="font-mono text-[11px] text-zinc-400">
-            AI-POWERED SOLOPRENEUR STACK
+            {t.hero.badge}
           </span>
           <span className="w-1 h-1 rounded-full bg-zinc-600" />
-          <span className="text-zinc-200">2026 独立创造者精选</span>
+          <span className="text-zinc-200">{t.hero.badgeSub}</span>
         </div>
 
         {/* 主标题 */}
         <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-100 leading-tight sm:leading-tight mb-4">
-          不用昂贵团队，
+          {t.hero.titleLine1}
           <br className="hidden sm:inline" />
           <span className="bg-gradient-to-r from-amber-200 via-amber-400 to-amber-500 bg-clip-text text-transparent">
-            一人搭建全自动 AI 生产力闭环
+            {t.hero.titleLine2}
           </span>
         </h1>
 
         {/* 副标题 */}
         <p className="text-sm sm:text-base text-zinc-400 max-w-2xl mx-auto leading-relaxed mb-8">
-          严选开源平替、AI 自动化工作流与出海全栈工具链。
-          拒绝高昂 SaaS 订阅税，掌控数据隐私、代码自主与自由分发。
+          {t.hero.subtitle}
         </p>
 
         {/* 3 个极客信任指标 */}
         <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs text-zinc-400 font-mono">
           <div className="flex items-center gap-1.5 bg-zinc-900/60 border border-zinc-800/80 rounded-lg px-3 py-1.5">
             <Zap className="w-3.5 h-3.5 text-amber-400" />
-            <span>{totalTools}+ 标杆工具</span>
+            <span>{totalTools}+ {t.hero.metricTools}</span>
           </div>
           <div className="flex items-center gap-1.5 bg-zinc-900/60 border border-zinc-800/80 rounded-lg px-3 py-1.5">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-            <span>100% 拒绝捆绑</span>
+            <span>{t.hero.metricLockin}</span>
           </div>
           <div className="flex items-center gap-1.5 bg-zinc-900/60 border border-zinc-800/80 rounded-lg px-3 py-1.5">
             <Globe className="w-3.5 h-3.5 text-sky-400" />
-            <span>Cloudflare 全球边缘分发</span>
+            <span>{t.hero.metricEdge}</span>
           </div>
         </div>
       </div>

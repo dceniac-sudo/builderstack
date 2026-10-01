@@ -4,6 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { LayoutGrid, ShieldCheck, Cpu, Terminal, Flame } from 'lucide-react';
 import { CategoryType, CategoryInfo } from '@/types/tool';
+import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
 interface CategoryFilterProps {
@@ -27,6 +28,8 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   onSelectCategory,
   toolCounts,
 }) => {
+  const { lang } = useI18n();
+
   return (
     <div className="w-full">
       {/* 滚动容器 */}
@@ -35,6 +38,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
           const isSelected = selectedCategory === cat.id;
           const Icon = ICON_MAP[cat.iconName] || LayoutGrid;
           const count = toolCounts[cat.id] || 0;
+          const displayName = lang === 'en' ? cat.labelEn : cat.label;
 
           return (
             <button
@@ -64,7 +68,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                     isSelected ? 'text-amber-400' : 'text-zinc-500'
                   )}
                 />
-                <span>{cat.label}</span>
+                <span>{displayName}</span>
                 <span
                   className={cn(
                     'font-mono text-[10px] rounded-full px-1.5 py-0.2',

@@ -10,9 +10,11 @@ import { ToolDetailModal } from '@/components/ToolDetailModal';
 import { SearchModal } from '@/components/SearchModal';
 import { CATEGORIES, TOOLS_DATA } from '@/data/tools';
 import { CategoryType, ToolItem } from '@/types/tool';
+import { I18nProvider, useI18n } from '@/lib/i18n';
 import { Filter, Layers, Zap } from 'lucide-react';
 
-export default function HomePage() {
+function HomeContent() {
+  const { lang, t } = useI18n();
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>('all');
   const [activeFilterTag, setActiveFilterTag] = useState<string>('all');
   const [selectedTool, setSelectedTool] = useState<ToolItem | null>(null);
@@ -57,6 +59,12 @@ export default function HomePage() {
     });
   }, [selectedCategory, activeFilterTag]);
 
+  const currentCategoryLabel = useMemo(() => {
+    const found = CATEGORIES.find((c) => c.id === selectedCategory);
+    if (!found) return '';
+    return lang === 'en' ? found.labelEn : found.label;
+  }, [selectedCategory, lang]);
+
   return (
     <div className="flex-1 flex flex-col justify-between">
       {/* 顶部导航 */}
@@ -81,12 +89,12 @@ export default function HomePage() {
             toolCounts={toolCounts}
           />
 
-          {/* 二级极客标签快捷筛选 (Pill Badges) */}
+          {/* 二级极客标签快捷筛选 */}
           {availableTags.length > 2 && (
             <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1 text-xs">
               <span className="text-zinc-500 font-mono text-[11px] flex items-center gap-1 shrink-0 pl-1 mr-1">
                 <Filter className="w-3 h-3" />
-                标签:
+                {t.filter.label}
               </span>
               {availableTags.map((tag) => {
                 const isActive = activeFilterTag === tag;
@@ -100,7 +108,7 @@ export default function HomePage() {
                         : 'bg-zinc-900/60 text-zinc-400 border-zinc-800/80 hover:text-zinc-200 hover:bg-zinc-800/60'
                     }`}
                   >
-                    {tag === 'all' ? '全部标签' : `#${tag}`}
+                    {tag === 'all' ? t.filter.allTags : `#${tag}`}
                   </button>
                 );
               })}
@@ -113,14 +121,14 @@ export default function HomePage() {
           <div className="flex items-center gap-2">
             <Layers className="w-3.5 h-3.5 text-zinc-400" />
             <span>
-              显示 {filteredTools.length} 个神器
-              {selectedCategory !== 'all' && ` · ${CATEGORIES.find((c) => c.id === selectedCategory)?.label}`}
+              {t.filter.showing} {filteredTools.length} {t.filter.toolsUnit}
+              {selectedCategory !== 'all' && ` · ${currentCategoryLabel}`}
             </span>
           </div>
-          <span className="hidden sm:inline">点击卡片可查看详细痛点分析与 Docker 命令</span>
+          <span className="hidden sm:inline">{t.filter.hint}</span>
         </div>
 
-        {/* 响应式网格 (Bento Grid: 手机 1 列 / 平板 2 列 / 桌面 3 列) */}
+        {/* 响应式网格 (Bento Grid) */}
         <motion.div
           layout
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
@@ -144,12 +152,12 @@ export default function HomePage() {
         {filteredTools.length === 0 && (
           <div className="text-center py-20 border border-dashed border-zinc-800 rounded-2xl bg-zinc-950/40">
             <Zap className="w-8 h-8 text-zinc-600 mx-auto mb-3" />
-            <p className="text-sm text-zinc-400 font-medium">当前标签下暂无收录</p>
+            <p className="text-sm text-zinc-400 font-medium">{t.filter.emptyTitle}</p>
             <button
               onClick={() => setActiveFilterTag('all')}
               className="mt-3 text-xs text-amber-400 underline font-mono"
             >
-              清空标签筛选
+              {t.filter.emptyClear}
             </button>
           </div>
         )}
@@ -160,7 +168,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-amber-500/80" />
-            <span>BuilderStack © 2026. Made for Solo Creators.</span>
+            <span>{t.footer.copyright}</span>
           </div>
           <div className="flex items-center gap-6">
             <a
@@ -169,7 +177,7 @@ export default function HomePage() {
               rel="noopener noreferrer"
               className="hover:text-zinc-300 transition-colors"
             >
-              Hosted on Cloudflare Pages
+              {t.footer.hostedOn}
             </a>
             <a
               href="https://twitter.com"
@@ -177,7 +185,7 @@ export default function HomePage() {
               rel="noopener noreferrer"
               className="hover:text-amber-400 transition-colors"
             >
-              Follow on X
+              {t.footer.followX}
             </a>
             <a
               href="https://youtube.com"
@@ -185,13 +193,13 @@ export default function HomePage() {
               rel="noopener noreferrer"
               className="hover:text-red-400 transition-colors"
             >
-              YouTube
+              {t.footer.youtube}
             </a>
           </div>
         </div>
       </footer>
 
-      {/* 详情弹窗 / 移动端抽屉 */}
+      {/* 详情弹窗 */}
       <ToolDetailModal
         tool={selectedTool}
         onClose={() => setSelectedTool(null)}
@@ -205,5 +213,13 @@ export default function HomePage() {
         onSelectTool={(tool) => setSelectedTool(tool)}
       />
     </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <I18nProvider>
+      <HomeContent />
+    </I18nProvider>
   );
 }

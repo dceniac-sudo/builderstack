@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ExternalLink, Github, Terminal, Copy, Check, Star, Shield } from 'lucide-react';
 import { ToolItem } from '@/types/tool';
+import { useI18n } from '@/lib/i18n';
 
 interface ToolDetailModalProps {
   tool: ToolItem | null;
@@ -12,6 +13,7 @@ interface ToolDetailModalProps {
 
 export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose }) => {
   const [copied, setCopied] = useState(false);
+  const { lang, t } = useI18n();
 
   if (!tool) return null;
 
@@ -21,6 +23,8 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose 
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  const description = lang === 'en' ? (tool.descriptionEn || tool.description) : tool.description;
 
   return (
     <AnimatePresence>
@@ -34,7 +38,7 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose 
           className="fixed inset-0 bg-black/80 backdrop-blur-md"
         />
 
-        {/* 弹窗主体 (手机端底部抽屉 / 桌面端居中卡片) */}
+        {/* 弹窗主体 */}
         <motion.div
           initial={{ y: '100%', opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -52,7 +56,7 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose 
 
           {/* 头部信息 */}
           <div className="flex items-start gap-4 mb-6 pr-8">
-            <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-amber-500 font-bold font-mono text-xl shadow-inner">
+            <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-amber-500 font-bold font-mono text-xl shadow-inner shrink-0">
               {tool.name.slice(0, 1)}
             </div>
             <div>
@@ -68,7 +72,7 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose 
               </div>
               {tool.alternativeTo && (
                 <div className="mt-1 text-xs font-mono text-amber-400">
-                  ⚡ 瞄准商业替代: {tool.alternativeTo}
+                  {t.modal.altAim} {tool.alternativeTo}
                 </div>
               )}
             </div>
@@ -90,20 +94,20 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose 
           <div className="space-y-4 mb-6">
             <div>
               <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2 font-mono">
-                核心价值与痛点突破
+                {t.modal.breakthrough}
               </h4>
               <p className="text-sm text-zinc-300 leading-relaxed bg-zinc-900/50 p-4 rounded-xl border border-zinc-900">
-                {tool.description}
+                {description}
               </p>
             </div>
 
-            {/* Docker 一键自托管命令 (极客最爱) */}
+            {/* Docker 一键自托管命令 */}
             {tool.selfHostCommand && (
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="text-xs font-semibold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5 font-mono">
                     <Terminal className="w-3.5 h-3.5" />
-                    一键本地 / Docker 跑起
+                    {t.modal.oneClickSelfHost}
                   </h4>
                   <button
                     onClick={handleCopyCommand}
@@ -112,12 +116,12 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose 
                     {copied ? (
                       <>
                         <Check className="w-3.5 h-3.5 text-emerald-400" />
-                        <span className="text-emerald-400">已复制!</span>
+                        <span className="text-emerald-400">{t.modal.copied}</span>
                       </>
                     ) : (
                       <>
                         <Copy className="w-3.5 h-3.5" />
-                        <span>复制代码</span>
+                        <span>{t.modal.copyCode}</span>
                       </>
                     )}
                   </button>
@@ -164,7 +168,7 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose 
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-semibold transition-transform active:scale-95 shadow-md shadow-amber-500/20"
               >
-                <span>直达官网</span>
+                <span>{t.modal.visitSite}</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
             </div>
