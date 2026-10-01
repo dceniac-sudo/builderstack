@@ -27,6 +27,7 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({ tool, onSelect }) 
   };
 
   const tagline = lang === 'en' ? (tool.taglineEn || tool.tagline) : tool.tagline;
+  const stage = lang === 'en' ? tool.stageEn : tool.stage;
 
   return (
     <div
@@ -42,7 +43,7 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({ tool, onSelect }) 
         'cursor-pointer flex flex-col justify-between overflow-hidden'
       )}
     >
-      {/* RareUI 风格: 鼠标跟随径向微光 (Radial Spotlight) */}
+      {/* RareUI 风格: 鼠标跟随径向微光 */}
       <div
         className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
         style={{
@@ -68,15 +69,18 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({ tool, onSelect }) 
       />
 
       <div className="relative z-10 flex flex-col h-full">
-        {/* 顶部 Header: 标题、替代标签与外链 */}
+        {/* 顶部阶段徽章与 Header */}
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+              <span className="font-mono text-[10px] uppercase tracking-wider text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded">
+                {stage}
+              </span>
               <h3 className="text-lg font-semibold text-zinc-100 tracking-tight group-hover:text-amber-400 transition-colors">
                 {tool.name}
               </h3>
               {tool.featured && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium text-amber-400 border border-amber-500/20">
+                <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-medium text-amber-400 border border-amber-500/20">
                   <Sparkles className="w-2.5 h-2.5" />
                   {t.card.featured}
                 </span>
@@ -99,7 +103,7 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({ tool, onSelect }) 
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
             title={t.card.visit}
-            className="rounded-lg p-2 text-zinc-400 hover:text-white hover:bg-zinc-800/80 transition-colors border border-transparent hover:border-zinc-700"
+            className="rounded-lg p-2 text-zinc-400 hover:text-white hover:bg-zinc-800/80 transition-colors border border-transparent hover:border-zinc-700 shrink-0"
           >
             <ExternalLink className="w-4 h-4" />
           </a>
@@ -110,18 +114,21 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({ tool, onSelect }) 
           {tagline}
         </p>
 
-        {/* 底部元数据: 标签、Stars 与定价模式 */}
+        {/* 底部元数据: 场景化双语标签 */}
         <div className="mt-auto pt-3 border-t border-zinc-900/80 flex items-center justify-between gap-2 flex-wrap text-xs">
           {/* Tags */}
           <div className="flex items-center gap-1.5 flex-wrap">
-            {tool.tags.slice(0, 2).map((tag) => (
-              <span
-                key={tag}
-                className="rounded-md bg-zinc-900 px-2 py-0.5 text-zinc-400 text-[11px] font-mono border border-zinc-800"
-              >
-                {tag}
-              </span>
-            ))}
+            {tool.tags.map((tagObj) => {
+              const tagText = lang === 'en' ? tagObj.en : tagObj.zh;
+              return (
+                <span
+                  key={tagObj.en}
+                  className="rounded-md bg-zinc-900 px-2 py-0.5 text-zinc-300 text-[11px] font-mono border border-zinc-800"
+                >
+                  #{tagText}
+                </span>
+              );
+            })}
           </div>
 
           {/* 右侧：Stars 或自托管标识 */}

@@ -58,7 +58,12 @@ export const SearchModal: React.FC<SearchModalProps> = ({
       tool.description.toLowerCase().includes(q) ||
       (tool.descriptionEn && tool.descriptionEn.toLowerCase().includes(q)) ||
       (tool.alternativeTo && tool.alternativeTo.toLowerCase().includes(q)) ||
-      tool.tags.some((tag) => tag.toLowerCase().includes(q))
+      tool.stage.toLowerCase().includes(q) ||
+      tool.stageEn.toLowerCase().includes(q) ||
+      tool.tags.some(
+        (tag) =>
+          tag.zh.toLowerCase().includes(q) || tag.en.toLowerCase().includes(q)
+      )
     );
   });
 
@@ -114,6 +119,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
             ) : (
               filtered.map((item) => {
                 const tagline = lang === 'en' ? (item.taglineEn || item.tagline) : item.tagline;
+                const stage = lang === 'en' ? item.stageEn : item.stage;
                 return (
                   <div
                     key={item.id}
@@ -125,17 +131,17 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                   >
                     <div className="flex-1 min-w-0 pr-4">
                       <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-1.5 py-0.2 rounded border border-amber-500/20">
+                          {stage}
+                        </span>
                         <span className="font-semibold text-zinc-100 group-hover:text-amber-400 text-sm">
                           {item.name}
                         </span>
                         {item.alternativeTo && (
-                          <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-1.5 py-0.2 rounded border border-amber-500/20">
+                          <span className="text-[10px] font-mono text-zinc-400 bg-zinc-900 px-1.5 py-0.2 rounded border border-zinc-800">
                             Alt: {item.alternativeTo}
                           </span>
                         )}
-                        <span className="text-[10px] font-mono text-zinc-500">
-                          {item.pricing}
-                        </span>
                       </div>
                       <p className="text-xs text-zinc-400 truncate">
                         {tagline}

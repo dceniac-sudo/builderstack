@@ -1,15 +1,22 @@
-export type CategoryType = 'all' | 'open-source' | 'ai-workflow' | 'indie-dev' | 'media-growth';
+export type CategoryType = 'all' | 'local-ai' | 'full-stack' | 'self-hosted' | 'distribution';
+
+export interface LocalizedTag {
+  zh: string;
+  en: string;
+}
 
 export interface ToolItem {
   id: string;
   name: string;
-  category: 'open-source' | 'ai-workflow' | 'indie-dev' | 'media-growth';
+  category: 'local-ai' | 'full-stack' | 'self-hosted' | 'distribution';
+  stage: string;               // 处于创造者哪个生产阶段 (如 "Step 1: 智能体编排" / "Phase 2: 全栈交付")
+  stageEn: string;
   tagline: string;             // 中文简介
   taglineEn: string;           // 英文简介
   description: string;         // 详细痛点中文说明
   descriptionEn: string;       // 详细痛点英文说明
   alternativeTo?: string;      // 例如 "Zapier", "Notion", "Midjourney"
-  tags: string[];              // 标签
+  tags: LocalizedTag[];        // 双语结构化场景标签
   url: string;                 // 官网链接
   githubUrl?: string;          // GitHub 仓库链接
   stars?: string;              // Stars 统计，例如 "48.5k"

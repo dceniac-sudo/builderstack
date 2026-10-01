@@ -16,18 +16,18 @@ import { Filter, Layers, Zap } from 'lucide-react';
 function HomeContent() {
   const { lang, t } = useI18n();
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>('all');
-  const [activeFilterTag, setActiveFilterTag] = useState<string>('all');
+  const [activeFilterTagKey, setActiveFilterTagKey] = useState<string>('all');
   const [selectedTool, setSelectedTool] = useState<ToolItem | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  // 统计每个分类下的数量
+  // 统计每个生命周期分类下的数量
   const toolCounts = useMemo(() => {
     const counts: Record<CategoryType, number> = {
       all: TOOLS_DATA.length,
-      'open-source': 0,
-      'ai-workflow': 0,
-      'indie-dev': 0,
-      'media-growth': 0,
+      'local-ai': 0,
+      'full-stack': 0,
+      'self-hosted': 0,
+      'distribution': 0,
     };
     TOOLS_DATA.forEach((tool) => {
       if (counts[tool.category] !== undefined) {
@@ -37,16 +37,30 @@ function HomeContent() {
     return counts;
   }, []);
 
-  // 提取当前分类下出现的所有热门标签
+  // 提取当前分类下出现的所有细分场景标签
   const availableTags = useMemo(() => {
     const currentList =
       selectedCategory === 'all'
         ? TOOLS_DATA
         : TOOLS_DATA.filter((t) => t.category === selectedCategory);
-    const tagSet = new Set<string>();
-    currentList.forEach((t) => t.tags.forEach((tag) => tagSet.add(tag)));
-    return ['all', ...Array.from(tagSet).slice(0, 8)];
-  }, [selectedCategory]);
+    
+    const tagMap = new Map<string, { zh: string; en: string }>();
+    currentList.forEach((t) => {
+      t.tags.forEach((tag) => {
+        if (!tagMap.has(tag.en)) {
+          tagMap.set(tag.en, tag);
+        }
+      });
+    });
+
+    return [
+      { key: 'all', label: lang === 'en' ? 'All Tags' : '全部标签' },
+      ...Array.from(tagMap.values()).map((tag) => ({
+        key: tag.en,
+        label: lang === 'en' ? `#${tag.en}` : `#${tag.zh}`,
+      })),
+    ];
+  }, [selectedCategory, lang]);
 
   // 根据分类和标签过滤
   const filteredTools = useMemo(() => {
@@ -54,10 +68,11 @@ function HomeContent() {
       const matchCat =
         selectedCategory === 'all' || tool.category === selectedCategory;
       const matchTag =
-        activeFilterTag === 'all' || tool.tags.includes(activeFilterTag);
+        activeFilterTagKey === 'all' ||
+        tool.tags.some((tag) => tag.en === activeFilterTagKey);
       return matchCat && matchTag;
     });
-  }, [selectedCategory, activeFilterTag]);
+  }, [selectedCategory, activeFilterTagKey]);
 
   const currentCategoryLabel = useMemo(() => {
     const found = CATEGORIES.find((c) => c.id === selectedCategory);
@@ -84,12 +99,12 @@ function HomeContent() {
             selectedCategory={selectedCategory}
             onSelectCategory={(id) => {
               setSelectedCategory(id);
-              setActiveFilterTag('all');
+              setActiveFilterTagKey('all');
             }}
             toolCounts={toolCounts}
           />
 
-          {/* 二级极客标签快捷筛选 */}
+          {/* 二级场景细分标签过滤 */}
           {availableTags.length > 2 && (
             <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1 text-xs">
               <span className="text-zinc-500 font-mono text-[11px] flex items-center gap-1 shrink-0 pl-1 mr-1">
@@ -97,18 +112,18 @@ function HomeContent() {
                 {t.filter.label}
               </span>
               {availableTags.map((tag) => {
-                const isActive = activeFilterTag === tag;
+                const isActive = activeFilterTagKey === tag.key;
                 return (
                   <button
-                    key={tag}
-                    onClick={() => setActiveFilterTag(tag)}
+                    key={tag.key}
+                    onClick={() => setActiveFilterTagKey(tag.key)}
                     className={`rounded-lg px-2.5 py-1 font-mono text-[11px] transition-all whitespace-nowrap border ${
                       isActive
                         ? 'bg-amber-500/10 text-amber-300 border-amber-500/30 font-medium'
                         : 'bg-zinc-900/60 text-zinc-400 border-zinc-800/80 hover:text-zinc-200 hover:bg-zinc-800/60'
                     }`}
                   >
-                    {tag === 'all' ? t.filter.allTags : `#${tag}`}
+                    {tag.label}
                   </button>
                 );
               })}
@@ -154,7 +169,7 @@ function HomeContent() {
             <Zap className="w-8 h-8 text-zinc-600 mx-auto mb-3" />
             <p className="text-sm text-zinc-400 font-medium">{t.filter.emptyTitle}</p>
             <button
-              onClick={() => setActiveFilterTag('all')}
+              onClick={() => setActiveFilterTagKey('all')}
               className="mt-3 text-xs text-amber-400 underline font-mono"
             >
               {t.filter.emptyClear}

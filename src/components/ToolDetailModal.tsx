@@ -25,6 +25,7 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose 
   };
 
   const description = lang === 'en' ? (tool.descriptionEn || tool.description) : tool.description;
+  const stage = lang === 'en' ? tool.stageEn : tool.stage;
 
   return (
     <AnimatePresence>
@@ -60,7 +61,10 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose 
               {tool.name.slice(0, 1)}
             </div>
             <div>
-              <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center gap-2 flex-wrap mb-1">
+                <span className="font-mono text-[10px] uppercase tracking-wider text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded">
+                  {stage}
+                </span>
                 <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
                   {tool.name}
                 </h2>
@@ -71,23 +75,26 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose 
                 )}
               </div>
               {tool.alternativeTo && (
-                <div className="mt-1 text-xs font-mono text-amber-400">
+                <div className="text-xs font-mono text-amber-400">
                   {t.modal.altAim} {tool.alternativeTo}
                 </div>
               )}
             </div>
           </div>
 
-          {/* 标签列表 */}
+          {/* 场景标签列表 */}
           <div className="flex flex-wrap gap-1.5 mb-6">
-            {tool.tags.map((tag) => (
-              <span
-                key={tag}
-                className="rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-mono text-zinc-300 border border-zinc-800"
-              >
-                #{tag}
-              </span>
-            ))}
+            {tool.tags.map((tagObj) => {
+              const tagText = lang === 'en' ? tagObj.en : tagObj.zh;
+              return (
+                <span
+                  key={tagObj.en}
+                  className="rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-mono text-zinc-300 border border-zinc-800"
+                >
+                  #{tagText}
+                </span>
+              );
+            })}
           </div>
 
           {/* 详细痛点解决与介绍 */}
