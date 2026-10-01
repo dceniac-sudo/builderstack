@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { LayoutGrid, ShieldCheck, Cpu, Terminal, Flame } from 'lucide-react';
+import { LayoutGrid, ShieldCheck, Cpu, Terminal, Flame, Palette } from 'lucide-react';
 import { CategoryType, CategoryInfo } from '@/types/tool';
 import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
@@ -19,6 +19,7 @@ const ICON_MAP: Record<string, React.ElementType> = {
   ShieldCheck,
   Cpu,
   Terminal,
+  Palette,
   Flame,
 };
 

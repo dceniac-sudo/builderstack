@@ -1,4 +1,4 @@
-export type CategoryType = 'all' | 'local-ai' | 'full-stack' | 'self-hosted' | 'distribution';
+export type CategoryType = 'all' | 'local-ai' | 'full-stack' | 'design-content' | 'self-hosted' | 'distribution';
 
 export interface LocalizedTag {
   zh: string;
@@ -8,7 +8,7 @@ export interface LocalizedTag {
 export interface ToolItem {
   id: string;
   name: string;
-  category: 'local-ai' | 'full-stack' | 'self-hosted' | 'distribution';
+  category: 'local-ai' | 'full-stack' | 'design-content' | 'self-hosted' | 'distribution';
   stage: string;               // 处于创造者哪个生产阶段 (如 "Step 1: 智能体编排" / "Phase 2: 全栈交付")
   stageEn: string;
   tagline: string;             // 中文简介

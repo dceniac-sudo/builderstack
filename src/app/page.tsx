@@ -26,6 +26,7 @@ function HomeContent() {
       all: TOOLS_DATA.length,
       'local-ai': 0,
       'full-stack': 0,
+      'design-content': 0,
       'self-hosted': 0,
       'distribution': 0,
     };
