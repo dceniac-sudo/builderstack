@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import React, { createContext, useContext } from 'react';
 
 export type Language = 'en' | 'zh';
 
@@ -152,41 +152,27 @@ interface I18nContextType {
 
 const I18nContext = createContext<I18nContextType | null>(null);
 
-export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [lang, setLangState] = useState<Language>('en');
-  // 访客实际需要的语言；确定之前为 null
-  const wanted = useRef<Language | null>(null);
+// 英文页面在根路径下，中文页面在 /zh 下。每个页面构建时就是它自己的语言，
+// 所以加载时不会出现先英文后中文的跳动。
+export function localePath(lang: Language, path: string) {
+  const clean = path.startsWith('/') ? path : '/' + path;
+  return lang === 'zh' ? '/zh' + clean : clean;
+}
 
-  useEffect(() => {
-    const saved = localStorage.getItem('builderstack_lang') as Language;
-    if (saved === 'en' || saved === 'zh') {
-      wanted.current = saved;
-    } else {
-      wanted.current = navigator.language.toLowerCase().startsWith('zh') ? 'zh' : 'en';
-    }
-    setLangState(wanted.current);
-  }, []);
-
-  // 页面声明的语言跟着实际显示的语言走；显示的语言和访客需要的一致后，再放出正文
-  useEffect(() => {
-    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
-    if (wanted.current === lang) {
-      document.documentElement.classList.remove('i18n-pending');
-    }
-  }, [lang]);
-
+export const I18nProvider: React.FC<{ lang: Language; children: React.ReactNode }> = ({ lang, children }) => {
+  // 切换语言就是跳到另一种语言的同一个页面，并记住这次选择
   const setLang = (newLang: Language) => {
-    wanted.current = newLang;
-    setLangState(newLang);
-    localStorage.setItem('builderstack_lang', newLang);
+    if (newLang === lang) return;
+    try {
+      localStorage.setItem('builderstack_lang', newLang);
+    } catch {}
+    const { pathname, search, hash } = window.location;
+    const base = pathname.replace(/^\/zh(?=\/|$)/, '') || '/';
+    window.location.assign(localePath(newLang, base) + search + hash);
   };
 
-  const t = DICTIONARY[lang];
-
   return (
-    <I18nContext.Provider value={{ lang, setLang, t }}>
-      {children}
-    </I18nContext.Provider>
+    <I18nContext.Provider value={{ lang, setLang, t: DICTIONARY[lang] }}>{children}</I18nContext.Provider>
   );
 };
 

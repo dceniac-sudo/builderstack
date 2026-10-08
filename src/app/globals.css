@@ -33,11 +33,6 @@ body {
   }
 }
 
-/* 语言确定之前先不显示正文，见 layout.tsx 里的 LANG_BOOTSTRAP */
-html.i18n-pending body {
-  visibility: hidden;
-}
-
 /* 自定义高亮选择 */
 ::selection {
   background-color: #f59e0b;

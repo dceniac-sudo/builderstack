@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { I18nProvider } from '@/lib/i18n';
+import { I18nProvider, Language } from '@/lib/i18n';
 
-// 语言状态放在最外层，首页和文章页共用，切换后跳转页面也保持一致
-export const Providers: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <I18nProvider>{children}</I18nProvider>
+// 每个页面的语言在构建时就定了：英文页面传 en，/zh 下的页面传 zh
+export const Providers: React.FC<{ lang: Language; children: React.ReactNode }> = ({ lang, children }) => (
+  <I18nProvider lang={lang}>{children}</I18nProvider>
 );

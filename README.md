@@ -8,7 +8,7 @@ Live: [https://dceniac.com](https://dceniac.com)
 
 - **What I learned**: things I tried myself, newest first. Data lives in `src/data/notes.ts`.
 - **What I use**: each tool with my own note and a status (daily, sometimes, dropped). Data lives in `src/data/tools.ts`.
-- English by default, Chinese via the toggle. Interface copy is in `src/lib/i18n.tsx`.
+- English pages live at the root and Chinese pages under /zh. Each page is built in its own language, so nothing changes after it loads. The toggle goes to the same page in the other language and remembers the choice. A first-time visitor with a Chinese browser is sent to /zh. Interface copy is in `src/lib/i18n.tsx`.
 
 ## Adding content
 
@@ -18,7 +18,7 @@ Every tool and note has a `confirmed` flag. Only confirmed entries are included 
 NEXT_PUBLIC_SHOW_DRAFTS=1 npm run build
 ```
 
-A note gets its own page at `/notes/<id>/` when two files exist: `content/notes/<id>.en.md` and `content/notes/<id>.zh.md`, and the entry in `src/data/notes.ts` has `hasPage: true`. Both languages are built into the same page and follow the language toggle. Images go in `public/notes/<id>/`.
+A note gets its own page at `/notes/<id>/` when two files exist: `content/notes/<id>.en.md` and `content/notes/<id>.zh.md`, and the entry in `src/data/notes.ts` has `hasPage: true`. The English page is at /notes/<id>/ and the Chinese one at /zh/notes/<id>/. Images go in `public/notes/<id>/`.
 
 Link to a single tool with `https://dceniac.com/#<tool-id>`.
 

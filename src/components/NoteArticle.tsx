@@ -6,26 +6,24 @@ import { ArrowLeft } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { WechatQr } from '@/components/WechatQr';
 import { NoteItem } from '@/types/tool';
-import { useI18n, X_HANDLE } from '@/lib/i18n';
+import { useI18n, localePath, X_HANDLE } from '@/lib/i18n';
 import { renderMarkdown } from '@/lib/markdown';
 
 interface NoteArticleProps {
   note: NoteItem;
-  bodyEn: string;
-  bodyZh: string;
+  body: string;                // 当前页面语言的正文
 }
 
-export const NoteArticle: React.FC<NoteArticleProps> = ({ note, bodyEn, bodyZh }) => {
+export const NoteArticle: React.FC<NoteArticleProps> = ({ note, body }) => {
   const { lang, t } = useI18n();
   const title = lang === 'en' ? note.titleEn : note.title;
-  const body = lang === 'en' ? bodyEn : bodyZh;
 
   return (
     <div className="flex-1 flex flex-col">
       <Navbar />
 
       <main className="flex-1 w-full max-w-2xl mx-auto px-5 sm:px-6 pt-8 pb-20">
-        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-amber-400">
+        <Link href={localePath(lang, '/')} className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-amber-400">
           <ArrowLeft className="w-4 h-4" />
           {t.article.back}
         </Link>

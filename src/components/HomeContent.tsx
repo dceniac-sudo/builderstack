@@ -24,7 +24,7 @@ function inCategory(tool: ToolItem, category: CategoryType) {
   return tool.category === category && tool.status !== 'dropped';
 }
 
-export default function HomePage() {
+export function HomeContent() {
   const { lang, t } = useI18n();
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>('all');
   const [selectedTool, setSelectedTool] = useState<ToolItem | null>(null);
