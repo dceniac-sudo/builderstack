@@ -1,206 +1,160 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Navbar } from '@/components/Navbar';
 import { Hero } from '@/components/Hero';
+import { NotesSection } from '@/components/NotesSection';
 import { CategoryFilter } from '@/components/CategoryFilter';
 import { SpotlightCard } from '@/components/SpotlightCard';
 import { ToolDetailModal } from '@/components/ToolDetailModal';
 import { SearchModal } from '@/components/SearchModal';
 import { CATEGORIES, TOOLS_DATA } from '@/data/tools';
+import { NOTES_DATA } from '@/data/notes';
 import { CategoryType, ToolItem } from '@/types/tool';
-import { I18nProvider, useI18n } from '@/lib/i18n';
-import { Filter, Layers, Zap } from 'lucide-react';
+import { I18nProvider, useI18n, X_HANDLE, GITHUB_URL } from '@/lib/i18n';
+import { Layers } from 'lucide-react';
+
+function inCategory(tool: ToolItem, category: CategoryType) {
+  if (category === 'all') return true;
+  if (category === 'dropped') return tool.status === 'dropped';
+  return tool.category === category && tool.status !== 'dropped';
+}
 
 function HomeContent() {
   const { lang, t } = useI18n();
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>('all');
-  const [activeFilterTagKey, setActiveFilterTagKey] = useState<string>('all');
   const [selectedTool, setSelectedTool] = useState<ToolItem | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  // 统计每个生命周期分类下的数量
-  const toolCounts = useMemo(() => {
-    const counts: Record<CategoryType, number> = {
-      all: TOOLS_DATA.length,
-      'local-ai': 0,
-      'full-stack': 0,
-      'design-content': 0,
-      'self-hosted': 0,
-      'distribution': 0,
-    };
-    TOOLS_DATA.forEach((tool) => {
-      if (counts[tool.category] !== undefined) {
-        counts[tool.category] += 1;
-      }
+  // 只显示有内容的分类
+  const { categories, toolCounts } = useMemo(() => {
+    const counts = {} as Record<CategoryType, number>;
+    CATEGORIES.forEach((c) => {
+      counts[c.id] = TOOLS_DATA.filter((tool) => inCategory(tool, c.id)).length;
     });
-    return counts;
+    return { categories: CATEGORIES.filter((c) => counts[c.id] > 0), toolCounts: counts };
   }, []);
 
-  // 提取当前分类下出现的所有细分场景标签
-  const availableTags = useMemo(() => {
-    const currentList =
-      selectedCategory === 'all'
-        ? TOOLS_DATA
-        : TOOLS_DATA.filter((t) => t.category === selectedCategory);
-    
-    const tagMap = new Map<string, { zh: string; en: string }>();
-    currentList.forEach((t) => {
-      t.tags.forEach((tag) => {
-        if (!tagMap.has(tag.en)) {
-          tagMap.set(tag.en, tag);
-        }
-      });
-    });
+  const filteredTools = useMemo(
+    () => TOOLS_DATA.filter((tool) => inCategory(tool, selectedCategory)),
+    [selectedCategory]
+  );
 
-    return [
-      { key: 'all', label: lang === 'en' ? 'All Tags' : '全部标签' },
-      ...Array.from(tagMap.values()).map((tag) => ({
-        key: tag.en,
-        label: lang === 'en' ? `#${tag.en}` : `#${tag.zh}`,
-      })),
-    ];
-  }, [selectedCategory, lang]);
+  // 支持 #工具id 直达某一条，方便分享
+  useEffect(() => {
+    const openFromHash = () => {
+      const id = decodeURIComponent(window.location.hash.slice(1));
+      const found = TOOLS_DATA.find((tool) => tool.id === id);
+      if (found) setSelectedTool(found);
+    };
+    openFromHash();
+    window.addEventListener('hashchange', openFromHash);
+    return () => window.removeEventListener('hashchange', openFromHash);
+  }, []);
 
-  // 根据分类和标签过滤
-  const filteredTools = useMemo(() => {
-    return TOOLS_DATA.filter((tool) => {
-      const matchCat =
-        selectedCategory === 'all' || tool.category === selectedCategory;
-      const matchTag =
-        activeFilterTagKey === 'all' ||
-        tool.tags.some((tag) => tag.en === activeFilterTagKey);
-      return matchCat && matchTag;
-    });
-  }, [selectedCategory, activeFilterTagKey]);
+  // ⌘K / Ctrl+K 打开搜索
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
-  const currentCategoryLabel = useMemo(() => {
-    const found = CATEGORIES.find((c) => c.id === selectedCategory);
-    if (!found) return '';
-    return lang === 'en' ? found.labelEn : found.label;
-  }, [selectedCategory, lang]);
+  const closeTool = () => {
+    setSelectedTool(null);
+    if (window.location.hash) {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+  };
 
   return (
     <div className="flex-1 flex flex-col justify-between">
-      {/* 顶部导航 */}
-      <Navbar
-        onOpenSearch={() => setIsSearchOpen(true)}
-        totalTools={TOOLS_DATA.length}
-      />
+      <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pb-20">
-        {/* Hero 主视觉 */}
-        <Hero totalTools={TOOLS_DATA.length} />
+        <Hero />
 
-        {/* 交互过滤条 */}
-        <div className="sticky top-16 z-30 bg-zinc-950/90 backdrop-blur-xl py-4 border-b border-white/5 space-y-3">
-          <CategoryFilter
-            categories={CATEGORIES}
-            selectedCategory={selectedCategory}
-            onSelectCategory={(id) => {
-              setSelectedCategory(id);
-              setActiveFilterTagKey('all');
-            }}
-            toolCounts={toolCounts}
-          />
+        {/* 学到了什么 */}
+        <NotesSection notes={NOTES_DATA} />
 
-          {/* 二级场景细分标签过滤 */}
-          {availableTags.length > 2 && (
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1 text-xs -mx-4 px-4 sm:mx-0 sm:px-0">
-              <span className="text-zinc-500 font-mono text-[11px] flex items-center gap-1 shrink-0 pl-1 mr-1">
-                <Filter className="w-3 h-3" />
-                {t.filter.label}
-              </span>
-              {availableTags.map((tag) => {
-                const isActive = activeFilterTagKey === tag.key;
-                return (
-                  <button
-                    key={tag.key}
-                    onClick={() => setActiveFilterTagKey(tag.key)}
-                    className={`rounded-lg px-2.5 py-1 font-mono text-[11px] transition-all whitespace-nowrap border ${
-                      isActive
-                        ? 'bg-amber-500/10 text-amber-300 border-amber-500/30 font-medium'
-                        : 'bg-zinc-900/60 text-zinc-400 border-zinc-800/80 hover:text-zinc-200 hover:bg-zinc-800/60'
-                    }`}
-                  >
-                    {tag.label}
-                  </button>
-                );
-              })}
+        {/* 在用什么 */}
+        <section id="stack">
+          <div className="mb-4 px-1">
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-100">{t.stack.heading}</h2>
+            <p className="text-sm text-zinc-500 mt-1">{t.stack.sub}</p>
+          </div>
+
+          {categories.length > 2 && (
+            <div className="sticky top-16 z-30 bg-zinc-950/90 backdrop-blur-xl py-3 border-b border-white/5">
+              <CategoryFilter
+                categories={categories}
+                selectedCategory={selectedCategory}
+                onSelectCategory={setSelectedCategory}
+                toolCounts={toolCounts}
+              />
             </div>
           )}
-        </div>
 
-        {/* 数量与当前视图状态提示 */}
-        <div className="flex items-center justify-between text-xs text-zinc-500 font-mono mt-6 mb-4 px-1">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 text-xs text-zinc-500 font-mono mt-5 mb-4 px-1">
             <Layers className="w-3.5 h-3.5 text-zinc-400" />
             <span>
-              {t.filter.showing} {filteredTools.length} {t.filter.toolsUnit}
-              {selectedCategory !== 'all' && ` · ${currentCategoryLabel}`}
+              {t.stack.showing} {filteredTools.length} {t.stack.toolsUnit}
             </span>
           </div>
-          <span className="hidden sm:inline">{t.filter.hint}</span>
-        </div>
 
-        {/* 响应式网格 (Bento Grid) */}
-        <motion.div
-          layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5"
-        >
-          {filteredTools.map((tool) => (
-            <motion.div
-              key={tool.id}
-              layout
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <SpotlightCard
-                tool={tool}
-                onSelect={(selected) => setSelectedTool(selected)}
-              />
-            </motion.div>
-          ))}
-        </motion.div>
+          <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+            {filteredTools.map((tool) => (
+              <motion.div
+                key={tool.id}
+                layout
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <SpotlightCard tool={tool} onSelect={setSelectedTool} />
+              </motion.div>
+            ))}
+          </motion.div>
 
-        {filteredTools.length === 0 && (
-          <div className="text-center py-20 border border-dashed border-zinc-800 rounded-2xl bg-zinc-950/40">
-            <Zap className="w-8 h-8 text-zinc-600 mx-auto mb-3" />
-            <p className="text-sm text-zinc-400 font-medium">{t.filter.emptyTitle}</p>
-            <button
-              onClick={() => setActiveFilterTagKey('all')}
-              className="mt-3 text-xs text-amber-400 underline font-mono"
-            >
-              {t.filter.emptyClear}
-            </button>
-          </div>
-        )}
+          {filteredTools.length === 0 && (
+            <div className="text-center py-16 border border-dashed border-zinc-800 rounded-2xl bg-zinc-950/40 text-sm text-zinc-500">
+              {t.stack.empty}
+            </div>
+          )}
+        </section>
       </main>
 
-      {/* 底部 Footer */}
-      <footer className="border-t border-white/5 bg-zinc-950/80 py-8 text-xs text-zinc-500 font-mono text-center">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
-          <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-500/80" />
-            <span>{t.footer.copyright}</span>
+      <footer className="border-t border-white/5 bg-zinc-950/80 py-8 text-xs text-zinc-500 text-center">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col items-center gap-3">
+          <div className="flex items-center gap-4 font-mono">
+            <a
+              href={`https://twitter.com/${X_HANDLE}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-amber-400"
+            >
+              X @{X_HANDLE}
+            </a>
+            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="hover:text-amber-400">
+              GitHub
+            </a>
           </div>
-          {t.footer.wechat && (
-            <span className="text-[11px] text-amber-400/90 bg-amber-500/10 border border-amber-500/20 rounded-full px-3 py-0.5 font-sans">
+          <span>{t.footer.copyright}</span>
+          {lang === 'zh' && t.footer.wechat && (
+            <span className="text-[11px] text-amber-400/90 bg-amber-500/10 border border-amber-500/20 rounded-full px-3 py-0.5">
               {t.footer.wechat}
             </span>
           )}
         </div>
       </footer>
 
-      {/* 详情弹窗 */}
-      <ToolDetailModal
-        tool={selectedTool}
-        onClose={() => setSelectedTool(null)}
-      />
+      <ToolDetailModal tool={selectedTool} onClose={closeTool} />
 
-      {/* ⌘K 全局搜索对话框 */}
       <SearchModal
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}

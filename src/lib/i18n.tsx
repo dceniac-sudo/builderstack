@@ -6,116 +6,114 @@ export type Language = 'en' | 'zh';
 
 // 你的 X (Twitter) 用户名，点击将直接唤起一键关注
 export const X_HANDLE = 'dceniac';
+export const GITHUB_URL = 'https://github.com/dceniac-sudo';
 
 export const DICTIONARY = {
   en: {
     nav: {
-      tagline: 'Curated for Solo Builders & Creators',
-      searchPlaceholder: 'Search tools, alts (Zapier, Notion)...',
-      submit: 'Submit Tool',
-      submitUrl: 'https://github.com/dceniac-sudo/builderstack/issues/new?title=%5BTool+Submission%5D+',
-      edgeLive: 'Edge Live',
+      tagline: 'What I use, and what I learned',
+      searchPlaceholder: 'Search tools and notes...',
       followX: `Follow @${X_HANDLE}`,
     },
     hero: {
-      badge: 'AI-POWERED SOLOPRENEUR STACK',
-      badgeSub: '2026 Curated Stack',
-      curator: `Curated by @${X_HANDLE}`,
-      curatorNote: 'Battle-tested in real solo production',
-      titleLine1: 'No Expensive Team Needed.',
-      titleLine2: 'Build Your Solo AI Production Loop.',
+      badge: 'Notes from one indie developer',
+      curator: `by @${X_HANDLE}`,
+      titleLine1: 'What I actually use to build with AI agents.',
+      titleLine2: 'And what broke.',
       subtitle:
-        'Curated open-source alternatives, AI workflows, and indie builder stacks. Stop paying unnecessary SaaS taxes. Take full control of your data and code.',
-      metricTools: 'Curated Tools',
-      metricLockin: 'Zero Vendor Lock-in',
-      metricEdge: 'Global Edge Distributed',
+        'Every tool here is one I use, and every note is something I tried myself.',
     },
-    filter: {
-      label: 'Tags:',
-      allTags: 'All Tags',
+    notes: {
+      heading: 'What I learned',
+      sub: 'Things I tried myself, newest first.',
+      readOnX: 'Thread on X',
+      readWechat: 'Article (Chinese)',
+      repo: 'Code',
+    },
+    stack: {
+      heading: 'What I use',
+      sub: 'Each one with my own note. The dropped ones stay, with the reason.',
       showing: 'Showing',
-      toolsUnit: 'tools',
-      hint: 'Click any card to view pain-point breakdown & Docker self-host commands',
-      emptyTitle: 'No tools found under this tag',
-      emptyClear: 'Clear tag filter',
+      toolsUnit: 'items',
+      empty: 'Nothing here yet.',
+    },
+    status: {
+      daily: 'Daily',
+      sometimes: 'Sometimes',
+      dropped: 'Dropped',
     },
     card: {
-      featured: 'Featured',
-      altTo: '⚡ Alt to:',
-      selfHost: 'Self-host',
       visit: 'Visit website',
     },
     modal: {
-      altAim: '⚡ Target Alternative:',
-      breakthrough: 'CORE VALUE & BREAKTHROUGH',
-      oneClickSelfHost: 'ONE-CLICK DOCKER / LOCAL RUN',
-      copyCode: 'Copy Command',
+      myNote: 'MY NOTE',
+      command: 'COMMAND',
+      copyCode: 'Copy',
       copied: 'Copied!',
       visitSite: 'Visit Website',
+      copyLink: 'Copy link',
     },
     search: {
-      placeholder: 'Search tools, alts (e.g. Zapier, Notion), tags (Docker, Local AI)...',
-      noResult: 'No tools found matching',
-      trySearching: 'You can try searching for "Notion" or "Docker"',
+      placeholder: 'Search by name or by anything in my notes...',
+      noResult: 'Nothing matches',
+      trySearching: 'Try “Claude” or “dropped”.',
     },
     footer: {
-      copyright: 'BuilderStack © 2026. Made for Solo Creators.',
+      copyright: 'BuilderStack © 2026. Written by one person, for people who build alone.',
       wechat: '',
     },
   },
   zh: {
     nav: {
-      tagline: '一人公司与独立创造者武器库',
-      searchPlaceholder: '快搜开源替代、工具...',
-      submit: '提交收录',
-      submitUrl: 'https://github.com/dceniac-sudo/builderstack/issues/new?title=%5B%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90%5D+',
-      edgeLive: '全球边缘在线',
+      tagline: '我在用什么，学到了什么',
+      searchPlaceholder: '搜工具和笔记…',
       followX: `关注 @${X_HANDLE}`,
     },
     hero: {
-      badge: 'AI-POWERED SOLOPRENEUR STACK',
-      badgeSub: '2026 独立创造者精选',
-      curator: `由 @${X_HANDLE} 独立策展`,
-      curatorNote: '真实一人全栈业务实测沉淀',
-      titleLine1: '不用昂贵团队，',
-      titleLine2: '一人搭建全自动 AI 生产力闭环',
-      subtitle:
-        '严选开源平替、AI 自动化工作流与出海全栈工具链。拒绝高昂 SaaS 订阅税，掌控数据隐私、代码自主与自由分发。',
-      metricTools: '标杆工具',
-      metricLockin: '100% 拒绝捆绑',
-      metricEdge: 'Cloudflare 全球边缘分发',
+      badge: '一个独立开发者的笔记',
+      curator: `@${X_HANDLE}`,
+      titleLine1: '我用 AI Agent 干活时真正在用的东西，',
+      titleLine2: '以及翻过的车',
+      subtitle: '这里的每个工具我都在用，每条笔记都是我亲手试过的。',
     },
-    filter: {
-      label: '标签:',
-      allTags: '全部标签',
+    notes: {
+      heading: '学到了什么',
+      sub: '都是自己动手试过的事，新的在前。',
+      readOnX: 'X 上的帖子',
+      readWechat: '公众号文章',
+      repo: '代码',
+    },
+    stack: {
+      heading: '在用什么',
+      sub: '每个都带一句我自己的话。弃用的也留着，写明原因。',
       showing: '显示',
-      toolsUnit: '个神器',
-      hint: '点击卡片可查看详细痛点分析与 Docker 命令',
-      emptyTitle: '当前标签下暂无收录',
-      emptyClear: '清空标签筛选',
+      toolsUnit: '项',
+      empty: '这里还没有内容。',
+    },
+    status: {
+      daily: '每天用',
+      sometimes: '偶尔用',
+      dropped: '已弃用',
     },
     card: {
-      featured: '精选',
-      altTo: '⚡ Alt to:',
-      selfHost: 'Self-host',
-      visit: '直达官网',
+      visit: '访问官网',
     },
     modal: {
-      altAim: '⚡ 瞄准商业替代:',
-      breakthrough: '核心价值与痛点突破',
-      oneClickSelfHost: '一键本地 / Docker 跑起',
-      copyCode: '复制代码',
-      copied: '已复制!',
-      visitSite: '直达官网',
+      myNote: '我的评语',
+      command: '命令',
+      copyCode: '复制',
+      copied: '已复制',
+      visitSite: '访问官网',
+      copyLink: '复制链接',
     },
     search: {
-      placeholder: '搜索任何工具、替代对象（如 Zapier, Notion）、或标签（Docker, Local AI）...',
-      noResult: '未找到与此相关的工具',
-      trySearching: '你可以试着搜索 "Notion" 或 "Docker"',
+      placeholder: '按名字搜，或者搜评语里的任何词…',
+      noResult: '没有找到',
+      trySearching: '可以试试“Claude”或“弃用”。',
     },
     footer: {
-      copyright: 'BuilderStack © 2026. 专为超级个体与创造者打造。',
-      wechat: '💡 深度实测与避坑手记：微信公众号【老孙不会AI】',
+      copyright: 'BuilderStack © 2026. 一个人写的，给一个人干活的人看。',
+      wechat: '更完整的过程写在微信公众号【老孙不会AI】',
     },
   },
 };
@@ -146,6 +144,11 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
   }, []);
+
+  // 页面声明的语言跟着实际显示的语言走
+  useEffect(() => {
+    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  }, [lang]);
 
   const setLang = (newLang: Language) => {
     setLangState(newLang);

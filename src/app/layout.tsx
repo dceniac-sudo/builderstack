@@ -1,43 +1,32 @@
 import type { Metadata } from 'next';
 import './globals.css';
 
+const TITLE = 'BuilderStack — What I use to build with AI agents, and what broke';
+const DESCRIPTION =
+  'Notes from one indie developer. Every tool here is one I use, and every note is something I tried myself.';
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://dceniac.com'),
-  title: 'BuilderStack — Curated Open-Source & AI Stack for Solo Builders',
-  description:
-    'Curated directory of open-source alternatives, AI workflows, and indie hacker tools. Built for creators and developers taking on the world solo.',
-  keywords: [
-    'Open Source Alternatives',
-    'AI Workflows',
-    'Indie Hackers',
-    'Solopreneur Tools',
-    'Self-hosted SaaS',
-    'Cloudflare Pages',
-  ],
+  title: TITLE,
+  description: DESCRIPTION,
+  keywords: ['AI coding agents', 'Claude Code', 'Codex', 'multi-agent workflows', 'solo builder'],
   authors: [{ name: 'dceniac', url: 'https://dceniac.com' }],
   creator: '@dceniac',
   openGraph: {
-    title: 'BuilderStack — AI-Powered Builder & Open-Source Stack',
-    description: 'Stop paying SaaS taxes. The battle-tested open-source stack for solo creators.',
+    title: TITLE,
+    description: DESCRIPTION,
     url: 'https://dceniac.com',
     siteName: 'BuilderStack',
     locale: 'en_US',
     type: 'website',
-    images: [
-      {
-        url: '/avatar.jpg',
-        width: 800,
-        height: 800,
-        alt: 'BuilderStack — Made for Solo Builders',
-      },
-    ],
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'BuilderStack: what I use, and what I learned' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'BuilderStack — Curated AI & Indie Stack for Solo Builders',
-    description: 'Stop paying unnecessary SaaS taxes. Curated open-source stack for modern hackers.',
+    title: TITLE,
+    description: DESCRIPTION,
     creator: '@dceniac',
-    images: ['/avatar.jpg'],
+    images: ['/og.png'],
   },
 };
 
@@ -47,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="zh-CN" className="dark">
+    <html lang="en" className="dark">
       <body className="bg-zinc-950 text-zinc-100 antialiased selection:bg-amber-500 selection:text-black min-h-screen flex flex-col bg-grid-pattern">
         {children}
       </body>

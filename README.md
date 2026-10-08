@@ -1,17 +1,24 @@
 # BuilderStack
 
-> The curated stack of open-source alternatives, AI workflows, and indie builder tools for solo creators and modern hackers.
+> What I actually use to build with AI agents, and what broke. Notes from one indie developer.
 
-Live on Edge: [https://dceniac.com](https://dceniac.com)
+Live: [https://dceniac.com](https://dceniac.com)
 
-## ✨ Features
+## What is on the site
 
-- **RareUI-inspired Micro-interactions**: Smooth cursor spotlight glow effect and subtle 1px border glows.
-- **Modern Next.js 14 (App Router)**: Fully typed with TypeScript and styled with Tailwind CSS.
-- **Fluid Layout Animations**: Framer Motion powered tab switches and modal animations.
-- **Fast Search & Keyboard Shortcuts**: Instant client-side fuzzy search with `⌘K` or `/` shortcuts.
-- **Self-hosting Ready**: One-click copyable Docker commands for open-source tools.
-- **Zero Hosting Cost**: Optimized for static export (`output: 'export'`) on Cloudflare Pages with infinite free bandwidth.
+- **What I learned**: things I tried myself, newest first. Data lives in `src/data/notes.ts`.
+- **What I use**: each tool with my own note and a status (daily, sometimes, dropped). Data lives in `src/data/tools.ts`.
+- English by default, Chinese via the toggle. Interface copy is in `src/lib/i18n.tsx`.
+
+## Adding content
+
+Every tool and note has a `confirmed` flag. Only confirmed entries are included in a normal build, so drafts never reach the live site. To preview drafts locally:
+
+```bash
+NEXT_PUBLIC_SHOW_DRAFTS=1 npm run build
+```
+
+Link to a single tool with `https://dceniac.com/#<tool-id>`.
 
 ## 🚀 Getting Started
 

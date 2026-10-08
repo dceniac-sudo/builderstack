@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, Star, ArrowRight } from 'lucide-react';
+import { Search, X, ArrowRight } from 'lucide-react';
 import { ToolItem } from '@/types/tool';
 import { useI18n } from '@/lib/i18n';
 
@@ -53,17 +53,11 @@ export const SearchModal: React.FC<SearchModalProps> = ({
     if (!q) return true;
     return (
       tool.name.toLowerCase().includes(q) ||
-      tool.tagline.toLowerCase().includes(q) ||
-      (tool.taglineEn && tool.taglineEn.toLowerCase().includes(q)) ||
-      tool.description.toLowerCase().includes(q) ||
-      (tool.descriptionEn && tool.descriptionEn.toLowerCase().includes(q)) ||
-      (tool.alternativeTo && tool.alternativeTo.toLowerCase().includes(q)) ||
-      tool.stage.toLowerCase().includes(q) ||
-      tool.stageEn.toLowerCase().includes(q) ||
-      tool.tags.some(
-        (tag) =>
-          tag.zh.toLowerCase().includes(q) || tag.en.toLowerCase().includes(q)
-      )
+      (tool.nameZh && tool.nameZh.toLowerCase().includes(q)) ||
+      tool.note.toLowerCase().includes(q) ||
+      tool.noteEn.toLowerCase().includes(q) ||
+      t.status[tool.status].toLowerCase().includes(q) ||
+      tool.status.includes(q)
     );
   });
 
@@ -114,12 +108,11 @@ export const SearchModal: React.FC<SearchModalProps> = ({
           <div className="max-h-[60vh] overflow-y-auto p-2 divide-y divide-zinc-900/60">
             {filtered.length === 0 ? (
               <div className="p-8 text-center text-sm text-zinc-500">
-                {t.search.noResult} &quot;{query}&quot;。{t.search.trySearching}
+                {t.search.noResult} &quot;{query}&quot;. {t.search.trySearching}
               </div>
             ) : (
               filtered.map((item) => {
-                const tagline = lang === 'en' ? (item.taglineEn || item.tagline) : item.tagline;
-                const stage = lang === 'en' ? item.stageEn : item.stage;
+                const note = lang === 'en' ? item.noteEn : item.note;
                 return (
                   <div
                     key={item.id}
@@ -132,29 +125,18 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                     <div className="flex-1 min-w-0 pr-4">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-1.5 py-0.2 rounded border border-amber-500/20">
-                          {stage}
+                          {t.status[item.status]}
                         </span>
                         <span className="font-semibold text-zinc-100 group-hover:text-amber-400 text-sm">
-                          {item.name}
+                          {lang === 'zh' && item.nameZh ? item.nameZh : item.name}
                         </span>
-                        {item.alternativeTo && (
-                          <span className="text-[10px] font-mono text-zinc-400 bg-zinc-900 px-1.5 py-0.2 rounded border border-zinc-800">
-                            Alt: {item.alternativeTo}
-                          </span>
-                        )}
                       </div>
                       <p className="text-xs text-zinc-400 truncate">
-                        {tagline}
+                        {note}
                       </p>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      {item.stars && (
-                        <span className="hidden sm:flex items-center gap-1 text-[11px] font-mono text-zinc-500">
-                          <Star className="w-3 h-3 text-amber-500 fill-amber-500/20" />
-                          {item.stars}
-                        </span>
-                      )}
                       <ArrowRight className="w-4 h-4 text-zinc-600 group-hover:text-zinc-200 transition-colors" />
                     </div>
                   </div>

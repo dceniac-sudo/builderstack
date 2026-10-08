@@ -1,13 +1,12 @@
 'use client';
 
 import React from 'react';
-import { Search, Sparkles } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { useI18n, X_HANDLE } from '@/lib/i18n';
 
 interface NavbarProps {
   onOpenSearch: () => void;
-  totalTools: number;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
@@ -30,54 +29,43 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-white/5 bg-zinc-950/80 backdrop-blur-xl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 sm:gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4">
         {/* Logo 区域 */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-amber-700 text-zinc-950 font-black font-mono text-base shadow-lg shadow-amber-500/20">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-amber-700 text-zinc-950 font-black font-mono text-base shadow-lg shadow-amber-500/20 shrink-0">
             B
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-zinc-100 text-sm sm:text-base tracking-tight">
-                BuilderStack
-              </span>
-              <div className="flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2 py-0.5 border border-emerald-500/20">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-[10px] font-mono text-emerald-400 font-medium hidden sm:inline">
-                  {t.nav.edgeLive}
-                </span>
-              </div>
-            </div>
-            <p className="text-[10px] font-mono text-zinc-500 hidden md:block">
-              {t.nav.tagline}
-            </p>
+          <div className="min-w-0">
+            <span className="font-semibold text-zinc-100 text-sm sm:text-base tracking-tight">
+              BuilderStack
+            </span>
+            <p className="text-[11px] text-zinc-500 hidden md:block">{t.nav.tagline}</p>
           </div>
         </div>
 
         {/* 中间搜索触发器 */}
         <button
           onClick={onOpenSearch}
-          className="flex items-center gap-2 sm:gap-3 rounded-xl bg-zinc-900/90 border border-zinc-800/80 px-2.5 sm:px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-200 hover:border-zinc-700 transition-all flex-1 max-w-[130px] sm:max-w-[240px] md:max-w-xs shadow-inner group"
+          className="flex items-center gap-2 sm:gap-3 rounded-xl bg-zinc-900/90 border border-zinc-800/80 px-2.5 sm:px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-200 hover:border-zinc-700 transition-all flex-1 min-w-0 max-w-[40px] sm:max-w-[240px] md:max-w-xs shadow-inner group"
+          aria-label={t.nav.searchPlaceholder}
         >
           <Search className="w-3.5 h-3.5 text-zinc-500 group-hover:text-amber-400 transition-colors shrink-0" />
-          <span className="flex-1 text-left truncate text-xs">{t.nav.searchPlaceholder}</span>
+          <span className="flex-1 text-left truncate text-xs hidden sm:inline">{t.nav.searchPlaceholder}</span>
           <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded bg-zinc-800/80 px-1.5 py-0.5 text-[10px] font-mono text-zinc-400 border border-zinc-700">
             ⌘K
           </kbd>
         </button>
 
-        {/* 右侧：X 一键关注胶囊 + 多语言 + 提交收录 */}
+        {/* 右侧：X 关注 + 语言切换 */}
         <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-          {/* 核心杀手锏：X 官方一键关注胶囊按钮 */}
           <a
             href={`https://twitter.com/intent/follow?screen_name=${X_HANDLE}`}
             onClick={handleFollowClick}
             target="_blank"
             rel="noopener noreferrer"
             title={`Follow @${X_HANDLE} on X`}
-            className="flex items-center justify-center gap-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800/90 text-zinc-100 hover:text-white p-2 sm:px-3 sm:py-1.5 text-xs font-medium border border-white/10 hover:border-amber-500/40 shadow-sm transition-all duration-200 hover:shadow-amber-500/10 hover:shadow-md group active:scale-95"
+            className="flex items-center justify-center gap-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800/90 text-zinc-100 hover:text-white p-2 sm:px-3 sm:py-1.5 text-xs font-medium border border-white/10 hover:border-amber-500/40 shadow-sm transition-all duration-200 group active:scale-95"
           >
-            {/* 𝕏 经典标志 */}
             <svg
               viewBox="0 0 24 24"
               aria-hidden="true"
@@ -88,19 +76,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             <span className="font-mono text-[11px] font-semibold hidden sm:inline">{t.nav.followX}</span>
           </a>
 
-          {/* 多语言切换按钮 */}
           <LanguageToggle />
-
-          {/* 提交收录按钮 */}
-          <a
-            href={t.nav.submitUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden lg:inline-flex items-center gap-1.5 rounded-lg bg-zinc-100 hover:bg-white text-zinc-950 font-medium px-3 py-1.5 text-xs transition-transform active:scale-95 shadow-sm"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-            <span>{t.nav.submit}</span>
-          </a>
         </div>
       </div>
     </header>
