@@ -124,6 +124,15 @@ const ALL_TOOLS: ToolItem[] = [
     url: 'https://browsermcp.io',
     confirmed: true,
   },
+  {
+    id: 'n8n-dify',
+    name: 'n8n + Dify',
+    category: 'knowledge',
+    status: 'sometimes',
+    note: '搭过一个生成内容的流程：多个模型对抗审核，最终结构化入库。',
+    noteEn: 'I built a content pipeline with them: several models review each other adversarially, then the result is stored as structured data.',
+    confirmed: true,
+  },
 
   // ---------- 试过后弃用 ----------
   {
