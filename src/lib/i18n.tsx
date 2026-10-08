@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 
 export type Language = 'en' | 'zh';
 
@@ -154,29 +154,29 @@ const I18nContext = createContext<I18nContextType | null>(null);
 
 export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [lang, setLangState] = useState<Language>('en');
+  // 访客实际需要的语言；确定之前为 null
+  const wanted = useRef<Language | null>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem('builderstack_lang') as Language;
-    if (saved && (saved === 'en' || saved === 'zh')) {
-      setLangState(saved);
-      return;
+    if (saved === 'en' || saved === 'zh') {
+      wanted.current = saved;
+    } else {
+      wanted.current = navigator.language.toLowerCase().startsWith('zh') ? 'zh' : 'en';
     }
-    if (typeof navigator !== 'undefined') {
-      const browserLang = navigator.language.toLowerCase();
-      if (browserLang.startsWith('zh')) {
-        setLangState('zh');
-      } else {
-        setLangState('en');
-      }
-    }
+    setLangState(wanted.current);
   }, []);
 
-  // 页面声明的语言跟着实际显示的语言走
+  // 页面声明的语言跟着实际显示的语言走；显示的语言和访客需要的一致后，再放出正文
   useEffect(() => {
     document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+    if (wanted.current === lang) {
+      document.documentElement.classList.remove('i18n-pending');
+    }
   }, [lang]);
 
   const setLang = (newLang: Language) => {
+    wanted.current = newLang;
     setLangState(newLang);
     localStorage.setItem('builderstack_lang', newLang);
   };

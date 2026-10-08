@@ -118,8 +118,7 @@ export default function HomePage() {
               <motion.div
                 key={tool.id}
                 layout
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={false}
                 transition={{ duration: 0.3 }}
               >
                 <SpotlightCard tool={tool} onSelect={setSelectedTool} />
