@@ -13,13 +13,15 @@ export const DICTIONARY = {
       tagline: 'Curated for Solo Builders & Creators',
       searchPlaceholder: 'Search tools, alts (Zapier, Notion)...',
       submit: 'Submit Tool',
-      submitAlert: 'Tool Submission: Form coming soon with 24h featured review!',
+      submitUrl: 'https://github.com/dceniac-sudo/builderstack/issues/new?title=%5BTool+Submission%5D+',
       edgeLive: 'Edge Live',
       followX: `Follow @${X_HANDLE}`,
     },
     hero: {
       badge: 'AI-POWERED SOLOPRENEUR STACK',
       badgeSub: '2026 Curated Stack',
+      curator: `Curated by @${X_HANDLE}`,
+      curatorNote: 'Battle-tested in real solo production',
       titleLine1: 'No Expensive Team Needed.',
       titleLine2: 'Build Your Solo AI Production Loop.',
       subtitle:
@@ -58,6 +60,7 @@ export const DICTIONARY = {
     },
     footer: {
       copyright: 'BuilderStack © 2026. Made for Solo Creators.',
+      wechat: '',
     },
   },
   zh: {
@@ -65,13 +68,15 @@ export const DICTIONARY = {
       tagline: '一人公司与独立创造者武器库',
       searchPlaceholder: '快搜开源替代、工具...',
       submit: '提交收录',
-      submitAlert: '提交收录：后续可接入表单，支持免费提交或付费 24 小时极速审核置顶！',
+      submitUrl: 'https://github.com/dceniac-sudo/builderstack/issues/new?title=%5B%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90%5D+',
       edgeLive: '全球边缘在线',
       followX: `关注 @${X_HANDLE}`,
     },
     hero: {
       badge: 'AI-POWERED SOLOPRENEUR STACK',
       badgeSub: '2026 独立创造者精选',
+      curator: `由 @${X_HANDLE} 独立策展`,
+      curatorNote: '真实一人全栈业务实测沉淀',
       titleLine1: '不用昂贵团队，',
       titleLine2: '一人搭建全自动 AI 生产力闭环',
       subtitle:
@@ -110,6 +115,7 @@ export const DICTIONARY = {
     },
     footer: {
       copyright: 'BuilderStack © 2026. 专为超级个体与创造者打造。',
+      wechat: '💡 深度实测与避坑手记：微信公众号【老孙不会AI】',
     },
   },
 };

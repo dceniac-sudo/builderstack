@@ -141,8 +141,8 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose 
           </div>
 
           {/* 底部按钮栏 */}
-          <div className="pt-4 border-t border-zinc-900 flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3 text-xs text-zinc-400 font-mono">
+          <div className="pt-4 border-t border-zinc-900 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <div className="flex items-center justify-between sm:justify-start gap-3 text-xs text-zinc-400 font-mono">
               {tool.stars && (
                 <span className="flex items-center gap-1">
                   <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500/20" />
@@ -163,7 +163,7 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose 
                   href={tool.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-xs font-medium text-zinc-200 border border-zinc-800 transition-colors"
+                  className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3.5 py-2.5 sm:py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-xs font-medium text-zinc-200 border border-zinc-800 transition-colors"
                 >
                   <Github className="w-3.5 h-3.5" />
                   <span>GitHub</span>
@@ -173,7 +173,7 @@ export const ToolDetailModal: React.FC<ToolDetailModalProps> = ({ tool, onClose 
                 href={tool.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-semibold transition-transform active:scale-95 shadow-md shadow-amber-500/20"
+                className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-4 py-2.5 sm:py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-semibold transition-transform active:scale-95 shadow-md shadow-amber-500/20"
               >
                 <span>{t.modal.visitSite}</span>
                 <ExternalLink className="w-3.5 h-3.5" />

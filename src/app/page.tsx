@@ -107,7 +107,7 @@ function HomeContent() {
 
           {/* 二级场景细分标签过滤 */}
           {availableTags.length > 2 && (
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1 text-xs">
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1 text-xs -mx-4 px-4 sm:mx-0 sm:px-0">
               <span className="text-zinc-500 font-mono text-[11px] flex items-center gap-1 shrink-0 pl-1 mr-1">
                 <Filter className="w-3 h-3" />
                 {t.filter.label}
@@ -147,7 +147,7 @@ function HomeContent() {
         {/* 响应式网格 (Bento Grid) */}
         <motion.div
           layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5"
         >
           {filteredTools.map((tool) => (
             <motion.div
@@ -179,11 +179,18 @@ function HomeContent() {
         )}
       </main>
 
-      {/* 底部 Footer (极简纯净版) */}
+      {/* 底部 Footer */}
       <footer className="border-t border-white/5 bg-zinc-950/80 py-8 text-xs text-zinc-500 font-mono text-center">
-        <div className="max-w-7xl mx-auto px-4 flex items-center justify-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-amber-500/80" />
-          <span>{t.footer.copyright}</span>
+        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500/80" />
+            <span>{t.footer.copyright}</span>
+          </div>
+          {t.footer.wechat && (
+            <span className="text-[11px] text-amber-400/90 bg-amber-500/10 border border-amber-500/20 rounded-full px-3 py-0.5 font-sans">
+              {t.footer.wechat}
+            </span>
+          )}
         </div>
       </footer>
 

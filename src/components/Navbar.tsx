@@ -57,7 +57,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
         {/* 中间搜索触发器 */}
         <button
           onClick={onOpenSearch}
-          className="flex items-center gap-2 sm:gap-3 rounded-xl bg-zinc-900/90 border border-zinc-800/80 px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-200 hover:border-zinc-700 transition-all w-36 sm:w-60 md:w-80 shadow-inner group"
+          className="flex items-center gap-2 sm:gap-3 rounded-xl bg-zinc-900/90 border border-zinc-800/80 px-2.5 sm:px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-200 hover:border-zinc-700 transition-all flex-1 max-w-[130px] sm:max-w-[240px] md:max-w-xs shadow-inner group"
         >
           <Search className="w-3.5 h-3.5 text-zinc-500 group-hover:text-amber-400 transition-colors shrink-0" />
           <span className="flex-1 text-left truncate text-xs">{t.nav.searchPlaceholder}</span>
@@ -66,8 +66,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           </kbd>
         </button>
 
-        {/* 右侧：X 一键关注胶囊 + 多语言 + GitHub */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5">
+        {/* 右侧：X 一键关注胶囊 + 多语言 + 提交收录 */}
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           {/* 核心杀手锏：X 官方一键关注胶囊按钮 */}
           <a
             href={`https://twitter.com/intent/follow?screen_name=${X_HANDLE}`}
@@ -75,7 +75,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             target="_blank"
             rel="noopener noreferrer"
             title={`Follow @${X_HANDLE} on X`}
-            className="flex items-center gap-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800/90 text-zinc-100 hover:text-white px-3 py-1.5 text-xs font-medium border border-white/10 hover:border-amber-500/40 shadow-sm transition-all duration-200 hover:shadow-amber-500/10 hover:shadow-md group active:scale-95"
+            className="flex items-center justify-center gap-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800/90 text-zinc-100 hover:text-white p-2 sm:px-3 sm:py-1.5 text-xs font-medium border border-white/10 hover:border-amber-500/40 shadow-sm transition-all duration-200 hover:shadow-amber-500/10 hover:shadow-md group active:scale-95"
           >
             {/* 𝕏 经典标志 */}
             <svg
@@ -85,20 +85,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             >
               <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
             </svg>
-            <span className="font-mono text-[11px] font-semibold">{t.nav.followX}</span>
+            <span className="font-mono text-[11px] font-semibold hidden sm:inline">{t.nav.followX}</span>
           </a>
 
           {/* 多语言切换按钮 */}
           <LanguageToggle />
 
-
           {/* 提交收录按钮 */}
           <a
-            href="#submit"
-            onClick={(e) => {
-              e.preventDefault();
-              alert(t.nav.submitAlert);
-            }}
+            href={t.nav.submitUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             className="hidden lg:inline-flex items-center gap-1.5 rounded-lg bg-zinc-100 hover:bg-white text-zinc-950 font-medium px-3 py-1.5 text-xs transition-transform active:scale-95 shadow-sm"
           >
             <Sparkles className="w-3.5 h-3.5 text-amber-600" />

@@ -34,7 +34,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   return (
     <div className="w-full">
       {/* 滚动容器 */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 no-scrollbar sm:justify-center">
+      <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-2 pt-1 no-scrollbar sm:justify-center -mx-4 px-4 sm:mx-0 sm:px-0">
         {categories.map((cat) => {
           const isSelected = selectedCategory === cat.id;
           const Icon = ICON_MAP[cat.iconName] || LayoutGrid;
@@ -46,7 +46,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
               key={cat.id}
               onClick={() => onSelectCategory(cat.id)}
               className={cn(
-                'relative flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-medium transition-colors whitespace-nowrap',
+                'relative flex items-center gap-2 rounded-xl px-3 py-1.5 sm:px-4 sm:py-2 text-xs font-medium transition-colors whitespace-nowrap',
                 'border outline-none select-none',
                 isSelected
                   ? 'text-white border-transparent'
