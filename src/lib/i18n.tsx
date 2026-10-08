@@ -11,7 +11,7 @@ export const GITHUB_URL = 'https://github.com/dceniac-sudo';
 export const DICTIONARY = {
   en: {
     nav: {
-      tagline: 'What I use, and what I learned',
+      tagline: 'Hands-on notes on building with AI agents',
       searchPlaceholder: 'Search tools and notes...',
       followX: `Follow @${X_HANDLE}`,
     },
@@ -78,7 +78,7 @@ export const DICTIONARY = {
   },
   zh: {
     nav: {
-      tagline: '我在用什么，学到了什么',
+      tagline: '一个独立开发者的 AI Agent 实战笔记',
       searchPlaceholder: '搜工具和笔记…',
       followX: `关注 @${X_HANDLE}`,
     },
