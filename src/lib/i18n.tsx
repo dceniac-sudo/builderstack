@@ -123,7 +123,7 @@ export const DICTIONARY = {
     },
     footer: {
       copyright: 'BuilderStack © 2026. 一个人写的，给一个人干活的人看。',
-      wechat: '更完整的过程写在微信公众号【老孙不会AI】',
+      wechat: '微信扫码关注公众号【老孙不会AI】',
     },
   },
 };

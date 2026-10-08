@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
+import { WechatQr } from '@/components/WechatQr';
 import { NoteItem } from '@/types/tool';
 import { useI18n, X_HANDLE } from '@/lib/i18n';
 import { renderMarkdown } from '@/lib/markdown';
@@ -49,6 +50,12 @@ export const NoteArticle: React.FC<NoteArticleProps> = ({ note, bodyEn, bodyZh }
             {t.nav.followX}
           </a>
         </div>
+
+        {lang === 'zh' && (
+          <div className="mt-8 flex justify-center">
+            <WechatQr />
+          </div>
+        )}
       </main>
     </div>
   );

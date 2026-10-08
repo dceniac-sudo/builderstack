@@ -9,6 +9,7 @@ import { CategoryFilter } from '@/components/CategoryFilter';
 import { SpotlightCard } from '@/components/SpotlightCard';
 import { ToolDetailModal } from '@/components/ToolDetailModal';
 import { SearchModal } from '@/components/SearchModal';
+import { WechatQr } from '@/components/WechatQr';
 import { CATEGORIES, TOOLS_DATA } from '@/data/tools';
 import { NOTES_DATA } from '@/data/notes';
 import { CategoryType, ToolItem } from '@/types/tool';
@@ -145,11 +146,7 @@ export default function HomePage() {
             </a>
           </div>
           <span>{t.footer.copyright}</span>
-          {lang === 'zh' && t.footer.wechat && (
-            <span className="text-[11px] text-amber-400/90 bg-amber-500/10 border border-amber-500/20 rounded-full px-3 py-0.5">
-              {t.footer.wechat}
-            </span>
-          )}
+          {lang === 'zh' && <WechatQr />}
         </div>
       </footer>
 
