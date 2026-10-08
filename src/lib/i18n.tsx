@@ -66,6 +66,7 @@ export const DICTIONARY = {
     footer: {
       copyright: 'BuilderStack © 2026. Written by one person, for people who build alone.',
       wechat: '',
+      wechatButton: '',
     },
   },
   zh: {
@@ -124,6 +125,7 @@ export const DICTIONARY = {
     footer: {
       copyright: 'BuilderStack © 2026. 一个人写的，给一个人干活的人看。',
       wechat: '微信扫码关注公众号【老孙不会AI】',
+      wechatButton: '微信公众号【老孙不会AI】',
     },
   },
 };
