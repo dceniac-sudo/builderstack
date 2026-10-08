@@ -31,6 +31,13 @@ export const DICTIONARY = {
       readWechat: 'Article (Chinese)',
       repo: 'Code',
     },
+    built: {
+      heading: 'What I built',
+      sub: 'Tools and projects I made myself.',
+      visit: 'Open',
+      repo: 'Code',
+      status: { live: 'Live', 'open-source': 'Open source', private: 'Private, for my own use' },
+    },
     stack: {
       heading: 'What I use',
       sub: 'Each one with my own note. The dropped ones stay, with the reason.',
@@ -89,6 +96,13 @@ export const DICTIONARY = {
       readOnX: 'X 上的帖子',
       readWechat: '公众号文章',
       repo: '代码',
+    },
+    built: {
+      heading: '做过什么',
+      sub: '我自己做的工具和项目。',
+      visit: '打开',
+      repo: '代码',
+      status: { live: '已上线', 'open-source': '已开源', private: '自用，未公开' },
     },
     stack: {
       heading: '在用什么',

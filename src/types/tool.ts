@@ -30,6 +30,18 @@ export interface NoteItem {
   confirmed: boolean;
 }
 
+export interface BuiltItem {
+  id: string;
+  name: string;
+  nameZh?: string;
+  desc: string;                // 一句话说它是干什么的（中文）
+  descEn: string;              // 一句话说它是干什么的（英文）
+  status: 'live' | 'open-source' | 'private';   // 已上线 / 已开源 / 自用未公开
+  url?: string;                // 线上地址
+  repoUrl?: string;            // 仓库地址
+  confirmed: boolean;
+}
+
 export interface CategoryInfo {
   id: CategoryType;
   label: string;

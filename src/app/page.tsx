@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Navbar } from '@/components/Navbar';
 import { Hero } from '@/components/Hero';
 import { NotesSection } from '@/components/NotesSection';
+import { BuiltSection } from '@/components/BuiltSection';
 import { CategoryFilter } from '@/components/CategoryFilter';
 import { SpotlightCard } from '@/components/SpotlightCard';
 import { ToolDetailModal } from '@/components/ToolDetailModal';
@@ -12,6 +13,7 @@ import { SearchModal } from '@/components/SearchModal';
 import { WechatQr } from '@/components/WechatQr';
 import { CATEGORIES, TOOLS_DATA } from '@/data/tools';
 import { NOTES_DATA } from '@/data/notes';
+import { BUILT_DATA } from '@/data/built';
 import { CategoryType, ToolItem } from '@/types/tool';
 import { useI18n, X_HANDLE, GITHUB_URL } from '@/lib/i18n';
 import { Layers } from 'lucide-react';
@@ -82,6 +84,9 @@ export default function HomePage() {
 
         {/* 学到了什么 */}
         <NotesSection notes={NOTES_DATA} />
+
+        {/* 做过什么：没有内容时不显示 */}
+        <BuiltSection items={BUILT_DATA} />
 
         {/* 在用什么 */}
         <section id="stack">
