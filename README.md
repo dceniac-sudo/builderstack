@@ -18,6 +18,8 @@ Every tool and note has a `confirmed` flag. Only confirmed entries are included 
 NEXT_PUBLIC_SHOW_DRAFTS=1 npm run build
 ```
 
+A note gets its own page at `/notes/<id>/` when two files exist: `content/notes/<id>.en.md` and `content/notes/<id>.zh.md`, and the entry in `src/data/notes.ts` has `hasPage: true`. Both languages are built into the same page and follow the language toggle. Images go in `public/notes/<id>/`.
+
 Link to a single tool with `https://dceniac.com/#<tool-id>`.
 
 ## 🚀 Getting Started

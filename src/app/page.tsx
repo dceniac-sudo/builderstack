@@ -12,7 +12,7 @@ import { SearchModal } from '@/components/SearchModal';
 import { CATEGORIES, TOOLS_DATA } from '@/data/tools';
 import { NOTES_DATA } from '@/data/notes';
 import { CategoryType, ToolItem } from '@/types/tool';
-import { I18nProvider, useI18n, X_HANDLE, GITHUB_URL } from '@/lib/i18n';
+import { useI18n, X_HANDLE, GITHUB_URL } from '@/lib/i18n';
 import { Layers } from 'lucide-react';
 
 function inCategory(tool: ToolItem, category: CategoryType) {
@@ -21,7 +21,7 @@ function inCategory(tool: ToolItem, category: CategoryType) {
   return tool.category === category && tool.status !== 'dropped';
 }
 
-function HomeContent() {
+export default function HomePage() {
   const { lang, t } = useI18n();
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>('all');
   const [selectedTool, setSelectedTool] = useState<ToolItem | null>(null);
@@ -162,13 +162,5 @@ function HomeContent() {
         onSelectTool={(tool) => setSelectedTool(tool)}
       />
     </div>
-  );
-}
-
-export default function HomePage() {
-  return (
-    <I18nProvider>
-      <HomeContent />
-    </I18nProvider>
   );
 }

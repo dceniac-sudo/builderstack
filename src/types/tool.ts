@@ -26,6 +26,7 @@ export interface NoteItem {
   xUrl?: string;               // X 帖子
   wechatUrl?: string;          // 公众号文章
   repoUrl?: string;            // 脚本或配置的仓库
+  hasPage?: boolean;           // content/notes/ 下有中英文正文，站内有完整文章页
   confirmed: boolean;
 }
 

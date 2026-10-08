@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { Providers } from '@/components/Providers';
 
 const TITLE = 'BuilderStack — What I use to build with AI agents, and what broke';
 const DESCRIPTION =
@@ -38,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className="bg-zinc-950 text-zinc-100 antialiased selection:bg-amber-500 selection:text-black min-h-screen flex flex-col bg-grid-pattern">
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

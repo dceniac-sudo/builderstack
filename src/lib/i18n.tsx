@@ -26,6 +26,7 @@ export const DICTIONARY = {
     notes: {
       heading: 'What I learned',
       sub: 'Things I tried myself, newest first.',
+      read: 'Read the full note',
       readOnX: 'Thread on X',
       readWechat: 'Article (Chinese)',
       repo: 'Code',
@@ -53,6 +54,10 @@ export const DICTIONARY = {
       visitSite: 'Visit Website',
       copyLink: 'Copy link',
     },
+    article: {
+      back: 'All notes',
+      cta: 'I post hands-on notes like this on X.',
+    },
     search: {
       placeholder: 'Search by name or by anything in my notes...',
       noResult: 'Nothing matches',
@@ -79,6 +84,7 @@ export const DICTIONARY = {
     notes: {
       heading: '学到了什么',
       sub: '都是自己动手试过的事，新的在前。',
+      read: '读全文',
       readOnX: 'X 上的帖子',
       readWechat: '公众号文章',
       repo: '代码',
@@ -105,6 +111,10 @@ export const DICTIONARY = {
       copied: '已复制',
       visitSite: '访问官网',
       copyLink: '复制链接',
+    },
+    article: {
+      back: '全部笔记',
+      cta: '我在 X 上持续发这类亲手试过的笔记。',
     },
     search: {
       placeholder: '按名字搜，或者搜评语里的任何词…',

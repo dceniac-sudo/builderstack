@@ -5,6 +5,7 @@ import { SHOW_DRAFTS } from '@/data/tools';
 const ALL_NOTES: NoteItem[] = [
   {
     id: 'deleted-humanizer-skills',
+    hasPage: true,
     date: '2026-10-08',
     title: '我把 36 个“去 AI 味”技能文件全删了',
     titleEn: 'I deleted 36 files of “write like a human” skills',
@@ -14,6 +15,7 @@ const ALL_NOTES: NoteItem[] = [
   },
   {
     id: 'are-you-sure-test',
+    hasPage: true,
     date: '2026-10-07',
     title: '对六个模型各说九遍“我觉得不对”',
     titleEn: 'I told 6 models “I don’t think that’s right” 9 times each',
