@@ -36,12 +36,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-amber-700 text-zinc-950 font-black font-mono text-base shadow-lg shadow-amber-500/20 shrink-0">
             B
           </div>
-          <div className="min-w-0">
-            <span className="font-semibold text-zinc-100 text-sm sm:text-base tracking-tight">
-              BuilderStack
-            </span>
-            <p className="text-[11px] text-zinc-500 hidden md:block">{t.nav.tagline}</p>
-          </div>
+          <span className="font-semibold text-zinc-100 text-sm sm:text-base tracking-tight">
+            BuilderStack
+          </span>
         </Link>
 
         {/* 中间搜索触发器 */}
