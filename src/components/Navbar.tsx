@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Search } from 'lucide-react';
 import { LanguageToggle } from '@/components/LanguageToggle';
+import { Logo } from '@/components/Logo';
 import { useI18n, localePath, X_HANDLE } from '@/lib/i18n';
 
 interface NavbarProps {
@@ -33,9 +34,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4">
         {/* Logo 区域 */}
         <Link href={localePath(lang, '/')} className="flex items-center gap-3 min-w-0">
-          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-amber-700 text-zinc-950 font-black font-mono text-base shadow-lg shadow-amber-500/20 shrink-0">
-            B
-          </div>
+          <Logo size={32} className="shrink-0" />
           <span className="font-semibold text-zinc-100 text-sm sm:text-base tracking-tight">
             BuilderStack
           </span>

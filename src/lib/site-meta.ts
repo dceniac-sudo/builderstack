@@ -31,6 +31,7 @@ export function pageMetadata(lang: Language, path: string, override?: { title: s
     keywords: ['AI coding agents', 'Claude Code', 'Codex', 'multi-agent workflows', 'solo builder'],
     authors: [{ name: 'dceniac', url: SITE }],
     creator: '@dceniac',
+    icons: { icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }] },
     alternates: {
       canonical: url,
       languages: { en: path, 'zh-CN': `/zh${path}` },
