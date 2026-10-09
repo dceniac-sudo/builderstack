@@ -18,8 +18,8 @@ export const NotesSection: React.FC<NotesSectionProps> = ({ notes }) => {
   return (
     <section id="notes" className="pb-12">
       <div className="mb-5 px-1">
-        <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-100">{t.notes.heading}</h2>
-        <p className="text-sm text-zinc-500 mt-1">{t.notes.sub}</p>
+        <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#0E1116]">{t.notes.heading}</h2>
+        <p className="text-sm text-[#6B7280] mt-1">{t.notes.sub}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
@@ -34,15 +34,15 @@ export const NotesSection: React.FC<NotesSectionProps> = ({ notes }) => {
             <article
               key={note.id}
               id={`note-${note.id}`}
-              className="flex flex-col rounded-2xl bg-zinc-950/80 border border-amber-500/15 p-6"
+              className="flex flex-col rounded-2xl bg-white border border-[#E6E8EC] p-6"
             >
-              <time className="font-mono text-xs text-amber-400/90" dateTime={note.date}>
+              <time className="font-mono text-xs text-[#C2410C]" dateTime={note.date}>
                 {note.date}
               </time>
-              <h3 className="mt-2 text-lg font-semibold leading-snug text-zinc-100">
+              <h3 className="mt-2 text-lg font-semibold leading-snug text-[#0E1116]">
                 {lang === 'en' ? note.titleEn : note.title}
               </h3>
-              <p className="mt-3 text-[15px] leading-relaxed text-zinc-300">
+              <p className="mt-3 text-[15px] leading-relaxed text-[#2B303A]">
                 {lang === 'en' ? note.summaryEn : note.summary}
               </p>
 
@@ -51,7 +51,7 @@ export const NotesSection: React.FC<NotesSectionProps> = ({ notes }) => {
                   {note.hasPage && (
                     <Link
                       href={localePath(lang, `/notes/${note.id}/`)}
-                      className="inline-flex items-center gap-1 font-medium text-amber-400 hover:text-amber-300 hover:underline"
+                      className="inline-flex items-center gap-1 font-medium text-[#C2410C] hover:text-[#C2410C] hover:underline"
                     >
                       {t.notes.read}
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -63,7 +63,7 @@ export const NotesSection: React.FC<NotesSectionProps> = ({ notes }) => {
                       href={l.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-amber-400 hover:text-amber-300 hover:underline"
+                      className="inline-flex items-center gap-1 text-[#C2410C] hover:text-[#C2410C] hover:underline"
                     >
                       {l.label}
                       <ArrowUpRight className="w-3.5 h-3.5" />

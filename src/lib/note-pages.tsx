@@ -27,6 +27,7 @@ export function noteMetadata(slug: string, lang: Language): Metadata {
   return pageMetadata(lang, `/notes/${note.id}/`, {
     title: lang === 'zh' ? note.title : note.titleEn,
     description: lang === 'zh' ? note.summary : note.summaryEn,
+    article: true,
   });
 }
 

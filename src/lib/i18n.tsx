@@ -2,7 +2,10 @@
 
 import React, { createContext, useContext } from 'react';
 
-export type Language = 'en' | 'zh';
+import { localePath, type Language } from '@/lib/i18n-path';
+
+export { localePath };
+export type { Language };
 
 // 你的 X (Twitter) 用户名，点击将直接唤起一键关注
 export const X_HANDLE = 'dceniac';
@@ -13,6 +16,51 @@ export const DICTIONARY = {
     nav: {
       searchPlaceholder: 'Search tools and notes...',
       followX: `Follow @${X_HANDLE}`,
+      industries: 'Industries',
+      notes: 'Notes',
+    },
+    oss: {
+      crumb: 'Open source by industry',
+      homeBadge: (n: number, m: number) => `${n} projects across ${m} ${m === 1 ? 'industry' : 'industries'}`,
+      homeTitle: 'Open-source software you can actually use,',
+      homeTagline: 'sorted by industry.',
+      homeSub: 'Every project answers five questions first: commercial use, maintenance, deployment, cost and caveats. Each answer links to its source.',
+      industriesHeading: 'Pick your industry',
+      industriesTitle: 'Industries',
+      industriesSub: 'Industries marked as being evaluated have no reviewed projects yet.',
+      allHeading: 'All projects',
+      searchPlaceholder: 'Search by name or what it does',
+      evaluating: 'Being evaluated',
+      projectCount: (n: number) => `${n} ${n === 1 ? 'project' : 'projects'}`,
+      basis: 'Based on license texts, commit history and official deployment docs. I have not deployed each one myself.',
+      checked: 'Last checked',
+      sum: { good: 'Free to use commercially', caution: 'Commercial use with conditions', bad: 'Paid license needed' },
+      pick: 'What do you need to solve?',
+      all: 'All',
+      only: 'Only show ones free to use commercially',
+      count: (n: number) => `${n} ${n === 1 ? 'project' : 'projects'}. Open one for the reasoning and sources.`,
+      empty: 'Nothing matches. Try another word, or untick the box above.',
+      cols: { commercial: 'Commercial use', alive: 'Updates', deploy: 'Deployment', cost: 'Cost' },
+      questions: {
+        commercial: 'Can you use it commercially?',
+        alive: 'Is it still maintained?',
+        deploy: 'How hard is it to deploy?',
+        cost: 'What does it cost?',
+        caveats: 'What to watch out for',
+      },
+      short: {
+        commercial: { good: 'Yes', caution: 'Conditions', bad: 'Paid license', pending: 'Unverified' },
+        alive: { good: 'Active', caution: 'Slowing', bad: 'Stalled', pending: 'Unverified' },
+        deploy: { good: 'Easy', caution: 'Moderate', bad: 'Hard', pending: 'Unverified' },
+        cost: { good: 'Low', caution: 'Moderate', bad: 'High', pending: 'Unverified' },
+      },
+      repo: 'Open the repository',
+      site: 'Website',
+      draft: 'Draft',
+      ctaTitle: 'Your industry is not here?',
+      ctaBody: 'Tell me the industry and what you need solved. I will look at it next.',
+      ctaButton: `Message @${X_HANDLE} on X`,
+      qrText: '',
     },
     hero: {
       badge: 'Notes from one indie developer',
@@ -70,7 +118,7 @@ export const DICTIONARY = {
       trySearching: 'Try “Claude” or “dropped”.',
     },
     footer: {
-      copyright: 'BuilderStack © 2026. Written by one person, for people who build alone.',
+      copyright: 'BuilderStack © 2026',
       wechat: '',
       wechatButton: '',
     },
@@ -79,6 +127,51 @@ export const DICTIONARY = {
     nav: {
       searchPlaceholder: '搜工具和笔记…',
       followX: `关注 @${X_HANDLE}`,
+      industries: '行业',
+      notes: '笔记',
+    },
+    oss: {
+      crumb: '按行业找开源项目',
+      homeBadge: (n: number, m: number) => `${m} 个行业，${n} 个项目`,
+      homeTitle: '按行业找能拿来用的开源项目',
+      homeTagline: '先看结论，再决定要不要装',
+      homeSub: '每个项目先回答五件事：能不能商用、还活不活着、部署难不难、成本多少、注意事项。每条都带出处。',
+      industriesHeading: '先选行业',
+      industriesTitle: '全部行业',
+      industriesSub: '标着“评估中”的行业还没有评估完的项目。',
+      allHeading: '全部项目',
+      searchPlaceholder: '搜项目名，或者它是干什么的',
+      evaluating: '评估中',
+      projectCount: (n: number) => `${n} 个项目`,
+      basis: '依据是许可证原文、仓库提交记录和官方部署文档，没有逐个亲自部署。',
+      checked: '最近核对',
+      sum: { good: '可直接商用', caution: '商用有条件', bad: '要买授权' },
+      pick: '你想解决哪件事',
+      all: '全部',
+      only: '只看可以直接商用的',
+      count: (n: number) => `共 ${n} 个，点开看依据和出处`,
+      empty: '没有符合条件的项目，换个词或者去掉上面的勾选再看。',
+      cols: { commercial: '商用', alive: '更新', deploy: '部署', cost: '成本' },
+      questions: {
+        commercial: '能不能商用',
+        alive: '还活不活着',
+        deploy: '部署难不难',
+        cost: '成本多少',
+        caveats: '注意事项',
+      },
+      short: {
+        commercial: { good: '可以', caution: '有条件', bad: '要买授权', pending: '待核对' },
+        alive: { good: '在更新', caution: '放缓', bad: '停更', pending: '待核对' },
+        deploy: { good: '容易', caution: '中等', bad: '门槛高', pending: '待核对' },
+        cost: { good: '低', caution: '中等', bad: '高', pending: '待核对' },
+      },
+      repo: '打开仓库',
+      site: '官网',
+      draft: '草稿',
+      ctaTitle: '没有你的行业？',
+      ctaBody: '告诉我行业和想解决的事，下一个就评估它。',
+      ctaButton: '在公众号“老孙不会AI”留言',
+      qrText: '微信扫码关注公众号“老孙不会AI”，在后台留言',
     },
     hero: {
       badge: '一个独立开发者的笔记',
@@ -135,7 +228,7 @@ export const DICTIONARY = {
       trySearching: '可以试试“Claude”或“弃用”。',
     },
     footer: {
-      copyright: 'BuilderStack © 2026. 一个人写的，给一个人干活的人看。',
+      copyright: 'BuilderStack © 2026',
       wechat: '微信扫码关注公众号【老孙不会AI】',
       wechatButton: '微信公众号【老孙不会AI】',
     },
@@ -149,13 +242,6 @@ interface I18nContextType {
 }
 
 const I18nContext = createContext<I18nContextType | null>(null);
-
-// 英文页面在根路径下，中文页面在 /zh 下。每个页面构建时就是它自己的语言，
-// 所以加载时不会出现先英文后中文的跳动。
-export function localePath(lang: Language, path: string) {
-  const clean = path.startsWith('/') ? path : '/' + path;
-  return lang === 'zh' ? '/zh' + clean : clean;
-}
 
 export const I18nProvider: React.FC<{ lang: Language; children: React.ReactNode }> = ({ lang, children }) => {
   // 切换语言就是跳到另一种语言的同一个页面，并记住这次选择

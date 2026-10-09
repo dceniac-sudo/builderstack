@@ -11,14 +11,14 @@ function inline(text: string): React.ReactNode[] {
     if (!part) return null;
     if (part.startsWith('`')) {
       return (
-        <code key={i} className="rounded bg-zinc-800/80 px-1.5 py-0.5 font-mono text-[0.9em] text-amber-200">
+        <code key={i} className="rounded bg-[#ECEEF2] px-1.5 py-0.5 font-mono text-[0.9em] text-[#C2410C]">
           {part.slice(1, -1)}
         </code>
       );
     }
     if (part.startsWith('**')) {
       return (
-        <strong key={i} className="font-semibold text-zinc-100">
+        <strong key={i} className="font-semibold text-[#0E1116]">
           {part.slice(2, -2)}
         </strong>
       );
@@ -26,7 +26,7 @@ function inline(text: string): React.ReactNode[] {
     if (part.startsWith('*')) return <em key={i}>{part.slice(1, -1)}</em>;
     if (part.startsWith('http')) {
       return (
-        <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:underline break-all">
+        <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="text-[#C2410C] hover:underline break-all">
           {part}
         </a>
       );
@@ -57,14 +57,14 @@ export function renderMarkdown(source: string): React.ReactNode[] {
     }
 
     if (line === '---') {
-      out.push(<hr key={key++} className="my-10 border-zinc-800" />);
+      out.push(<hr key={key++} className="my-10 border-[#E6E8EC]" />);
       i++;
       continue;
     }
 
     if (line.startsWith('### ')) {
       out.push(
-        <h3 key={key++} className="mt-8 mb-3 text-base font-semibold text-zinc-300">
+        <h3 key={key++} className="mt-8 mb-3 text-base font-semibold text-[#2B303A]">
           {inline(line.slice(4))}
         </h3>
       );
@@ -74,7 +74,7 @@ export function renderMarkdown(source: string): React.ReactNode[] {
 
     if (line.startsWith('## ')) {
       out.push(
-        <h2 key={key++} className="mt-12 mb-4 text-xl sm:text-2xl font-bold tracking-tight text-zinc-100">
+        <h2 key={key++} className="mt-12 mb-4 text-xl sm:text-2xl font-bold tracking-tight text-[#0E1116]">
           {inline(line.slice(3))}
         </h2>
       );
@@ -88,8 +88,8 @@ export function renderMarkdown(source: string): React.ReactNode[] {
       const caption = /^\*[^*].*\*$/.test(next) ? next.slice(1, -1) : '';
       out.push(
         <figure key={key++} className="my-8">
-          <img src={img[2]} alt={img[1]} loading="lazy" className="w-full rounded-xl border border-zinc-800" />
-          {caption && <figcaption className="mt-2 text-center text-sm text-zinc-500">{inline(caption)}</figcaption>}
+          <img src={img[2]} alt={img[1]} loading="lazy" className="w-full rounded-xl border border-[#E6E8EC]" />
+          {caption && <figcaption className="mt-2 text-center text-sm text-[#6B7280]">{inline(caption)}</figcaption>}
         </figure>
       );
       i += caption ? 2 : 1;
@@ -102,9 +102,9 @@ export function renderMarkdown(source: string): React.ReactNode[] {
       const head = cells(rows[0]);
       const body = rows.slice(2).map(cells);
       out.push(
-        <div key={key++} className="my-6 overflow-x-auto rounded-xl border border-zinc-800">
+        <div key={key++} className="my-6 overflow-x-auto rounded-xl border border-[#E6E8EC]">
           <table className="w-full text-left text-[15px]">
-            <thead className="bg-zinc-900/80 text-zinc-300">
+            <thead className="bg-[#F5F6F8] text-[#2B303A]">
               <tr>
                 {head.map((h, c) => (
                   <th key={c} className="px-4 py-2.5 font-semibold">
@@ -115,9 +115,9 @@ export function renderMarkdown(source: string): React.ReactNode[] {
             </thead>
             <tbody>
               {body.map((r, ri) => (
-                <tr key={ri} className="border-t border-zinc-800/80">
+                <tr key={ri} className="border-t border-[#E6E8EC]">
                   {r.map((c, ci) => (
-                    <td key={ci} className="px-4 py-2.5 text-zinc-300">
+                    <td key={ci} className="px-4 py-2.5 text-[#2B303A]">
                       {inline(c)}
                     </td>
                   ))}
@@ -148,7 +148,7 @@ export function renderMarkdown(source: string): React.ReactNode[] {
       }
       const List = ordered ? 'ol' : 'ul';
       out.push(
-        <List key={key++} className={`my-5 space-y-3 pl-6 ${ordered ? 'list-decimal' : 'list-disc'} marker:text-zinc-600`}>
+        <List key={key++} className={`my-5 space-y-3 pl-6 ${ordered ? 'list-decimal' : 'list-disc'} marker:text-[#6B7280]`}>
           {items.map((it, n) => (
             <li key={n} className="pl-1">
               {inline(it)}
@@ -161,7 +161,7 @@ export function renderMarkdown(source: string): React.ReactNode[] {
 
     if (line.startsWith('>')) {
       out.push(
-        <blockquote key={key++} className="my-6 border-l-2 border-amber-500/60 pl-4 text-zinc-300">
+        <blockquote key={key++} className="my-6 border-l-2 border-[#0E1116] pl-4 text-[#2B303A]">
           {inline(line.replace(/^>\s*/, ''))}
         </blockquote>
       );

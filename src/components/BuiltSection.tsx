@@ -18,8 +18,8 @@ export const BuiltSection: React.FC<BuiltSectionProps> = ({ items }) => {
   return (
     <section id="built" className="pb-12">
       <div className="mb-5 px-1">
-        <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-100">{t.built.heading}</h2>
-        <p className="text-sm text-zinc-500 mt-1">{t.built.sub}</p>
+        <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#0E1116]">{t.built.heading}</h2>
+        <p className="text-sm text-[#6B7280] mt-1">{t.built.sub}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
@@ -33,17 +33,17 @@ export const BuiltSection: React.FC<BuiltSectionProps> = ({ items }) => {
             <article
               key={item.id}
               id={`built-${item.id}`}
-              className="flex flex-col rounded-2xl bg-zinc-950/80 border border-white/10 p-6"
+              className="flex flex-col rounded-2xl bg-white border border-[#E6E8EC] p-6"
             >
               <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="text-lg font-semibold text-zinc-100">
+                <h3 className="text-lg font-semibold text-[#0E1116]">
                   {lang === 'zh' && item.nameZh ? item.nameZh : item.name}
                 </h3>
-                <span className="font-mono text-[11px] px-2 py-0.5 rounded border text-emerald-300 bg-emerald-500/10 border-emerald-500/20">
+                <span className="font-mono text-[11px] px-2 py-0.5 rounded border text-[#1F6F43] bg-[#E8F5EE] border-[#CFE8DA]">
                   {t.built.status[item.status]}
                 </span>
               </div>
-              <p className="mt-3 text-[15px] leading-relaxed text-zinc-300">
+              <p className="mt-3 text-[15px] leading-relaxed text-[#2B303A]">
                 {lang === 'en' ? item.descEn : item.desc}
               </p>
 
@@ -55,7 +55,7 @@ export const BuiltSection: React.FC<BuiltSectionProps> = ({ items }) => {
                       href={l.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-amber-400 hover:text-amber-300 hover:underline"
+                      className="inline-flex items-center gap-1 text-[#C2410C] hover:text-[#C2410C] hover:underline"
                     >
                       {l.label}
                       <ArrowUpRight className="w-3.5 h-3.5" />

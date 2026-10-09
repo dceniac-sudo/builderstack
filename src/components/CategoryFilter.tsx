@@ -50,14 +50,14 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                 'border outline-none select-none',
                 isSelected
                   ? 'text-white border-transparent'
-                  : 'text-zinc-400 border-zinc-900 bg-zinc-950/60 hover:text-zinc-200 hover:border-zinc-800'
+                  : 'text-[#535A66] border-[#E6E8EC] bg-white hover:text-[#0E1116] hover:border-[#0E1116]'
               )}
             >
               {/* Framer Motion 驱动的丝滑背光胶囊滑块 */}
               {isSelected && (
                 <motion.div
                   layoutId="activeCategoryPill"
-                  className="absolute inset-0 rounded-xl bg-gradient-to-r from-zinc-800 via-zinc-800/90 to-zinc-800/60 border border-white/20 shadow-md shadow-black/50"
+                  className="absolute inset-0 rounded-xl bg-[#0E1116]"
                   transition={{ type: 'spring', bounce: 0.18, duration: 0.5 }}
                 />
               )}
@@ -66,7 +66,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                 <Icon
                   className={cn(
                     'w-3.5 h-3.5 transition-colors',
-                    isSelected ? 'text-amber-400' : 'text-zinc-500'
+                    isSelected ? 'text-white' : 'text-[#6B7280]'
                   )}
                 />
                 <span>{displayName}</span>
@@ -74,8 +74,8 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                   className={cn(
                     'font-mono text-[10px] rounded-full px-1.5 py-0.2',
                     isSelected
-                      ? 'bg-amber-500/20 text-amber-300 font-semibold'
-                      : 'bg-zinc-900 text-zinc-500'
+                      ? 'bg-white/15 text-white font-semibold'
+                      : 'bg-[#F5F6F8] text-[#6B7280]'
                   )}
                 >
                   {count}

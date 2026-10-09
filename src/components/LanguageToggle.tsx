@@ -9,14 +9,14 @@ export const LanguageToggle: React.FC = () => {
   const { lang, setLang } = useI18n();
 
   return (
-    <div className="flex items-center bg-zinc-900 border border-zinc-800 rounded-lg p-0.5 text-xs font-mono">
+    <div className="flex items-center bg-[#F5F6F8] border border-[#E6E8EC] rounded-lg p-0.5 text-xs font-mono">
       <button
         onClick={() => setLang('en')}
         className={cn(
           'px-2 py-1 rounded-md transition-all font-medium text-[11px]',
           lang === 'en'
-            ? 'bg-zinc-800 text-amber-400 shadow-sm border border-white/10'
-            : 'text-zinc-500 hover:text-zinc-300'
+            ? 'bg-white text-[#0E1116] shadow-sm border border-[#E6E8EC]'
+            : 'text-[#6B7280] hover:text-[#2B303A]'
         )}
       >
         EN
@@ -26,8 +26,8 @@ export const LanguageToggle: React.FC = () => {
         className={cn(
           'px-2 py-1 rounded-md transition-all font-medium text-[11px]',
           lang === 'zh'
-            ? 'bg-zinc-800 text-amber-400 shadow-sm border border-white/10'
-            : 'text-zinc-500 hover:text-zinc-300'
+            ? 'bg-white text-[#0E1116] shadow-sm border border-[#E6E8EC]'
+            : 'text-[#6B7280] hover:text-[#2B303A]'
         )}
       >
         中文

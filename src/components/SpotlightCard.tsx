@@ -12,9 +12,9 @@ interface SpotlightCardProps {
 }
 
 const STATUS_STYLE: Record<ToolItem['status'], string> = {
-  daily: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
-  sometimes: 'text-sky-300 bg-sky-500/10 border-sky-500/20',
-  dropped: 'text-zinc-400 bg-zinc-800/60 border-zinc-700',
+  daily: 'text-[#C2410C] bg-[#F5F6F8] border-[#E6E8EC]',
+  sometimes: 'text-[#1D4ED8] bg-[#EEF3FF] border-[#D6E2FF]',
+  dropped: 'text-[#535A66] bg-[#ECEEF2] border-[#D9DCE2]',
 };
 
 export const SpotlightCard: React.FC<SpotlightCardProps> = ({ tool, onSelect }) => {
@@ -46,11 +46,11 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({ tool, onSelect }) 
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => onSelect(tool)}
       className={cn(
-        'group relative h-full rounded-2xl bg-zinc-950/80 p-6 text-zinc-100 backdrop-blur-md',
+        'group relative h-full rounded-2xl bg-white p-6 text-[#0E1116] backdrop-blur-md',
         'border transition-all duration-300 ease-out',
-        'hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/60',
+        'hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/10',
         'cursor-pointer flex flex-col overflow-hidden',
-        dropped ? 'border-dashed border-zinc-800 hover:border-zinc-600' : 'border-white/10 hover:border-white/20'
+        dropped ? 'border-dashed border-[#E6E8EC] hover:border-[#D9DCE2]' : 'border-[#E6E8EC] hover:border-[#E6E8EC]'
       )}
     >
       {/* 鼠标跟随径向微光 */}
@@ -58,7 +58,7 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({ tool, onSelect }) 
         className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
         style={{
           background: isHovered
-            ? `radial-gradient(400px circle at ${coords.x}px ${coords.y}px, rgba(246, 130, 31, 0.12), transparent 80%)`
+            ? `radial-gradient(400px circle at ${coords.x}px ${coords.y}px, rgba(14, 17, 22, 0.04), transparent 80%)`
             : undefined,
         }}
       />
@@ -68,8 +68,8 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({ tool, onSelect }) 
           <div className="flex items-center gap-2 flex-wrap min-w-0">
             <h3
               className={cn(
-                'text-lg font-semibold tracking-tight transition-colors group-hover:text-amber-400',
-                dropped ? 'text-zinc-300 line-through decoration-zinc-600' : 'text-zinc-100'
+                'text-lg font-semibold tracking-tight transition-colors group-hover:text-[#C2410C]',
+                dropped ? 'text-[#2B303A] line-through decoration-[#9CA3AF]' : 'text-[#0E1116]'
               )}
             >
               {displayName}
@@ -91,7 +91,7 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({ tool, onSelect }) 
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
               title={t.card.visit}
-              className="rounded-lg p-2 -mt-1 -mr-1 text-zinc-500 hover:text-white hover:bg-zinc-800/80 transition-colors shrink-0"
+              className="rounded-lg p-2 -mt-1 -mr-1 text-[#6B7280] hover:text-[#0E1116] hover:bg-[#ECEEF2] transition-colors shrink-0"
             >
               <ExternalLink className="w-4 h-4" />
             </a>
@@ -99,7 +99,7 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({ tool, onSelect }) 
         </div>
 
         {/* 作者自己的话，完整显示 */}
-        <p className="text-[15px] text-zinc-300 leading-relaxed">{note}</p>
+        <p className="text-[15px] text-[#2B303A] leading-relaxed">{note}</p>
       </div>
     </div>
   );

@@ -23,20 +23,20 @@ export const WechatQr: React.FC = () => {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="text-xs text-amber-400/90 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 rounded-full px-3 py-1 transition-colors"
+        className="text-[13px] text-[#0E1116] bg-[#F5F6F8] hover:bg-[#ECEEF2] rounded-full px-3 py-1.5 transition-colors"
       >
         {t.footer.wechatButton}
       </button>
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-md" onClick={() => setOpen(false)} />
-          <div className="relative z-10 w-full max-w-xs rounded-2xl bg-zinc-950 border border-white/10 p-6 text-center shadow-2xl shadow-black">
+          <div className="fixed inset-0 bg-[#0E1116]/50" onClick={() => setOpen(false)} />
+          <div className="relative z-10 w-full max-w-xs rounded-2xl bg-white border border-[#E6E8EC] p-6 text-center shadow-2xl">
             <button
               type="button"
               onClick={() => setOpen(false)}
               aria-label="Close"
-              className="absolute top-3 right-3 p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-900"
+              className="absolute top-3 right-3 p-1.5 rounded-lg text-[#535A66] hover:text-[#0E1116] hover:bg-[#F5F6F8]"
             >
               <X className="w-4 h-4" />
             </button>
@@ -47,7 +47,7 @@ export const WechatQr: React.FC = () => {
               height={200}
               className="mx-auto rounded-xl bg-white p-2"
             />
-            <p className="mt-4 text-sm text-zinc-200">{t.footer.wechat}</p>
+            <p className="mt-4 text-sm text-[#0E1116]">{t.footer.wechat}</p>
           </div>
         </div>
       )}

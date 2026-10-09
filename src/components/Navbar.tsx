@@ -8,10 +8,11 @@ import { Logo } from '@/components/Logo';
 import { useI18n, localePath, X_HANDLE } from '@/lib/i18n';
 
 interface NavbarProps {
-  onOpenSearch?: () => void;          // 不传就不显示搜索（文章页）
+  onOpenSearch?: () => void;          // 不传就不显示搜索（只有“笔记”页有搜索）
+  active?: 'industries' | 'notes';    // 当前在哪个栏目；首页不传
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch, active }) => {
   const { lang, t } = useI18n();
 
   // 触发 X 官方关注小弹窗
@@ -30,26 +31,47 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-white/5 bg-zinc-950/80 backdrop-blur-xl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4">
+    <header className="sticky top-0 z-40 w-full border-b border-[#E6E8EC] bg-white backdrop-blur-xl">
+      <div className="max-w-[1120px] mx-auto px-5 sm:px-10 h-16 flex items-center justify-between gap-2 sm:gap-4">
         {/* Logo 区域 */}
         <Link href={localePath(lang, '/')} className="flex items-center gap-3 min-w-0">
           <Logo size={32} className="shrink-0" />
-          <span className="font-semibold text-zinc-100 text-sm sm:text-base tracking-tight">
+          <span className="hidden sm:inline font-semibold text-[#0E1116] text-base tracking-tight">
             BuilderStack
           </span>
         </Link>
+
+        {/* 两个栏目 */}
+        <nav className="flex items-center gap-1 text-sm font-medium mr-auto">
+          {([
+            { id: 'industries', href: '/oss/', label: t.nav.industries },
+            { id: 'notes', href: '/notes/', label: t.nav.notes },
+          ] as const).map((item) => (
+            <Link
+              key={item.id}
+              href={localePath(lang, item.href)}
+              aria-current={active === item.id ? 'page' : undefined}
+              className={
+                active === item.id
+                  ? 'inline-flex items-center min-h-11 px-3 rounded-full text-[#0E1116] bg-[#F5F6F8] whitespace-nowrap'
+                  : 'inline-flex items-center min-h-11 px-3 rounded-full text-[#535A66] hover:text-[#0E1116] whitespace-nowrap'
+              }
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
 
         {/* 中间搜索触发器 */}
         {onOpenSearch && (
         <button
           onClick={onOpenSearch}
-          className="flex items-center gap-2 sm:gap-3 rounded-xl bg-zinc-900/90 border border-zinc-800/80 px-2.5 sm:px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-200 hover:border-zinc-700 transition-all flex-1 min-w-0 max-w-[40px] sm:max-w-[240px] md:max-w-xs shadow-inner group"
+          className="hidden sm:flex items-center gap-2 sm:gap-3 rounded-xl bg-[#F5F6F8] border border-[#E6E8EC] px-2.5 sm:px-3 py-1.5 text-xs text-[#535A66] hover:text-[#0E1116] hover:border-[#D9DCE2] transition-all flex-1 min-w-0 max-w-[40px] sm:max-w-[240px] md:max-w-xs group"
           aria-label={t.nav.searchPlaceholder}
         >
-          <Search className="w-3.5 h-3.5 text-zinc-500 group-hover:text-amber-400 transition-colors shrink-0" />
+          <Search className="w-3.5 h-3.5 text-[#6B7280] group-hover:text-[#0E1116] transition-colors shrink-0" />
           <span className="flex-1 text-left truncate text-xs hidden sm:inline">{t.nav.searchPlaceholder}</span>
-          <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded bg-zinc-800/80 px-1.5 py-0.5 text-[10px] font-mono text-zinc-400 border border-zinc-700">
+          <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded bg-[#ECEEF2] px-1.5 py-0.5 text-[10px] font-mono text-[#535A66] border border-[#D9DCE2]">
             ⌘K
           </kbd>
         </button>
@@ -63,12 +85,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             target="_blank"
             rel="noopener noreferrer"
             title={`Follow @${X_HANDLE} on X`}
-            className="flex items-center justify-center gap-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800/90 text-zinc-100 hover:text-white p-2 sm:px-3 sm:py-1.5 text-xs font-medium border border-white/10 hover:border-amber-500/40 shadow-sm transition-all duration-200 group active:scale-95"
+            className="flex items-center justify-center gap-1.5 rounded-xl bg-[#F5F6F8] hover:bg-[#ECEEF2] text-[#0E1116] hover:text-[#0E1116] p-2 sm:px-3 sm:py-1.5 text-xs font-medium border border-[#E6E8EC] hover:border-[#0E1116] shadow-sm transition-all duration-200 group active:scale-95"
           >
             <svg
               viewBox="0 0 24 24"
               aria-hidden="true"
-              className="w-3.5 h-3.5 fill-current text-zinc-300 group-hover:text-amber-400 transition-colors"
+              className="w-3.5 h-3.5 fill-current text-[#2B303A] group-hover:text-[#0E1116] transition-colors"
             >
               <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
             </svg>

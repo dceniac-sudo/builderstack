@@ -1,5 +1,6 @@
-import { HomeContent } from '@/components/HomeContent';
+import { renderOssHome } from '@/lib/oss-pages';
 
+// The home page is the open-source finder: pick an industry, or browse every project.
 export default function HomePage() {
-  return <HomeContent />;
+  return renderOssHome('en');
 }

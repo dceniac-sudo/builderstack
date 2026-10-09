@@ -8,19 +8,12 @@
   --font-mono: ui-monospace, SFMono-Regular, "Cascadia Code", Menlo, Monaco, Consolas, "Liberation Mono", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", monospace;
 }
 
+/* 全站一套浅色：白底、近黑的字 */
 body {
-  color: #f4f4f5;
-  background-color: #09090b;
+  color: #0e1116;
+  background-color: #ffffff;
   min-height: 100vh;
   font-feature-settings: "rlig" 1, "calt" 1;
-}
-
-/* 极客微细网格底纹 (Cloudflare / Linear 风格) */
-.bg-grid-pattern {
-  background-size: 32px 32px;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
 }
 
 /* 隐藏横向滚动条但保持可滚动 */
@@ -36,6 +29,6 @@ body {
 
 /* 自定义高亮选择 */
 ::selection {
-  background-color: #f59e0b;
-  color: #09090b;
+  background-color: #0e1116;
+  color: #ffffff;
 }

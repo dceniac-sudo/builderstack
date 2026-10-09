@@ -10,13 +10,13 @@ const REDIRECT_TO_ZH = `(function(){try{var s=localStorage.getItem('builderstack
 // 所以切换语言等于打开另一个语言的页面，不存在页面内容中途变化的问题。
 export function RootShell({ lang, children }: { lang: Language; children: React.ReactNode }) {
   return (
-    <html lang={lang === 'zh' ? 'zh-CN' : 'en'} className="dark">
+    <html lang={lang === 'zh' ? 'zh-CN' : 'en'}>
       {lang === 'en' && (
         <head>
           <script dangerouslySetInnerHTML={{ __html: REDIRECT_TO_ZH }} />
         </head>
       )}
-      <body className="bg-zinc-950 text-zinc-100 antialiased selection:bg-amber-500 selection:text-black min-h-screen flex flex-col bg-grid-pattern">
+      <body className="bg-white text-[#0E1116] antialiased min-h-screen flex flex-col">
         <Providers lang={lang}>{children}</Providers>
       </body>
     </html>
