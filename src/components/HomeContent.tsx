@@ -16,7 +16,7 @@ import { NOTES_DATA } from '@/data/notes';
 import { BUILT_DATA } from '@/data/built';
 import { CategoryType, ToolItem } from '@/types/tool';
 import { useI18n, X_HANDLE, GITHUB_URL } from '@/lib/i18n';
-import { Layers } from 'lucide-react';
+import { ArrowRight, Layers } from 'lucide-react';
 
 function inCategory(tool: ToolItem, category: CategoryType) {
   if (category === 'all') return true;
@@ -24,7 +24,11 @@ function inCategory(tool: ToolItem, category: CategoryType) {
   return tool.category === category && tool.status !== 'dropped';
 }
 
-export function HomeContent() {
+interface HomeContentProps {
+  ossCount?: number;                  // 中文首页传入：教育行业开源项目页里已确认的项目数，大于 0 才显示入口
+}
+
+export function HomeContent({ ossCount = 0 }: HomeContentProps) {
   const { lang, t } = useI18n();
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>('all');
   const [selectedTool, setSelectedTool] = useState<ToolItem | null>(null);
@@ -81,6 +85,25 @@ export function HomeContent() {
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pb-20">
         <Hero />
+
+        {/* 按行业找开源项目的入口：只有中文，那一组页面有自己的浅色外壳，所以用普通链接整页跳转 */}
+        {lang === 'zh' && ossCount > 0 && (
+          <a
+            href="/zh/oss/education/"
+            className="group mb-12 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 rounded-2xl border border-white/10 bg-zinc-950/80 px-6 py-5 hover:border-amber-500/40 transition-colors"
+          >
+            <span className="min-w-0">
+              <span className="block text-lg font-semibold text-zinc-100">按行业找开源项目：教育</span>
+              <span className="mt-1 block text-sm text-zinc-400">
+                {ossCount} 个项目，每个回答能不能商用、还活不活着、部署难不难、成本多少。
+              </span>
+            </span>
+            <span className="inline-flex items-center gap-1 text-sm font-medium text-amber-400 group-hover:text-amber-300">
+              去看看
+              <ArrowRight className="w-4 h-4" />
+            </span>
+          </a>
+        )}
 
         {/* 学到了什么 */}
         <NotesSection notes={NOTES_DATA} />

@@ -17,8 +17,12 @@ const COPY = {
   },
 };
 
-// path 是不带语言前缀的路径，比如 '/' 或 '/notes/xxx/'
-export function pageMetadata(lang: Language, path: string, override?: { title: string; description: string }): Metadata {
+// path 是不带语言前缀的路径，比如 '/' 或 '/notes/xxx/'。zhOnly 用于只有中文、没有英文对应页的页面。
+export function pageMetadata(
+  lang: Language,
+  path: string,
+  override?: { title: string; description: string; zhOnly?: boolean }
+): Metadata {
   const copy = COPY[lang];
   const title = override ? `${override.title} — BuilderStack` : copy.title;
   const description = override?.description ?? copy.description;
@@ -32,10 +36,12 @@ export function pageMetadata(lang: Language, path: string, override?: { title: s
     authors: [{ name: 'dceniac', url: SITE }],
     creator: '@dceniac',
     icons: { icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }] },
-    alternates: {
-      canonical: url,
-      languages: { en: path, 'zh-CN': `/zh${path}` },
-    },
+    alternates: override?.zhOnly
+      ? { canonical: url }
+      : {
+          canonical: url,
+          languages: { en: path, 'zh-CN': `/zh${path}` },
+        },
     openGraph: {
       title,
       description,
