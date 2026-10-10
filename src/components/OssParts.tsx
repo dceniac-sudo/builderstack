@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { X } from 'lucide-react';
 import { OssFactKey, OssVerdict } from '@/types/oss';
 import { useI18n, X_HANDLE } from '@/lib/i18n';
@@ -21,6 +20,7 @@ export interface OssFactView {
 export interface OssProjectView {
   id: string;
   name: string;
+  logo?: string;
   what: string;
   industry: string;
   industryLabel: string;
@@ -37,92 +37,48 @@ export interface OssIndustryView {
   id: string;
   label: string;
   description: string;
-  count: number;               // 能显示出来的项目数
-  href?: string;               // 没有可显示的项目时为空，卡片显示“评估中”且不能点
+  count: number;               // 能显示出来的项目数；0 表示还在评估，不能选
+  href?: string;               // 行业页；没有可显示的项目时为空
+  uses: { id: string; label: string }[];
 }
 
 export type RowFactKey = Exclude<OssFactKey, 'caveats'>;
 export const ROW_FACTS: RowFactKey[] = ['commercial', 'alive', 'deploy', 'cost'];
 export const ALL_FACTS: OssFactKey[] = ['commercial', 'alive', 'deploy', 'cost', 'caveats'];
 
-const DOT: Record<OssVerdict, string> = {
-  good: 'bg-[#1F8A4C]',
-  caution: 'bg-[#D97706]',
-  bad: 'bg-[#C62828]',
-  pending: 'bg-[#9CA3AF]',
-};
-
+// 结论的小圆点是全站唯一用颜色的地方；“还没查到”是虚线空心圈
 export const Dot: React.FC<{ verdict: OssVerdict }> = ({ verdict }) => (
-  <span className={cn('inline-block w-2 h-2 rounded-full shrink-0', DOT[verdict])} />
+  <span
+    className={cn(
+      'inline-block w-2 h-2 rounded-full shrink-0',
+      verdict === 'good' && 'bg-[var(--good)]',
+      verdict === 'caution' && 'bg-[var(--warn)]',
+      verdict === 'bad' && 'bg-[var(--bad)]',
+      verdict === 'pending' && 'border-[1.5px] border-dashed border-[#9A9A96]'
+    )}
+  />
 );
 
-// 项目卡片：名字、一句话、四个结论。整张卡片点进详情页。
-export const OssCard: React.FC<{ project: OssProjectView; showIndustry?: boolean }> = ({ project: p, showIndustry }) => {
-  const { t } = useI18n();
-  const o = t.oss;
-
-  return (
-    <Link
-      href={p.href}
-      className="group flex h-full flex-col rounded-[20px] border border-[#E6E8EC] bg-white p-5 transition-colors duration-150 hover:border-[#0E1116] sm:p-6"
+// 项目图标：有官方图标用图标，没有就用名字的第一个字
+export const OssLogo: React.FC<{ project: Pick<OssProjectView, 'name' | 'logo'>; size?: number }> = ({ project, size = 34 }) =>
+  project.logo ? (
+    <img
+      src={project.logo}
+      alt=""
+      width={size}
+      height={size}
+      className="shrink-0 rounded-[9px] border border-[var(--line)] bg-white object-cover"
+      style={{ width: size, height: size }}
+    />
+  ) : (
+    <span
+      aria-hidden="true"
+      className="grid shrink-0 place-items-center rounded-[9px] border border-[var(--line)] bg-[var(--wash)] font-semibold text-[var(--sub)]"
+      style={{ width: size, height: size, fontSize: Math.round(size * 0.44) }}
     >
-      <div className="flex items-start justify-between gap-3">
-        <h3 className="min-w-0 text-lg font-semibold leading-[1.35]">
-          {p.name}
-          {!p.confirmed && <span className="ml-2 align-middle text-xs font-normal text-[#6B7280]">{o.draft}</span>}
-        </h3>
-        {showIndustry && (
-          <span className="shrink-0 rounded-full bg-[#F5F6F8] px-2.5 py-1 text-xs text-[#535A66]">{p.industryLabel}</span>
-        )}
-      </div>
-      <p className="mt-2 text-sm leading-[1.6] text-[#535A66]">{p.what}</p>
-
-      <div className="mt-auto grid grid-cols-2 gap-x-4 gap-y-3 pt-5">
-        {ROW_FACTS.map((key) => {
-          const fact = p.facts[key];
-          return (
-            <span key={key} className="flex flex-col gap-1">
-              <span className="text-xs text-[#6B7280]">{o.cols[key]}</span>
-              <span className="flex items-center gap-2 text-[15px] font-medium">
-                <Dot verdict={fact.verdict} />
-                {fact.short ?? o.short[key][fact.verdict]}
-              </span>
-            </span>
-          );
-        })}
-      </div>
-    </Link>
+      {project.name.charAt(0)}
+    </span>
   );
-};
-
-// 行业卡片。还没有项目的行业显示“评估中”，不能点。
-export const OssIndustryCard: React.FC<{ industry: OssIndustryView }> = ({ industry }) => {
-  const { t } = useI18n();
-  const o = t.oss;
-  const body = (
-    <>
-      <span className="flex items-center justify-between gap-3">
-        <span className="text-lg font-semibold leading-[1.35]">{industry.label}</span>
-        <span className={cn('shrink-0 text-[13px]', industry.href ? 'text-[#0E1116]' : 'text-[#6B7280]')}>
-          {industry.href ? o.projectCount(industry.count) : o.evaluating}
-        </span>
-      </span>
-      <span className="mt-1.5 block text-sm leading-[1.6] text-[#535A66]">{industry.description}</span>
-    </>
-  );
-
-  if (!industry.href) {
-    return <div className="rounded-[20px] border border-dashed border-[#D9DCE2] bg-white p-5">{body}</div>;
-  }
-  return (
-    <Link
-      href={industry.href}
-      className="block rounded-[20px] border border-[#E6E8EC] bg-white p-5 transition-colors duration-150 hover:border-[#0E1116]"
-    >
-      {body}
-    </Link>
-  );
-};
 
 // 页面底部的联系入口。中文是公众号二维码（微信不支持网页一键关注，只能扫码），英文是 X。
 export const OssCta: React.FC = () => {
@@ -130,7 +86,7 @@ export const OssCta: React.FC = () => {
   const o = t.oss;
   const [showQr, setShowQr] = useState(false);
   const button =
-    'inline-flex min-h-12 items-center rounded-full bg-[#0E1116] px-6 text-[15px] font-medium text-white hover:bg-[#2B303A]';
+    'inline-flex min-h-11 items-center rounded-[10px] bg-[var(--ink)] px-[18px] text-[14.5px] font-medium text-white transition-colors hover:bg-[#2E2E2B]';
 
   useEffect(() => {
     if (!showQr) return;
@@ -142,10 +98,10 @@ export const OssCta: React.FC = () => {
   }, [showQr]);
 
   return (
-    <section className="mt-12 flex flex-wrap items-center justify-between gap-x-10 gap-y-5 rounded-[20px] bg-[#F5F6F8] p-7 sm:mt-[72px] sm:p-12">
+    <section className="mt-12 flex flex-wrap items-center justify-between gap-x-8 gap-y-4 rounded-2xl border border-[var(--line)] bg-gradient-to-b from-white to-[var(--wash)] p-6 sm:p-8">
       <div className="min-w-0 flex-[1_1_320px]">
-        <h2 className="text-[clamp(22px,3vw,30px)] font-bold leading-[1.3]">{o.ctaTitle}</h2>
-        <p className="mt-2 text-[15px] text-[#535A66]">{o.ctaBody}</p>
+        <h2 className="text-[clamp(19px,2.2vw,24px)] font-semibold tracking-[-0.01em]">{o.ctaTitle}</h2>
+        <p className="mt-1 text-[15px] text-[var(--sub)]">{o.ctaBody}</p>
       </div>
       {lang === 'zh' ? (
         <button type="button" onClick={() => setShowQr(true)} className={button}>
@@ -159,18 +115,18 @@ export const OssCta: React.FC = () => {
 
       {showQr && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label={o.qrText}>
-          <div className="fixed inset-0 bg-[#0E1116]/50" onClick={() => setShowQr(false)} />
-          <div className="relative z-10 w-full max-w-xs rounded-[20px] bg-white p-6 text-center shadow-2xl">
+          <div className="fixed inset-0 bg-[#141414]/50" onClick={() => setShowQr(false)} />
+          <div className="swap-in relative z-10 w-full max-w-xs rounded-2xl bg-white p-6 text-center shadow-2xl">
             <button
               type="button"
               onClick={() => setShowQr(false)}
               aria-label="Close"
-              className="absolute top-2 right-2 flex h-11 w-11 items-center justify-center rounded-full text-[#535A66] hover:bg-[#F5F6F8]"
+              className="absolute top-2 right-2 flex h-11 w-11 items-center justify-center rounded-full text-[var(--sub)] hover:bg-[var(--wash)]"
             >
               <X className="w-4 h-4" />
             </button>
             <img src="/wechat-qr.png" alt={o.qrText} width={200} height={200} className="mx-auto mt-4 rounded-xl" />
-            <p className="mt-4 text-sm text-[#2B303A]">{o.qrText}</p>
+            <p className="mt-4 text-sm text-[#2E2E2B]">{o.qrText}</p>
           </div>
         </div>
       )}

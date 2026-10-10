@@ -93,12 +93,12 @@ export function NotesHome() {
         {/* 在用什么 */}
         <section id="stack">
           <div className="mb-4 px-1">
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#0E1116]">{t.stack.heading}</h2>
-            <p className="text-sm text-[#6B7280] mt-1">{t.stack.sub}</p>
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#141414]">{t.stack.heading}</h2>
+            <p className="text-sm text-[#6F6F6A] mt-1">{t.stack.sub}</p>
           </div>
 
           {categories.length > 2 && (
-            <div className="sticky top-16 z-30 bg-white backdrop-blur-xl py-3 border-b border-[#E6E8EC]">
+            <div className="sticky top-16 z-30 bg-white backdrop-blur-xl py-3 border-b border-[#E6E6E2]">
               <CategoryFilter
                 categories={categories}
                 selectedCategory={selectedCategory}
@@ -108,8 +108,8 @@ export function NotesHome() {
             </div>
           )}
 
-          <div className="flex items-center gap-2 text-xs text-[#6B7280] font-mono mt-5 mb-4 px-1">
-            <Layers className="w-3.5 h-3.5 text-[#535A66]" />
+          <div className="flex items-center gap-2 text-xs text-[#6F6F6A] font-mono mt-5 mb-4 px-1">
+            <Layers className="w-3.5 h-3.5 text-[#5E5E5A]" />
             <span>
               {t.stack.showing} {filteredTools.length} {t.stack.toolsUnit}
             </span>
@@ -129,7 +129,7 @@ export function NotesHome() {
           </motion.div>
 
           {filteredTools.length === 0 && (
-            <div className="text-center py-16 border border-dashed border-[#E6E8EC] rounded-2xl bg-white text-sm text-[#6B7280]">
+            <div className="text-center py-16 border border-dashed border-[#E6E6E2] rounded-2xl bg-white text-sm text-[#6F6F6A]">
               {t.stack.empty}
             </div>
           )}

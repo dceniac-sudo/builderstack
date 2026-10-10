@@ -16,7 +16,7 @@ export function RootShell({ lang, children }: { lang: Language; children: React.
           <script dangerouslySetInnerHTML={{ __html: REDIRECT_TO_ZH }} />
         </head>
       )}
-      <body className="bg-white text-[#0E1116] antialiased min-h-screen flex flex-col">
+      <body className="bg-white text-[#141414] antialiased min-h-screen flex flex-col">
         <Providers lang={lang}>{children}</Providers>
       </body>
     </html>

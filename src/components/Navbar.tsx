@@ -31,12 +31,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch, active }) => {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-[#E6E8EC] bg-white backdrop-blur-xl">
+    <header className="sticky top-0 z-40 w-full border-b border-[#E6E6E2] bg-white/90 backdrop-blur-xl">
       <div className="max-w-[1120px] mx-auto px-5 sm:px-10 h-16 flex items-center justify-between gap-2 sm:gap-4">
         {/* Logo 区域 */}
         <Link href={localePath(lang, '/')} className="flex items-center gap-3 min-w-0">
-          <Logo size={32} className="shrink-0" />
-          <span className="hidden sm:inline font-semibold text-[#0E1116] text-base tracking-tight">
+          <Logo size={28} className="shrink-0" />
+          <span className="hidden sm:inline font-semibold text-[#141414] text-[15.5px] tracking-[-0.01em]">
             BuilderStack
           </span>
         </Link>
@@ -53,8 +53,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch, active }) => {
               aria-current={active === item.id ? 'page' : undefined}
               className={
                 active === item.id
-                  ? 'inline-flex items-center min-h-11 px-3 rounded-full text-[#0E1116] bg-[#F5F6F8] whitespace-nowrap'
-                  : 'inline-flex items-center min-h-11 px-3 rounded-full text-[#535A66] hover:text-[#0E1116] whitespace-nowrap'
+                  ? 'inline-flex items-center min-h-9 px-3 rounded-lg text-[#141414] bg-[#F0F0EC] whitespace-nowrap'
+                  : 'inline-flex items-center min-h-9 px-3 rounded-lg font-normal text-[#5E5E5A] hover:text-[#141414] transition-colors whitespace-nowrap'
               }
             >
               {item.label}
@@ -66,12 +66,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch, active }) => {
         {onOpenSearch && (
         <button
           onClick={onOpenSearch}
-          className="hidden sm:flex items-center gap-2 sm:gap-3 rounded-xl bg-[#F5F6F8] border border-[#E6E8EC] px-2.5 sm:px-3 py-1.5 text-xs text-[#535A66] hover:text-[#0E1116] hover:border-[#D9DCE2] transition-all flex-1 min-w-0 max-w-[40px] sm:max-w-[240px] md:max-w-xs group"
+          className="hidden sm:flex items-center gap-2 sm:gap-3 rounded-xl bg-[#F5F5F2] border border-[#E6E6E2] px-2.5 sm:px-3 py-1.5 text-xs text-[#5E5E5A] hover:text-[#141414] hover:border-[#D9D9D5] transition-all flex-1 min-w-0 max-w-[40px] sm:max-w-[240px] md:max-w-xs group"
           aria-label={t.nav.searchPlaceholder}
         >
-          <Search className="w-3.5 h-3.5 text-[#6B7280] group-hover:text-[#0E1116] transition-colors shrink-0" />
+          <Search className="w-3.5 h-3.5 text-[#6F6F6A] group-hover:text-[#141414] transition-colors shrink-0" />
           <span className="flex-1 text-left truncate text-xs hidden sm:inline">{t.nav.searchPlaceholder}</span>
-          <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded bg-[#ECEEF2] px-1.5 py-0.5 text-[10px] font-mono text-[#535A66] border border-[#D9DCE2]">
+          <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded bg-[#EFEFEB] px-1.5 py-0.5 text-[10px] font-mono text-[#5E5E5A] border border-[#D9D9D5]">
             ⌘K
           </kbd>
         </button>
@@ -85,12 +85,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch, active }) => {
             target="_blank"
             rel="noopener noreferrer"
             title={`Follow @${X_HANDLE} on X`}
-            className="flex items-center justify-center gap-1.5 rounded-xl bg-[#F5F6F8] hover:bg-[#ECEEF2] text-[#0E1116] hover:text-[#0E1116] p-2 sm:px-3 sm:py-1.5 text-xs font-medium border border-[#E6E8EC] hover:border-[#0E1116] shadow-sm transition-all duration-200 group active:scale-95"
+            className="flex items-center justify-center gap-1.5 rounded-xl bg-[#F5F5F2] hover:bg-[#EFEFEB] text-[#141414] hover:text-[#141414] p-2 sm:px-3 sm:py-1.5 text-xs font-medium border border-[#E6E6E2] hover:border-[#141414] shadow-sm transition-all duration-200 group active:scale-95"
           >
             <svg
               viewBox="0 0 24 24"
               aria-hidden="true"
-              className="w-3.5 h-3.5 fill-current text-[#2B303A] group-hover:text-[#0E1116] transition-colors"
+              className="w-3.5 h-3.5 fill-current text-[#2E2E2B] group-hover:text-[#141414] transition-colors"
             >
               <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
             </svg>

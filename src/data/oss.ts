@@ -192,6 +192,7 @@ const ALL_PROJECTS: OssProject[] = [
   // ---------- 在线课程 ----------
   {
     id: 'moodle',
+    logo: '/oss/logos/moodle.png',
     name: 'Moodle',
     industry: 'education',
     uses: ['course', 'exam'],
@@ -239,6 +240,7 @@ const ALL_PROJECTS: OssProject[] = [
   },
   {
     id: 'playedu',
+    logo: '/oss/logos/playedu.png',
     name: 'PlayEdu',
     industry: 'education',
     uses: ['course'],
@@ -333,6 +335,7 @@ const ALL_PROJECTS: OssProject[] = [
   },
   {
     id: 'edusoho',
+    logo: '/oss/logos/edusoho.jpg',
     name: 'EduSoho',
     industry: 'education',
     uses: ['course'],
@@ -379,6 +382,7 @@ const ALL_PROJECTS: OssProject[] = [
   },
   {
     id: 'frappe-lms',
+    logo: '/oss/logos/frappe-lms.png',
     name: 'Frappe LMS',
     industry: 'education',
     uses: ['course'],
@@ -421,6 +425,7 @@ const ALL_PROJECTS: OssProject[] = [
   },
   {
     id: 'canvas-lms',
+    logo: '/oss/logos/canvas-lms.jpg',
     name: 'Canvas LMS',
     industry: 'education',
     uses: ['course'],
@@ -461,6 +466,7 @@ const ALL_PROJECTS: OssProject[] = [
   },
   {
     id: 'kolibri',
+    logo: '/oss/logos/kolibri.png',
     name: 'Kolibri',
     industry: 'education',
     uses: ['course'],
@@ -510,6 +516,7 @@ const ALL_PROJECTS: OssProject[] = [
   // ---------- 考试测评 ----------
   {
     id: 'xzs',
+    logo: '/oss/logos/xzs.png',
     name: '学之思开源考试系统',
     nameEn: 'XZS exam system (学之思)',
     industry: 'education',
@@ -566,6 +573,7 @@ const ALL_PROJECTS: OssProject[] = [
   },
   {
     id: 'hydro',
+    logo: '/oss/logos/hydro.png',
     name: 'Hydro',
     industry: 'education',
     uses: ['exam', 'coding'],
@@ -613,6 +621,7 @@ const ALL_PROJECTS: OssProject[] = [
   },
   {
     id: 'qduoj',
+    logo: '/oss/logos/qduoj.jpg',
     name: '青岛大学 OnlineJudge',
     nameEn: 'QDU OnlineJudge',
     industry: 'education',
@@ -665,6 +674,7 @@ const ALL_PROJECTS: OssProject[] = [
   // ---------- 直播课堂 ----------
   {
     id: 'bigbluebutton',
+    logo: '/oss/logos/bigbluebutton.png',
     name: 'BigBlueButton',
     industry: 'education',
     uses: ['live'],
@@ -714,6 +724,7 @@ const ALL_PROJECTS: OssProject[] = [
   // ---------- 教务管理 ----------
   {
     id: 'gibbon',
+    logo: '/oss/logos/gibbon.png',
     name: 'Gibbon',
     industry: 'education',
     uses: ['admin'],
@@ -766,6 +777,7 @@ const ALL_PROJECTS: OssProject[] = [
   // ---------- 编程教学 ----------
   {
     id: 'jupyterhub',
+    logo: '/oss/logos/jupyterhub.png',
     name: 'JupyterHub',
     industry: 'education',
     uses: ['coding'],
@@ -817,6 +829,7 @@ const ALL_PROJECTS: OssProject[] = [
   // ---------- 机房管理 ----------
   {
     id: 'veyon',
+    logo: '/oss/logos/veyon.png',
     name: 'Veyon',
     industry: 'education',
     uses: ['classroom'],

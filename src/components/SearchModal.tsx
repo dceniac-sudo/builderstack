@@ -70,7 +70,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="fixed inset-0 bg-[#0E1116]/50"
+          className="fixed inset-0 bg-[#141414]/50"
         />
 
         {/* 搜索框主体 */}
@@ -78,10 +78,10 @@ export const SearchModal: React.FC<SearchModalProps> = ({
           initial={{ scale: 0.95, opacity: 0, y: -20 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.95, opacity: 0, y: -20 }}
-          className="relative z-10 w-full max-w-2xl rounded-2xl bg-white border border-[#E6E8EC] shadow-2xl overflow-hidden text-[#0E1116]"
+          className="relative z-10 w-full max-w-2xl rounded-2xl bg-white border border-[#E6E6E2] shadow-2xl overflow-hidden text-[#141414]"
         >
           {/* 搜索输入行 */}
-          <div className="flex items-center px-4 py-3.5 border-b border-[#E6E8EC] gap-3">
+          <div className="flex items-center px-4 py-3.5 border-b border-[#E6E6E2] gap-3">
             <Search className="w-5 h-5 text-[#C2410C]" />
             <input
               ref={inputRef}
@@ -89,25 +89,25 @@ export const SearchModal: React.FC<SearchModalProps> = ({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t.search.placeholder}
-              className="flex-1 bg-transparent text-sm text-[#0E1116] placeholder-[#6B7280] outline-none"
+              className="flex-1 bg-transparent text-sm text-[#141414] placeholder-[#6F6F6A] outline-none"
             />
             {query && (
               <button
                 onClick={() => setQuery('')}
-                className="p-1 rounded text-[#6B7280] hover:text-[#2B303A]"
+                className="p-1 rounded text-[#6F6F6A] hover:text-[#2E2E2B]"
               >
                 <X className="w-4 h-4" />
               </button>
             )}
-            <kbd className="hidden sm:inline-block rounded bg-[#F5F6F8] border border-[#E6E8EC] px-2 py-0.5 text-[10px] font-mono text-[#535A66]">
+            <kbd className="hidden sm:inline-block rounded bg-[#F5F5F2] border border-[#E6E6E2] px-2 py-0.5 text-[10px] font-mono text-[#5E5E5A]">
               ESC
             </kbd>
           </div>
 
           {/* 搜索结果列表 */}
-          <div className="max-h-[60vh] overflow-y-auto p-2 divide-y divide-[#E6E8EC]">
+          <div className="max-h-[60vh] overflow-y-auto p-2 divide-y divide-[#E6E6E2]">
             {filtered.length === 0 ? (
-              <div className="p-8 text-center text-sm text-[#6B7280]">
+              <div className="p-8 text-center text-sm text-[#6F6F6A]">
                 {t.search.noResult} &quot;{query}&quot;. {t.search.trySearching}
               </div>
             ) : (
@@ -120,24 +120,24 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                       onSelectTool(item);
                       onClose();
                     }}
-                    className="flex items-center justify-between p-3 rounded-xl hover:bg-[#F5F6F8] cursor-pointer transition-colors group"
+                    className="flex items-center justify-between p-3 rounded-xl hover:bg-[#F5F5F2] cursor-pointer transition-colors group"
                   >
                     <div className="flex-1 min-w-0 pr-4">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] font-mono text-[#C2410C] bg-[#F5F6F8] px-1.5 py-0.2 rounded border border-[#E6E8EC]">
+                        <span className="text-[10px] font-mono text-[#C2410C] bg-[#F5F5F2] px-1.5 py-0.2 rounded border border-[#E6E6E2]">
                           {t.status[item.status]}
                         </span>
-                        <span className="font-semibold text-[#0E1116] group-hover:text-[#C2410C] text-sm">
+                        <span className="font-semibold text-[#141414] group-hover:text-[#C2410C] text-sm">
                           {lang === 'zh' && item.nameZh ? item.nameZh : item.name}
                         </span>
                       </div>
-                      <p className="text-xs text-[#535A66] truncate">
+                      <p className="text-xs text-[#5E5E5A] truncate">
                         {note}
                       </p>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <ArrowRight className="w-4 h-4 text-[#6B7280] group-hover:text-[#0E1116] transition-colors" />
+                      <ArrowRight className="w-4 h-4 text-[#6F6F6A] group-hover:text-[#141414] transition-colors" />
                     </div>
                   </div>
                 );

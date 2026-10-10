@@ -1,9 +1,8 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { OssHome } from '@/components/OssHome';
+import { OssDirectory } from '@/components/OssDirectory';
 import { OssIndustriesPage } from '@/components/OssIndustriesPage';
-import { OssIndustryPage } from '@/components/OssIndustryPage';
 import { OssProjectPage } from '@/components/OssProjectPage';
 import type { OssFactView, OssIndustryView, OssProjectView } from '@/components/OssParts';
 import { IndustryCopy, OSS_INDUSTRIES, OSS_PROJECTS, OSS_USES, ossIndustry, ossProjectsOf } from '@/data/oss';
@@ -35,6 +34,7 @@ function projectView(p: OssProject, lang: Language): OssProjectView {
   return {
     id: p.id,
     name: en ? p.nameEn ?? p.name : p.name,
+    logo: p.logo,
     what: en ? p.whatEn : p.what,
     industry: p.industry,
     industryLabel: industry ? (en ? industry.labelEn : industry.label) : p.industry,
@@ -57,6 +57,7 @@ function industryView(i: IndustryCopy, lang: Language): OssIndustryView {
     description: en ? i.descriptionEn : i.description,
     count,
     href: count > 0 ? localePath(lang, `/oss/${i.id}/`) : undefined,
+    uses: OSS_USES[i.id].map((u) => ({ id: u.id, label: en ? u.labelEn : u.label })),
   };
 }
 
@@ -104,13 +105,36 @@ export function ossProjectMetadata(lang: Language, industryId: string, id: strin
 
 // ---------- 页面 ----------
 
-export function renderOssHome(lang: Language) {
+// 首页和行业页是同一个目录，只是打开时选中的行业和标题不同。项目始终传全部行业的，搜索时可以跨行业找。
+function directory(lang: Language, industryId: string, title: string, sub: string, active?: 'industries') {
   return (
-    <OssHome
+    <OssDirectory
+      title={title}
+      sub={sub}
       industries={OSS_INDUSTRIES.map((i) => industryView(i, lang))}
       projects={OSS_PROJECTS.map((p) => projectView(p, lang))}
+      initialIndustry={industryId}
+      active={active}
     />
   );
+}
+
+const HOME_COPY = {
+  en: {
+    title: 'Can you actually use that open-source software?',
+    sub: 'Sorted by industry. Each project answers four things first: commercial use, maintenance, setup and cost.',
+  },
+  zh: {
+    title: '开源的系统，能不能直接拿来用？',
+    sub: '按行业整理，每个项目先告诉你四件事：让不让商用、有没有人维护、好不好装、要花多少钱。',
+  },
+};
+
+export function renderOssHome(lang: Language) {
+  // 默认选中第一个有项目的行业
+  const first = OSS_INDUSTRIES.find((i) => ossProjectsOf(i.id).length > 0);
+  if (!first) notFound();
+  return directory(lang, first.id, HOME_COPY[lang].title, HOME_COPY[lang].sub);
 }
 
 export function renderOssIndustries(lang: Language) {
@@ -119,18 +143,8 @@ export function renderOssIndustries(lang: Language) {
 
 export function renderOssIndustry(lang: Language, industryId: string) {
   const copy = ossIndustry(industryId);
-  const projects = copy ? ossProjectsOf(copy.id) : [];
-  if (!copy || projects.length === 0) notFound();
-  const en = lang === 'en';
-  return (
-    <OssIndustryPage
-      label={en ? copy.labelEn : copy.label}
-      title={en ? `${copy.titleEn}.` : `${copy.title}。`}
-      tagline={en ? copy.taglineEn : copy.tagline}
-      uses={OSS_USES[copy.id].map((u) => ({ id: u.id, label: en ? u.labelEn : u.label }))}
-      projects={projects.map((p) => projectView(p, lang))}
-    />
-  );
+  if (!copy || ossProjectsOf(copy.id).length === 0) notFound();
+  return directory(lang, copy.id, lang === 'en' ? copy.titleEn : copy.title, HOME_COPY[lang].sub, 'industries');
 }
 
 export function renderOssProject(lang: Language, industryId: string, id: string) {

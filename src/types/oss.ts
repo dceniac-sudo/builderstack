@@ -32,6 +32,7 @@ export interface OssProject {
   id: string;
   name: string;
   nameEn?: string;             // 英文页面显示的名字，不写就用 name
+  logo?: string;               // 项目图标，放在 public/oss/logos/ 下；没有就显示名字的第一个字
   industry: OssIndustry;
   uses: OssUse[];              // 用途，用于筛选
   what: string;                // 一句话说它是干什么的

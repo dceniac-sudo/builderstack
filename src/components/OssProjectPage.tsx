@@ -4,8 +4,9 @@ import React from 'react';
 import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
 import { SiteFooter } from '@/components/SiteFooter';
-import { ALL_FACTS, Dot, OssCta, OssProjectView } from '@/components/OssParts';
+import { ALL_FACTS, Dot, OssCta, OssLogo, OssProjectView } from '@/components/OssParts';
 import { useI18n, localePath } from '@/lib/i18n';
+import { cn } from '@/lib/utils';
 
 // 一个项目的详情页：五件事各一行，每行有结论、依据和出处
 export const OssProjectPage: React.FC<{ project: OssProjectView }> = ({ project: p }) => {
@@ -13,32 +14,37 @@ export const OssProjectPage: React.FC<{ project: OssProjectView }> = ({ project:
   const o = t.oss;
 
   return (
-    <div className="flex-1 flex flex-col text-base leading-[1.6]">
+    <div className="flex-1 flex flex-col text-[15px] leading-[1.6]">
       <Navbar active="industries" />
 
       <main className="mx-auto w-full max-w-[860px] flex-1 px-5 pt-10 sm:px-10 sm:pt-16">
-        <p className="mb-4 text-sm font-medium text-[#535A66]">
-          <Link href={localePath(lang, '/')} className="hover:text-[#0E1116]">
+        <p className="mb-5 text-sm text-[var(--sub)]">
+          <Link href={localePath(lang, '/')} className="hover:text-[var(--ink)]">
             {o.crumb}
           </Link>
           {' / '}
-          <Link href={localePath(lang, `/oss/${p.industry}/`)} className="hover:text-[#0E1116]">
+          <Link href={localePath(lang, `/oss/${p.industry}/`)} className="hover:text-[var(--ink)]">
             {p.industryLabel}
           </Link>
         </p>
 
-        <h1 className="text-[clamp(30px,5vw,48px)] font-bold leading-[1.18] tracking-[-0.01em]">
-          {p.name}
-          {!p.confirmed && <span className="ml-3 align-middle text-sm font-normal text-[#6B7280]">{o.draft}</span>}
-        </h1>
-        <p className="mt-4 text-[17px] text-[#535A66]">{p.what}</p>
+        <div className="rise flex items-center gap-4">
+          <OssLogo project={p} size={52} />
+          <h1 className="min-w-0 text-[clamp(26px,4vw,40px)] font-semibold leading-[1.16] tracking-[-0.02em]">
+            {p.name}
+            {!p.confirmed && <span className="ml-3 align-middle text-sm font-normal text-[var(--sub)]">{o.draft}</span>}
+          </h1>
+        </div>
+        <p className="rise mt-4 text-[17px] text-[var(--sub)]" style={{ animationDelay: '70ms' }}>
+          {p.what}
+        </p>
 
-        <div className="mt-6 flex flex-wrap gap-x-3 gap-y-2">
+        <div className="rise mt-5 flex flex-wrap gap-2" style={{ animationDelay: '140ms' }}>
           <a
             href={p.repoUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex min-h-11 items-center rounded-full bg-[#0E1116] px-[18px] text-sm font-medium text-white hover:bg-[#2B303A]"
+            className="inline-flex min-h-10 items-center rounded-[9px] bg-[var(--ink)] px-4 text-sm font-medium text-white transition-colors hover:bg-[#2E2E2B]"
           >
             {o.repo}
           </a>
@@ -47,28 +53,29 @@ export const OssProjectPage: React.FC<{ project: OssProjectView }> = ({ project:
               href={p.homepage}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-11 items-center rounded-full border border-[#D9DCE2] bg-white px-[18px] text-sm font-medium hover:border-[#0E1116]"
+              className="inline-flex min-h-10 items-center rounded-[9px] border border-[#D9D9D5] bg-white px-4 text-sm font-medium transition-colors hover:border-[var(--ink)]"
             >
               {o.site}
             </a>
           )}
         </div>
 
-        <dl className="mt-10 overflow-hidden rounded-[20px] border border-[#E6E8EC]">
+        <dl className="mt-9 rounded-[14px] border border-[var(--line)] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] [overflow:clip]">
           {ALL_FACTS.map((key, i) => {
             const fact = p.facts[key];
             return (
               <div
                 key={key}
-                className={`grid grid-cols-1 gap-x-8 gap-y-2 p-5 sm:grid-cols-[10rem_1fr] sm:p-6 ${i > 0 ? 'border-t border-[#E6E8EC]' : ''}`}
+                className={cn('rise grid grid-cols-1 gap-x-8 gap-y-1.5 p-[18px] sm:grid-cols-[9rem_1fr] sm:p-5', i > 0 && 'border-t border-[var(--line)]')}
+                style={{ animationDelay: `${210 + i * 45}ms` }}
               >
-                <dt className="text-sm text-[#6B7280] sm:pt-0.5">{o.questions[key]}</dt>
+                <dt className="text-[13px] text-[var(--sub)] sm:pt-0.5">{o.questions[key]}</dt>
                 <dd className="min-w-0">
-                  <span className="flex items-center gap-2 text-[17px] font-semibold">
+                  <span className="flex items-center gap-2 text-base font-semibold">
                     <Dot verdict={fact.verdict} />
                     {fact.label}
                   </span>
-                  {fact.detail && <p className="mt-2 text-[15px] leading-[1.75] text-[#2B303A]">{fact.detail}</p>}
+                  {fact.detail && <p className="mt-1.5 leading-[1.75] text-[#2E2E2B]">{fact.detail}</p>}
                   {fact.sources.length > 0 && (
                     <p className="mt-2 flex flex-wrap gap-x-3.5 gap-y-1 text-[13px]">
                       {fact.sources.map((s) => (
@@ -77,7 +84,7 @@ export const OssProjectPage: React.FC<{ project: OssProjectView }> = ({ project:
                           href={s.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[#535A66] underline underline-offset-2 hover:text-[#C2410C]"
+                          className="text-[var(--sub)] underline decoration-[#CFCFCA] underline-offset-[3px] transition-colors hover:text-[var(--ink)] hover:decoration-[var(--ink)]"
                         >
                           {s.label}
                         </a>
@@ -90,7 +97,7 @@ export const OssProjectPage: React.FC<{ project: OssProjectView }> = ({ project:
           })}
         </dl>
 
-        <p className="mt-5 text-sm text-[#6B7280]">
+        <p className="mt-4 text-[13px] text-[var(--sub)]">
           {o.basis}
           {lang === 'zh' ? '' : ' '}
           {o.checked}
