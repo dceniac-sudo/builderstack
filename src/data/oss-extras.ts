@@ -197,6 +197,26 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
       confirmed: true,
     },
   },
+
+  // AI。下面两条是 Claude 2026-10-13 按作者当天确认的五件事起草的，只是换个说法，没有加新的事实，按上面的约定直接标成已确认。
+  livetalking: {
+    fit: {
+      considerIf: '有一块 RTX 3060 以上的显卡，也有人能配 Python 和 CUDA 环境，想让数字人按输入的文字或音频对口型，把画面推到浏览器或直播平台。',
+      considerIfEn: 'You have an RTX 3060 or better and someone who can set up Python and CUDA, and you want an avatar that lip-syncs to text or audio and streams to a browser or a live platform.',
+      lookElsewhereIf: '要开箱就能语音对话、能用唤醒词打断：这些在付费的商用版里，价格要联系作者。发到 B 站、视频号、抖音的视频不想带 LiveTalking 的水印和标识，也别选。',
+      lookElsewhereIfEn: 'You need spoken conversation with wake-word interruption out of the box: that is in the paid commercial edition, priced on request. Also skip it if your videos on Bilibili, WeChat Channels or Douyin cannot carry the LiveTalking watermark and logo.',
+      confirmed: true,
+    },
+  },
+  openavatarchat: {
+    fit: {
+      considerIf: '想要一套能对话的数字人，语音识别、大模型、语音合成和形象都能自己换，也接受默认配置把大模型和语音合成交给阿里云百炼的接口。',
+      considerIfEn: 'You want a conversational avatar where speech recognition, the LLM, text-to-speech and the avatar can each be swapped, and you accept that the default preset sends the LLM and text-to-speech to Alibaba Cloud Bailian.',
+      lookElsewhereIf: '要同时接很多路对话：LiteAvatar 支不支持多路并发，官方文档前后说法不一。商用前要求每个模型的许可都有定论的也先别选：SenseVoice 能不能商用，许可方还没有最终确认。',
+      lookElsewhereIfEn: 'You need many conversations at once: the docs disagree on whether LiteAvatar supports concurrency. Also hold off if you need a settled license for every model before going commercial: the license owner has not yet confirmed whether SenseVoice may be used commercially.',
+      confirmed: true,
+    },
+  },
 };
 
 // 一个项目能显示出来的附加内容：没确认的部分在线上构建里去掉

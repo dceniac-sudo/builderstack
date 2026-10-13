@@ -19,17 +19,7 @@ const TAGLINE_EN = 'Five answers for each one, before you install anything.';
 // 行业分类，按这里的顺序显示。作者 2026-10-11 定：所有分类都正常显示、可以点进去，不写“评估中”；还没有项目的分类内容先空着，由作者后面加。
 // 教育以外的四个分类是 2026-10-09 按作者“多做几个分类”的要求加的，选哪几个行业是 Claude 的推断，作者可以改。
 export const OSS_INDUSTRIES: IndustryCopy[] = [
-  {
-    id: 'education',
-    label: '教育',
-    labelEn: 'Education',
-    title: '教育行业能拿来用的开源项目',
-    titleEn: 'Open-source software an education business can actually use',
-    tagline: TAGLINE,
-    taglineEn: TAGLINE_EN,
-    description: '网校、考试、直播课堂、教务、编程教学和机房管理。',
-    descriptionEn: 'Online courses, exams, live classes, school admin, teaching code and computer labs.',
-  },
+  // AI 排在第一个标签（作者 2026-10-13 定）。首页默认选中第一个有项目的分类，所以首页打开就是 AI。
   {
     id: 'ai',
     label: 'AI',
@@ -40,6 +30,17 @@ export const OSS_INDUSTRIES: IndustryCopy[] = [
     taglineEn: TAGLINE_EN,
     description: '各行业都用得上的 AI 能力，先从实时数字人开始。',
     descriptionEn: 'AI capabilities that cut across industries, starting with real-time digital humans.',
+  },
+  {
+    id: 'education',
+    label: '教育',
+    labelEn: 'Education',
+    title: '教育行业能拿来用的开源项目',
+    titleEn: 'Open-source software an education business can actually use',
+    tagline: TAGLINE,
+    taglineEn: TAGLINE_EN,
+    description: '网校、考试、直播课堂、教务、编程教学和机房管理。',
+    descriptionEn: 'Online courses, exams, live classes, school admin, teaching code and computer labs.',
   },
   {
     id: 'ecommerce',
@@ -1093,7 +1094,7 @@ const ALL_PROJECTS: OssProject[] = [
   // 所以单独设了 AI 分类。起初还让它们同时出现在教育和电商零售下面，作者 2026-10-13 看过后去掉了：数字人只留在 AI 分类，不要再挂到别的行业下。
   // 作者 2026-10-13 定：只有许可证和推送日期、其余“待核对”“待评估”的五个候选（Duix Mobile、Linly-Talker、VideoChat、
   // Open-LLM-VTuber、awesome-digital-human-live2d）从这里删除；“作者实践过”的标签也去掉，不要再给条目标 handsOn。
-  // 下面两条的内容是 Claude 2026-10-10 从 README 和官方文档里查的，不是作者的实测记录。
+  // 下面两条的内容是 Claude 2026-10-10 从 README 和官方文档里查的，不是作者的实测记录。作者 2026-10-13 确认，当天复核了推送日期和出处链接。
   {
     id: 'livetalking',
     name: 'LiveTalking',
@@ -1103,6 +1104,7 @@ const ALL_PROJECTS: OssProject[] = [
     whatEn: 'A real-time streaming digital human engine: feed it text or audio and the avatar lip-syncs, streamed to a browser or a live platform.',
     repoUrl: `${GH}lipku/LiveTalking`,
     homepage: 'https://www.livetalking.ai',
+    logo: '/oss/logos/livetalking.png',
     facts: {
       commercial: {
         verdict: 'caution',
@@ -1151,8 +1153,8 @@ const ALL_PROJECTS: OssProject[] = [
       detailEn: 'A GPU is required. For speech you can use the free EdgeTTS, host GPT-SoVITS or CosyVoice yourself, or call Tencent Cloud (needs an API key). For it to hold a conversation, add an LLM: Qwen and OpenAI-compatible endpoints are supported (needs an API key). For spoken questions you also need a FunASR recognition service, or the browser’s built-in recognition. The server must expose TCP port 8010 and UDP ports.',
       sources: [readme('lipku/LiveTalking'), src('使用说明', 'Usage guide (Chinese)', 'https://doc.livetalking.ai/docs/usage/')],
     },
-    checkedAt: '2026-10-10',
-    confirmed: false,
+    checkedAt: '2026-10-13',
+    confirmed: true,             // 作者 2026-10-13 确认
   },
   {
     id: 'openavatarchat',
@@ -1163,14 +1165,16 @@ const ALL_PROJECTS: OssProject[] = [
     whatEn: 'A modular digital human chat system: speech recognition, the LLM, text-to-speech and the avatar can each be swapped.',
     repoUrl: `${GH}HumanAIGC-Engineering/OpenAvatarChat`,
     homepage: 'https://humanaigc-engineering.github.io/OpenAvatarChat/',
+    logo: '/oss/logos/openavatarchat.jpg',
     facts: {
       commercial: {
         // 2026-10-12 逐个核对了所用模型的许可。SenseVoice 一项是照 issue 里的原话写的，许可方的最终确认出来后要回来改。
+        // 2026-10-13 复核：issue 还开着，没有新的确认；协议第 3 条“仅供参考和学习”原来没写进来，补上了。
         verdict: 'caution',
         label: '可以商用，有两个模型要留意',
         labelEn: 'Yes, with two models to watch',
-        detail: '项目本身是 Apache-2.0。它用到的模型里，LiteAvatar 是 MIT，LAM 和 CosyVoice 是 Apache-2.0，MuseTalk 的代码是 MIT、README 写明训练好的模型可以商用。两处要留意：语音识别用的 SenseVoice，权重走的是 FunASR 模型协议，要求注明出处并保留模型名，协议原文没有提商用；维护者在 issue 里答复过可以商用，但 2026 年 9 月又注明这还不是许可方的最终确认。FlashHead 的模型包里有一个 Open-RAIL-M 许可的组件，只用 Pro 版本的话整套是 Apache-2.0。',
-        detailEn: 'The project itself is Apache-2.0. Of the models it uses, LiteAvatar is MIT, LAM and CosyVoice are Apache-2.0, and MuseTalk has MIT code with a README stating that the trained model may be used commercially. Two need care. SenseVoice, used for speech recognition, ships its weights under the FunASR model license, which requires attribution and keeping the model name and does not mention commercial use; a maintainer answered in an issue that commercial use is permitted, and in September 2026 the same thread was marked as not yet the license owner’s final confirmation. The FlashHead model archive includes one component under Open-RAIL-M; with the Pro variant alone, the whole workflow is Apache-2.0.',
+        detail: '项目本身是 Apache-2.0。它用到的模型里，LiteAvatar 是 MIT，LAM 和 CosyVoice 是 Apache-2.0，MuseTalk 的代码是 MIT、README 写明训练好的模型可以商用。两处要留意：语音识别用的 SenseVoice，权重走的是 FunASR 模型协议，要求注明出处并保留模型名；协议第 3 条（责任与风险）写着模型“仅供参考和学习”，没有说这算不算限制商用。有人为这句话提了 issue：维护者答复过第 3 条是免责条款、可以商用，但 2026 年 9 月又注明这还不是许可方的最终确认，issue 到 2026-10-13 还开着。FlashHead 的模型包里有一个 Open-RAIL-M 许可的组件，只用 Pro 版本的话整套是 Apache-2.0。',
+        detailEn: 'The project itself is Apache-2.0. Of the models it uses, LiteAvatar is MIT, LAM and CosyVoice are Apache-2.0, and MuseTalk has MIT code with a README stating that the trained model may be used commercially. Two need care. SenseVoice, used for speech recognition, ships its weights under the FunASR model license, which requires attribution and keeping the model name. Its section 3 (Responsibility and Risk) says the model is “provided for reference and learning purposes only” and does not say whether that limits commercial use. An issue asks exactly that: a maintainer answered that section 3 is a disclaimer and commercial use is permitted, and in September 2026 that answer was marked as not yet the license owner’s final confirmation. The issue was still open on 2026-10-13. The FlashHead model archive includes one component under Open-RAIL-M; with the Pro variant alone, the whole workflow is Apache-2.0.',
         sources: [
           license(`${GH}HumanAIGC-Engineering/OpenAvatarChat/blob/main/LICENSE`),
           src('MuseTalk 的许可说明', 'MuseTalk license notes', `${GH}TMElyralab/MuseTalk#disclaimerlicense`),
@@ -1221,8 +1225,8 @@ const ALL_PROJECTS: OssProject[] = [
       detailEn: 'The default preset uses Alibaba Cloud Bailian for the LLM and text-to-speech, which needs a DASHSCOPE_API_KEY; speech recognition runs locally with SenseVoice. If you would rather stay off the cloud, the docs say local multimodal models are supported too. For remote access, the bundled coturn can be started alongside it.',
       sources: [src('LiteAvatar 模式', 'LiteAvatar mode (Chinese)', 'https://humanaigc-engineering.github.io/OpenAvatarChat/getting-started/liteavatar.html'), readme('HumanAIGC-Engineering/OpenAvatarChat')],
     },
-    checkedAt: '2026-10-10',
-    confirmed: false,
+    checkedAt: '2026-10-13',
+    confirmed: true,             // 作者 2026-10-13 确认
   },
 ];
 
