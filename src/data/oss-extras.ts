@@ -177,6 +177,26 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
       confirmed: true,
     },
   },
+
+  // 餐饮门店。下面两条是 Claude 2026-10-13 按作者当天确认的五件事起草的，只是换个说法，没有加新的事实，按上面的约定直接标成已确认。
+  opensourcepos: {
+    fit: {
+      considerIf: '自己开店，想要一套带库存、进货和报表的网页版收银，手上只有一台小服务器：官方给的最低配置是 512MB 内存，树莓派 3 和 4 也能跑。',
+      considerIfEn: 'You run your own shop and want a web-based till with inventory, receivings and reports on a small server: the stated minimum is 512 MB of RAM, and Raspberry Pi 3 and 4 are supported.',
+      lookElsewhereIf: '要接刷卡机（官方硬件清单写明不支持），或者想换成自己的牌子卖给别人：每个页面底部的署名不能去掉。',
+      lookElsewhereIfEn: 'You need a card reader (the official hardware list says they are not supported), or you want to resell it under your own brand: the footer signature has to stay on every page.',
+      confirmed: true,
+    },
+  },
+  tastyigniter: {
+    fit: {
+      considerIf: '餐厅想有自己的在线点餐和订座网站，一家店或多家分店都行：这些都在免费的核心里，MIT 许可。',
+      considerIfEn: 'Your restaurant wants its own online ordering and reservation site, for one location or several: all of that is in the free, MIT-licensed core.',
+      lookElsewhereIf: '要的是店里柜台的收银：它不是收银系统。桌边扫码点餐和堂食桌台管理也是付费扩展，2026 年 10 月各标价每年 49 美元。',
+      lookElsewhereIfEn: 'You need a till for the counter: it is not a point of sale. Table ordering and dine-in management are also paid extensions, each listed at $49 a year in October 2026.',
+      confirmed: true,
+    },
+  },
 };
 
 // 一个项目能显示出来的附加内容：没确认的部分在线上构建里去掉

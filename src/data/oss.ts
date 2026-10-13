@@ -968,7 +968,7 @@ const ALL_PROJECTS: OssProject[] = [
   // 餐饮门店
   // 下面两条是 2026-10-13 评估的：许可证、README、安装文档和价格页都是当天读的，没有亲自部署。
   // 同一天还评估过 NexoPOS 和 URY，作者看过后要求去掉，条目已从这里删除，不要再加回来。
-  // 价格是当天页面上的数字，会变。全部 confirmed: false，等作者逐条确认。
+  // 价格是当天页面上的数字，会变。两条作者 2026-10-13 都确认了。
   // 两条都只在餐饮门店。Open Source Point of Sale 原来同时出现在电商零售下面，作者 2026-10-13 按知名度标准去掉了那份显示。
   {
     id: 'opensourcepos',
@@ -979,6 +979,7 @@ const ALL_PROJECTS: OssProject[] = [
     whatEn: 'A web-based point of sale with inventory, receivings, customers, reports and receipt printing.',
     repoUrl: `${GH}opensourcepos/opensourcepos`,
     homepage: 'http://www.opensourcepos.org',
+    logo: '/oss/logos/opensourcepos.png',
     facts: {
       commercial: {
         verdict: 'caution',
@@ -1015,7 +1016,7 @@ const ALL_PROJECTS: OssProject[] = [
       },
     },
     checkedAt: '2026-10-13',
-    confirmed: false,
+    confirmed: true,             // 作者 2026-10-13 确认
   },
   {
     id: 'tastyigniter',
@@ -1026,6 +1027,7 @@ const ALL_PROJECTS: OssProject[] = [
     whatEn: 'A restaurant’s own online ordering and table reservation site, with an admin back office and multi-location support.',
     repoUrl: `${GH}tastyigniter/TastyIgniter`,
     homepage: 'https://tastyigniter.com',
+    logo: '/oss/logos/tastyigniter.png',
     facts: {
       commercial: {
         verdict: 'good',
@@ -1064,7 +1066,7 @@ const ALL_PROJECTS: OssProject[] = [
       },
     },
     checkedAt: '2026-10-13',
-    confirmed: false,
+    confirmed: true,             // 作者 2026-10-13 确认
   },
 
   // 医疗诊所

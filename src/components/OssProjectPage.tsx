@@ -174,8 +174,7 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({ project: p, fit,
         </dl>
 
         <p className="mt-4 text-[13px] text-[var(--sub)]">
-          {p.handsOn ? o.basisHandsOn : o.basis}
-          {lang === 'zh' ? '' : ' '}
+          {p.handsOn && `${o.basisHandsOn}${lang === 'zh' ? '' : ' '}`}
           {o.checked}
           {lang === 'zh' ? '：' : ': '}
           <time dateTime={p.checkedAt}>{p.checkedAt}</time>
