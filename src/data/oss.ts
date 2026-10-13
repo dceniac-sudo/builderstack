@@ -36,11 +36,11 @@ export const OSS_INDUSTRIES: IndustryCopy[] = [
     label: '教育',
     labelEn: 'Education',
     title: '教育行业能拿来用的开源项目',
-    titleEn: 'Open-source software an education business can actually use',
+    titleEn: 'Open-source LMS and education software you can actually use',   // 2026-10-13 按搜索量加上 LMS：open source lms 是教育这边搜得最多的词
     tagline: TAGLINE,
     taglineEn: TAGLINE_EN,
     description: '网校、考试、直播课堂和编程教学。',
-    descriptionEn: 'Online courses, exams, live classes and teaching code.',
+    descriptionEn: 'Learning management systems (LMS), exams, live classes and teaching code.',
   },
   {
     id: 'ecommerce',
@@ -51,7 +51,7 @@ export const OSS_INDUSTRIES: IndustryCopy[] = [
     tagline: TAGLINE,
     taglineEn: TAGLINE_EN,
     description: '自建商城、小程序商城和电商引擎。',
-    descriptionEn: 'Self-hosted stores, mini-program shops and commerce engines.',
+    descriptionEn: 'Self-hosted stores and commerce engines.',
   },
   {
     id: 'restaurant',
