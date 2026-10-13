@@ -58,6 +58,7 @@ function industryView(i: IndustryCopy, lang: Language): OssIndustryView {
   return {
     id: i.id,
     label: en ? i.labelEn : i.label,
+    title: en ? i.titleEn : i.title,
     description: en ? i.descriptionEn : i.description,
     count,
     href: localePath(lang, `/oss/${i.id}/`),

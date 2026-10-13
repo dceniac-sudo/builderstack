@@ -38,6 +38,7 @@ export interface OssProjectView {
 export interface OssIndustryView {
   id: string;
   label: string;
+  title: string;               // 分类页的大标题
   description: string;
   count: number;               // 能显示出来的项目数；可以是 0，分类照常显示
   href: string;                // 分类页的地址

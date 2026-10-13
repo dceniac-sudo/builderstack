@@ -38,6 +38,16 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({ title, sub, industri
   const [touched, setTouched] = useState(false);   // 筛选过之后，行的入场动画换成更短的那种
 
   const current = industries.find((i) => i.id === industry);
+  // 分类页上换标签时，大标题、浏览器标题和地址都跟着换成那个分类的；首页的标题不分行业，不用换。
+  const followTab = active === 'industries';
+  const heading = followTab && current ? current.title : title;
+  const pickIndustry = (i: OssIndustryView) => {
+    change(() => { setIndustry(i.id); setUse('all'); });
+    if (followTab && i.id !== industry) {
+      window.history.replaceState(null, '', i.href);
+      document.title = `${i.title} — BuilderStack`;
+    }
+  };
   // 一个分类下的项目：本来就属于它的，加上标了“也出现在这里”的（比如餐饮门店里的通用收银系统同时出现在电商零售下面）
   const inIndustry = useMemo(() => projects.filter((p) => p.industry === industry || p.alsoIn.includes(industry)), [projects, industry]);
   // “想解决的事”先列这个分类自己的，再补上从别的分类带过来的项目的
@@ -85,7 +95,7 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({ title, sub, industri
             )}
             style={{ animationDelay: '70ms', textWrap: 'balance' } as React.CSSProperties}
           >
-            {title}
+            {heading}
           </h1>
           <p className="rise relative mx-auto mt-3.5 max-w-[34em] text-[clamp(15px,1.4vw,18px)] text-[var(--sub)]" style={{ animationDelay: '140ms' }}>
             {sub}
@@ -123,7 +133,7 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({ title, sub, industri
                 key={i.id}
                 type="button"
                 aria-pressed={i.id === industry}
-                onClick={() => change(() => { setIndustry(i.id); setUse('all'); })}
+                onClick={() => pickIndustry(i)}
                 className={cn(
                   '-mb-px inline-flex min-h-12 items-center gap-[7px] whitespace-nowrap text-[15px] transition-colors md:min-h-[52px]',
                   i.id === industry ? 'font-semibold shadow-[inset_0_-2px_0_var(--ink)]' : 'text-[var(--sub)] hover:text-[var(--ink)]'

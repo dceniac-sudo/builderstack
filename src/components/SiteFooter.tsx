@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useI18n, X_HANDLE, GITHUB_URL } from '@/lib/i18n';
+import { useI18n, X_HANDLE } from '@/lib/i18n';
 
 // 全站共用的页脚。联系入口只有 X（2026-10-11 定），这里不放其他渠道的入口。
 export const SiteFooter: React.FC = () => {
@@ -14,9 +14,6 @@ export const SiteFooter: React.FC = () => {
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
           <a href={`https://twitter.com/${X_HANDLE}`} target="_blank" rel="noopener noreferrer" className="hover:text-[#141414]">
             X @{X_HANDLE}
-          </a>
-          <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="hover:text-[#141414]">
-            GitHub
           </a>
         </div>
       </div>
