@@ -17,7 +17,7 @@ const TAGLINE = '每个先回答五件事，再决定要不要装。';
 const TAGLINE_EN = 'Five answers for each one, before you install anything.';
 
 // 行业分类，按这里的顺序显示。作者 2026-10-11 定：所有分类都正常显示、可以点进去，不写“评估中”；还没有项目的分类内容先空着，由作者后面加。
-// 教育以外的四个分类是 2026-10-09 按作者“多做几个分类”的要求加的，选哪几个行业是 Claude 的推断，作者可以改。
+// 教育以外的分类最初是 2026-10-09 按作者“多做几个分类”的要求加的；2026-10-13 作者去掉了医疗诊所，加了客服与工单。
 export const OSS_INDUSTRIES: IndustryCopy[] = [
   // AI 排在第一个标签（作者 2026-10-13 定）。首页默认选中第一个有项目的分类，所以首页打开就是 AI。
   {
@@ -39,8 +39,8 @@ export const OSS_INDUSTRIES: IndustryCopy[] = [
     titleEn: 'Open-source software an education business can actually use',
     tagline: TAGLINE,
     taglineEn: TAGLINE_EN,
-    description: '网校、考试、直播课堂、教务、编程教学和机房管理。',
-    descriptionEn: 'Online courses, exams, live classes, school admin, teaching code and computer labs.',
+    description: '网校、考试、直播课堂和编程教学。',
+    descriptionEn: 'Online courses, exams, live classes and teaching code.',
   },
   {
     id: 'ecommerce',
@@ -64,17 +64,19 @@ export const OSS_INDUSTRIES: IndustryCopy[] = [
     description: '收银、点餐、订座和门店管理。',
     descriptionEn: 'Point of sale, online ordering, reservations and store management.',
   },
+  // 作者 2026-10-13 定：去掉医疗诊所，加客服与工单。英文标题用 help desk 和 ticketing，是按搜索量取的词（customer support 这个说法几乎没人搜）。
   {
-    id: 'healthcare',
-    label: '医疗诊所',
-    labelEn: 'Clinics & healthcare',
-    title: '医疗诊所能拿来用的开源项目',
-    titleEn: 'Open-source software a clinic can actually use',
+    id: 'helpdesk',
+    label: '客服与工单',
+    labelEn: 'Customer support & helpdesk',
+    title: '能拿来用的开源客服与工单系统',
+    titleEn: 'Open-source help desk and ticketing systems you can actually use',
     tagline: TAGLINE,
     taglineEn: TAGLINE_EN,
-    description: '电子病历和诊所管理。',
-    descriptionEn: 'Electronic health records and practice management.',
+    description: '在线客服、多渠道收件箱和工单系统。',
+    descriptionEn: 'Live chat, shared inboxes and ticketing systems.',
   },
+  // 作者 2026-10-13 定：制造与仓储留着，只放一个 ERP。
   {
     id: 'manufacturing',
     label: '制造与仓储',
@@ -83,8 +85,8 @@ export const OSS_INDUSTRIES: IndustryCopy[] = [
     titleEn: 'Open-source software a factory or warehouse can actually use',
     tagline: TAGLINE,
     taglineEn: TAGLINE_EN,
-    description: '进销存、ERP 和库存管理。',
-    descriptionEn: 'ERP, purchasing, sales and inventory management.',
+    description: 'ERP：销售、采购、库存和生产放在一套系统里。',
+    descriptionEn: 'ERP: sales, purchasing, inventory and manufacturing in one system.',
   },
 ];
 
@@ -94,9 +96,7 @@ export const OSS_USES: Record<OssIndustry, { id: string; label: string; labelEn:
     { id: 'course', label: '在线课程', labelEn: 'Online courses' },
     { id: 'exam', label: '考试测评', labelEn: 'Exams' },
     { id: 'live', label: '直播课堂', labelEn: 'Live classes' },
-    { id: 'admin', label: '教务管理', labelEn: 'School admin' },
     { id: 'coding', label: '编程教学', labelEn: 'Teaching code' },
-    { id: 'classroom', label: '机房管理', labelEn: 'Computer labs' },
   ],
   ai: [{ id: 'avatar', label: '实时数字人', labelEn: 'Digital humans' }],
   ecommerce: [
@@ -107,11 +107,11 @@ export const OSS_USES: Record<OssIndustry, { id: string; label: string; labelEn:
     { id: 'pos', label: '收银', labelEn: 'Point of sale' },
     { id: 'ordering', label: '点餐订座', labelEn: 'Ordering & reservations' },
   ],
-  healthcare: [{ id: 'emr', label: '电子病历', labelEn: 'Health records' }],
-  manufacturing: [
-    { id: 'erp', label: 'ERP', labelEn: 'ERP' },
-    { id: 'inventory', label: '库存管理', labelEn: 'Inventory' },
+  helpdesk: [
+    { id: 'chat', label: '在线客服', labelEn: 'Live chat & inbox' },
+    { id: 'ticketing', label: '工单系统', labelEn: 'Ticketing' },
   ],
+  manufacturing: [{ id: 'erp', label: 'ERP', labelEn: 'ERP' }],
 };
 
 const CHECKED_AT = '2026-10-09';
@@ -147,58 +147,6 @@ function alive(lastPush: string, repo: string, archived = false): OssFact {
   };
 }
 
-const PENDING: OssFact = { verdict: 'pending', label: '待评估', labelEn: 'Not yet evaluated' };
-
-// 候选项目：只有许可证标识和推送日期，其余三项待评估。永远是 confirmed: false。
-function candidate(o: {
-  id: string;
-  name: string;
-  nameEn?: string;
-  industry: OssIndustry;
-  alsoIn?: OssIndustry[];
-  uses: string[];
-  repo: string;
-  homepage?: string;
-  spdx: string | null;         // GitHub 识别出的许可证，null 表示没识别出标准许可证
-  lastPush: string;
-  archived?: boolean;
-  what: string;
-  whatEn: string;
-}): OssProject {
-  const repoUrl = `${GH}${o.repo}`;
-  return {
-    id: o.id,
-    name: o.name,
-    nameEn: o.nameEn,
-    industry: o.industry,
-    alsoIn: o.alsoIn,
-    uses: o.uses,
-    what: o.what,
-    whatEn: o.whatEn,
-    repoUrl,
-    homepage: o.homepage,
-    facts: {
-      commercial: {
-        verdict: 'pending',
-        label: o.spdx ? `${o.spdx}，细则待核对` : '许可证待核对',
-        labelEn: o.spdx ? `${o.spdx}, terms not yet checked` : 'License not yet checked',
-        detail: o.spdx
-          ? `仓库的许可证文件被 GitHub 识别为 ${o.spdx}。项目自己加的条款、商标限制还没有读。`
-          : 'GitHub 没有从仓库里识别出标准许可证，要读仓库里的协议原文才能下结论。',
-        detailEn: o.spdx
-          ? `GitHub identifies the repository license as ${o.spdx}. Any terms the project adds on top, and trademark limits, have not been read yet.`
-          : 'GitHub does not identify a standard license in the repository. The license text itself needs to be read before drawing a conclusion.',
-        sources: [src('仓库', 'Repository', repoUrl)],
-      },
-      alive: alive(o.lastPush, o.repo, o.archived),
-      deploy: PENDING,
-      cost: PENDING,
-      caveats: PENDING,
-    },
-    checkedAt: CHECKED_AT,
-    confirmed: false,
-  };
-}
 
 // 候选名单和推送日期来自 2026-10-09 调 GitHub 公开接口的结果。
 // 其余各项的依据是仓库里的许可证和 README、各项目的官方文档，没有亲自部署。标“待核对”的是没读到出处的。
@@ -250,49 +198,6 @@ const ALL_PROJECTS: OssProject[] = [
         detail: '“Moodle”是注册商标。没有官方书面许可，不能用这个名字对外卖托管、培训、技术支持、定制这类服务，通常只有官方合作伙伴有这个许可。自己机构内部说“我们用的是 Moodle”不受限制。',
         detailEn: '"Moodle" is a registered trademark. Without written permission you cannot use the name to sell hosting, training, support or customization; that permission usually goes to official partners only. Saying your own organization runs Moodle is fine.',
         sources: [src('商标政策', 'Trademark policy', 'https://moodle.com/trademarks/')],
-      },
-    },
-    checkedAt: CHECKED_AT,
-    confirmed: true,
-  },
-  {
-    id: 'frappe-lms',
-    logo: '/oss/logos/frappe-lms.png',
-    name: 'Frappe LMS',
-    industry: 'education',
-    uses: ['course'],
-    what: '界面简洁的学习管理系统，出自做 ERPNext 的团队。',
-    whatEn: 'A clean, simple learning management system from the team behind ERPNext.',
-    repoUrl: `${GH}frappe/lms`,
-    homepage: 'https://frappe.io/learning',
-    facts: {
-      commercial: agpl(`${GH}frappe/lms/blob/develop/license.txt`),
-      alive: alive('2026-10-09', 'frappe/lms'),
-      deploy: {
-        verdict: 'good',
-        label: '容易',
-        labelEn: 'Easy',
-        detail: '官方给了一个安装脚本，下载后带上邮箱和域名执行一条命令，README 说大约五分钟装好。要先有域名，并把 A 记录指到服务器。',
-        detailEn: 'There is an official install script: download it and run one command with your email and domain. The README says it takes about five minutes. You need a domain with its A record pointing at the server first.',
-        sources: [readme('frappe/lms'), src('安装文档', 'Install guide', 'https://docs.frappe.io/learning/get-started/installation')],
-      },
-      cost: {
-        verdict: 'good',
-        label: '软件免费',
-        labelEn: 'Free software',
-        short: '软件免费',
-        shortEn: 'Free software',
-        detail: '官方文档没有给自建服务器的配置要求。不想自己运维可以用官方的托管服务 Frappe Cloud，价格这里没有核对。',
-        detailEn: 'The docs give no server requirements for self-hosting. If you would rather not run it yourself there is the official hosted service, Frappe Cloud; its pricing has not been checked here.',
-        sources: [src('安装文档', 'Install guide', 'https://docs.frappe.io/learning/get-started/installation')],
-      },
-      caveats: {
-        verdict: 'caution',
-        label: '直播课走 Zoom',
-        labelEn: 'Live classes run on Zoom',
-        detail: 'README 里的直播课功能是在系统里创建 Zoom 会议，国内能不能顺畅用要自己试。文档是英文的。',
-        detailEn: 'The live class feature in the README creates Zoom meetings from inside the system, so you need Zoom. Whether that works well from mainland China is something to test yourself.',
-        sources: [readme('frappe/lms')],
       },
     },
     checkedAt: CHECKED_AT,
@@ -438,59 +343,6 @@ const ALL_PROJECTS: OssProject[] = [
     confirmed: true,
   },
 
-  // ---------- 教务管理 ----------
-  {
-    id: 'gibbon',
-    logo: '/oss/logos/gibbon.png',
-    name: 'Gibbon',
-    industry: 'education',
-    uses: ['admin'],
-    what: '学校管理平台，面向老师、学生、家长和管理者。',
-    whatEn: 'A school management platform for teachers, students, parents and administrators.',
-    repoUrl: `${GH}GibbonEdu/core`,
-    homepage: 'https://gibbonedu.org',
-    facts: {
-      commercial: {
-        verdict: 'good',
-        label: '可以商用',
-        labelEn: 'Yes',
-        detail: 'GPL-3.0。学校和机构自己部署使用没有限制；把改过的版本分发给别人时，要同样以 GPL 开源。',
-        detailEn: 'GPL-3.0. Schools and institutions can host and use it without restriction. If you distribute a modified version, it must stay under the GPL.',
-        sources: [license(`${GH}GibbonEdu/core/blob/v31.0.00/LICENSE`)],
-      },
-      alive: alive('2026-10-09', 'GibbonEdu/core'),
-      deploy: {
-        verdict: 'good',
-        label: '容易',
-        labelEn: 'Easy',
-        detail: '下载解压、把文件传到服务器、浏览器打开后跟着安装向导走，官方文档一共五步。环境是 Apache 或 Nginx、PHP 8.0 以上、MySQL 8.0 以上。',
-        detailEn: 'Download and unzip, copy the files to your server, open it in a browser and follow the installer: five steps in the official guide. It needs Apache or Nginx, PHP 8.0 or later and MySQL 8.0 or later.',
-        sources: [
-          src('安装文档', 'Install guide', 'https://docs.gibbonedu.org/guides/install/installing-gibbon'),
-          src('系统要求', 'System requirements', 'https://docs.gibbonedu.org/reference/system-requirements'),
-        ],
-      },
-      cost: {
-        verdict: 'good',
-        label: '低',
-        labelEn: 'Low',
-        detail: '软件免费。官方给小型学校的建议配置是 2 核、4 到 8GB 内存、50GB 硬盘；大型学校是 4 核、16GB、300GB。',
-        detailEn: 'The software is free. For a small school the docs suggest 2 CPUs, 4 to 8 GB of RAM and 50 GB of disk; for a large one, 4 CPUs, 16 GB and 300 GB.',
-        sources: [src('系统要求', 'System requirements', 'https://docs.gibbonedu.org/reference/system-requirements')],
-      },
-      caveats: {
-        verdict: 'caution',
-        label: '中文靠志愿者翻译',
-        labelEn: 'Translations are volunteer-run',
-        detail: '界面翻译由志愿者维护，中文翻到什么程度要装上之后看。文档是英文的。',
-        detailEn: 'Interface translations are maintained by volunteers, so check how complete your language is after installing. The docs are in English.',
-        sources: [readme('GibbonEdu/core')],
-      },
-    },
-    checkedAt: CHECKED_AT,
-    confirmed: true,
-  },
-
   // ---------- 编程教学 ----------
   {
     id: 'jupyterhub',
@@ -543,59 +395,7 @@ const ALL_PROJECTS: OssProject[] = [
     confirmed: true,
   },
 
-  // ---------- 机房管理 ----------
-  {
-    id: 'veyon',
-    logo: '/oss/logos/veyon.png',
-    name: 'Veyon',
-    industry: 'education',
-    uses: ['classroom'],
-    what: '机房里看学生屏幕、广播教师屏幕、锁屏的课堂管理软件。',
-    whatEn: 'Classroom management for computer labs: watch student screens, broadcast the teacher’s screen, lock screens.',
-    repoUrl: `${GH}veyon/veyon`,
-    homepage: 'https://veyon.io',
-    facts: {
-      commercial: {
-        verdict: 'good',
-        label: '可以商用',
-        labelEn: 'Yes',
-        detail: 'GPL-2.0。机构在自己的机房里装来用没有限制；把改过的版本分发给别人时，要同样以 GPL 开源。',
-        detailEn: 'GPL-2.0. An institution can install and use it in its own labs without restriction. If you distribute a modified version, it must stay under the GPL.',
-        sources: [license(`${GH}veyon/veyon/blob/main/COPYING`)],
-      },
-      alive: alive('2026-10-07', 'veyon/veyon'),
-      deploy: {
-        verdict: 'good',
-        label: '容易',
-        labelEn: 'Easy',
-        detail: 'Windows 10 和 11 有安装程序，支持不弹窗的静默安装，适合批量装。Linux 支持 Debian 10、Ubuntu 20.04 等及更新的版本。学生机可以不装教师端组件。',
-        detailEn: 'There is an installer for Windows 10 and 11 with a silent mode, which suits rolling it out to many machines. Linux support covers Debian 10, Ubuntu 20.04 and newer. Student machines can skip the teacher component.',
-        sources: [src('安装文档', 'Install guide', 'https://docs.veyon.io/en/latest/admin/installation.html')],
-      },
-      cost: {
-        verdict: 'good',
-        label: '低',
-        labelEn: 'Low',
-        detail: '软件免费，不需要服务器。每台电脑至少 2GB 内存，官方强烈建议多核处理器。',
-        detailEn: 'The software is free and needs no server. Each computer needs at least 2 GB of RAM, and a multi-core CPU is strongly recommended.',
-        sources: [src('安装文档', 'Install guide', 'https://docs.veyon.io/en/latest/admin/installation.html')],
-      },
-      caveats: {
-        verdict: 'caution',
-        label: '看的是机房网络',
-        labelEn: 'It depends on the lab network',
-        detail: '所有电脑要连在同一个 TCP/IP 网络里，超过 10 台官方建议用千兆网络。',
-        detailEn: 'All computers must be on a TCP/IP network together, and gigabit networking is recommended for more than 10 machines.',
-        sources: [src('安装文档', 'Install guide', 'https://docs.veyon.io/en/latest/admin/installation.html')],
-      },
-    },
-    checkedAt: CHECKED_AT,
-    confirmed: true,
-  },
-  // ---------- 以下四个行业是候选草稿 ----------
-  // 用 candidate() 写的条目只有许可证和推送日期，是 2026-10-09 从 GitHub 公开接口查的，部署、成本、注意事项都还没评估。
-  // 电商零售和餐饮门店的条目 2026-10-13 已经评估成完整条目；医疗诊所、制造与仓储还是 candidate()。
-  // 全部 confirmed: false，线上不显示。逐个评估并由作者确认后，改写成上面教育行业那样的完整条目。
+  // ---------- 教育以外的分类 ----------
 
   // 电商零售
   // 作者 2026-10-13 看过草稿后去掉了 CRMEB 和 mall（还有 AI 分类里的 Fay），三条候选已从这里删除，不要再加回来。
@@ -1070,25 +870,159 @@ const ALL_PROJECTS: OssProject[] = [
     confirmed: true,             // 作者 2026-10-13 确认
   },
 
-  // 医疗诊所
-  candidate({ id: 'openemr', name: 'OpenEMR', industry: 'healthcare', uses: ['emr'], repo: 'openemr/openemr', homepage: 'https://open-emr.org/', spdx: 'GPL-3.0', lastPush: '2026-10-09',
-    what: '开源的电子病历和诊所管理系统。', whatEn: 'Open-source electronic health records and medical practice management.' }),
-  candidate({ id: 'openmrs', name: 'OpenMRS', industry: 'healthcare', uses: ['emr'], repo: 'openmrs/openmrs-core', homepage: 'http://openmrs.org', spdx: null, lastPush: '2026-10-08',
-    what: '开源的病历系统平台。', whatEn: 'An open-source medical record system platform.' }),
-  candidate({ id: 'hospitalrun', name: 'HospitalRun', industry: 'healthcare', uses: ['emr'], repo: 'HospitalRun/hospitalrun-frontend', homepage: 'https://hospitalrun.io', spdx: 'MIT', lastPush: '2023-01-09', archived: true,
-    what: '面向资源有限地区的医院管理系统。', whatEn: 'A hospital management system aimed at low-resource settings.' }),
+  // 客服与工单。作者 2026-10-13 提出加这个分类，并把候选从五个压到两个：一个管聊天（Chatwoot），一个管工单（Zammad）。
+  // 两条都是 Claude 2026-10-13 按许可证原文、官方文档和价格页起草的，作者当天在本地预览里看过，确认。
+  {
+    id: 'chatwoot',
+    name: 'Chatwoot',
+    industry: 'helpdesk',
+    uses: ['chat'],
+    what: '把网站在线聊天、邮件和社交消息收进同一个收件箱的客服系统，自带帮助中心。',
+    whatEn: 'A customer support inbox that brings website live chat, email and social messaging into one place, with a built-in help center.',
+    repoUrl: `${GH}chatwoot/chatwoot`,
+    homepage: 'https://www.chatwoot.com',
+    logo: '/oss/logos/chatwoot.png',
+    facts: {
+      commercial: {
+        verdict: 'good',
+        label: '核心可以商用',
+        labelEn: 'Yes, for the core',
+        detail: 'MIT。可以商用、修改、闭源，保留版权声明即可。例外是仓库里 enterprise/ 目录下的代码：那是另一份企业版协议，在生产环境使用要有对应坐席数的付费订阅，见下面的注意事项。',
+        detailEn: 'MIT. Commercial use, modification and closed-source use are all allowed; keep the copyright notice. The exception is the code under the enterprise/ directory of the repository, which has its own Enterprise license: production use requires a paid subscription for the right number of seats. See the caveat below.',
+        sources: [license(`${GH}chatwoot/chatwoot/blob/develop/LICENSE`), src('企业版协议', 'Enterprise license', `${GH}chatwoot/chatwoot/blob/develop/enterprise/LICENSE`)],
+      },
+      alive: alive('2026-10-13', 'chatwoot/chatwoot'),
+      deploy: {
+        verdict: 'good',
+        label: '容易',
+        labelEn: 'Easy',
+        detail: '有官方安装脚本，文档按 Ubuntu 24.04 写：下载脚本，运行一条安装命令；要用域名的话先把 A 记录指向服务器，脚本会配好 Nginx 和 Let’s Encrypt 证书。也可以用 Docker Compose：下载官方的 .env 和 compose 模板，改掉 Postgres 和 Redis 的密码，初始化数据库后启动。发通知邮件要自己准备 SMTP 服务。',
+        detailEn: 'There is an official install script, documented for Ubuntu 24.04: download it and run one install command. If you want a domain, point its A record at the server first and the script sets up Nginx and a Let’s Encrypt certificate. Docker Compose also works: download the official .env and compose templates, change the Postgres and Redis passwords, prepare the database and start. You bring your own SMTP server for notification emails.',
+        sources: [src('Linux 安装', 'Linux VM guide', 'https://developers.chatwoot.com/self-hosted/deployment/linux-vm'), src('Docker 安装', 'Docker guide', 'https://developers.chatwoot.com/self-hosted/deployment/docker')],
+      },
+      cost: {
+        verdict: 'caution',
+        label: '社区版免费，高级功能按坐席收费',
+        labelEn: 'Free Community edition; paid features are per agent',
+        short: '高级功能收费',
+        shortEn: 'Paid tiers',
+        detail: '社区版免费。文档写的最低配置是 2 核、4 GB 内存、20 GB SSD，生产环境建议 4 核以上、8 GB 以上、50 GB 以上，另要 PostgreSQL 12 以上和 Redis 6 以上。自己部署想要高级功能，2026 年 10 月官网标价：Premium Support 每坐席每月 19 美元，企业版每坐席每月 99 美元。不想自己部署，官方云有免费档（最多 2 个坐席），付费档每坐席每月 19、39、99 美元。',
+        detailEn: 'The Community edition is free. The docs list a minimum of 2 cores, 4 GB of RAM and a 20 GB SSD, and recommend 4 or more cores, 8 GB or more and 50 GB or more for production, plus PostgreSQL 12 or later and Redis 6 or later. For paid features on your own server, the prices in October 2026 are $19 per agent a month for Premium Support and $99 per agent a month for Enterprise. If you would rather not self-host, the official cloud has a free plan for up to 2 agents and paid plans at $19, $39 and $99 per agent a month.',
+        sources: [src('自托管说明', 'Self-hosted overview', 'https://developers.chatwoot.com/self-hosted'), src('自托管价格', 'Self-hosted pricing', 'https://www.chatwoot.com/pricing/self-hosted-plans'), src('云服务价格', 'Cloud pricing', 'https://www.chatwoot.com/pricing')],
+      },
+      caveats: {
+        verdict: 'caution',
+        label: '角色权限、SLA、去品牌都不在社区版里',
+        labelEn: 'Roles, SLAs and custom branding are not in the Community edition',
+        detail: '官方的自托管价格页列出社区版不包含的功能：Captain AI、语音通话、自定义品牌、坐席接待上限、角色与权限、SSO / SAML、SLA。前五项要买 Premium Support，SSO 和 SLA 要买企业版。这些功能的代码在仓库的 enterprise/ 目录里，受企业版协议约束。只想跑 MIT 许可的部分，文档说把 Docker 镜像换成带 -ce 后缀的版本。',
+        detailEn: 'The self-hosted pricing page lists what the Community edition leaves out: Captain AI, voice calls, custom branding, agent capacity, roles and permissions, SSO / SAML and SLA policies. The first five come with Premium Support; SSO and SLAs need Enterprise. The code for these sits in the enterprise/ directory of the repository under the Enterprise license. To run only the MIT-licensed part, the docs say to switch to the Docker image tags ending in -ce.',
+        sources: [src('自托管价格', 'Self-hosted pricing', 'https://www.chatwoot.com/pricing/self-hosted-plans'), src('企业版协议', 'Enterprise license', `${GH}chatwoot/chatwoot/blob/develop/enterprise/LICENSE`), src('Docker 安装', 'Docker guide', 'https://developers.chatwoot.com/self-hosted/deployment/docker')],
+      },
+    },
+    checkedAt: '2026-10-13',
+    confirmed: true,             // 作者 2026-10-13 确认
+  },
+  {
+    id: 'zammad',
+    name: 'Zammad',
+    industry: 'helpdesk',
+    uses: ['ticketing'],
+    what: '网页版的工单系统：邮件、在线聊天、电话和社交消息进来都变成工单，在一个界面里处理。',
+    whatEn: 'A web-based helpdesk and ticketing system: email, chat, phone and social media messages all become tickets handled in one interface.',
+    repoUrl: `${GH}zammad/zammad`,
+    homepage: 'https://zammad.org',
+    logo: '/oss/logos/zammad.png',
+    facts: {
+      commercial: {
+        verdict: 'caution',
+        label: '有条件',
+        labelEn: 'With conditions',
+        detail: 'AGPL-3.0。不改代码直接部署使用没有额外义务；改了代码又让客户或员工通过网络使用，就要向这些用户提供改动后的源码。README 写明代码归 Zammad 基金会所有，基金会独立于做商业服务的 Zammad GmbH。',
+        detailEn: 'AGPL-3.0. Running it unmodified adds no obligations. If you change the code and let customers or staff use it over a network, you must offer those users your modified source. The README states that the code is owned by the Zammad Foundation, which is independent of the commercial provider Zammad GmbH.',
+        sources: [license(`${GH}zammad/zammad/blob/develop/LICENSE`), readme('zammad/zammad')],
+      },
+      alive: alive('2026-10-13', 'zammad/zammad'),
+      deploy: {
+        verdict: 'caution',
+        label: '中等',
+        labelEn: 'Moderate',
+        detail: '可以用软件包装（CentOS / RHEL 9 和 10、Debian 11 到 13、Ubuntu 22.04 到 26.04、openSUSE Leap / SLES 15 和 16），也可以用 Docker Compose 或 Kubernetes。要 PostgreSQL 15 以上和 Redis 7 以上，用软件包安装时会自动装上。用 Docker Compose 至少要 4 GB 内存，并且要先把主机的 vm.max_map_count 调到 262144，Elasticsearch 才能正常运行。',
+        detailEn: 'You can install from packages (CentOS / RHEL 9 and 10, Debian 11 to 13, Ubuntu 22.04 to 26.04, openSUSE Leap / SLES 15 and 16), or use Docker Compose or Kubernetes. It needs PostgreSQL 15 or newer and Redis 7 or newer; the package install sets both up automatically. Docker Compose needs at least 4 GB of RAM, and you first raise the host’s vm.max_map_count to 262144 so Elasticsearch runs properly.',
+        sources: [src('软件要求', 'Software requirements', 'https://docs.zammad.org/en/latest/prerequisites/software.html'), src('Docker Compose 安装', 'Docker Compose guide', 'https://docs.zammad.org/en/latest/install/docker-compose.html')],
+      },
+      cost: {
+        verdict: 'caution',
+        label: '中等',
+        labelEn: 'Moderate',
+        detail: '软件免费。官方给的最低配置是 2 核、6 GB 内存，Elasticsearch 装在同一台机器上再加 4 GB；40 个坐席以内的参考配置是 6 核、6 GB，同机装 Elasticsearch 再加 6 GB。磁盘官方没有给建议。不想自己部署，官方托管版 2026 年 10 月的标价（按年付、不含增值税）：每坐席每月 7 欧元（最多 5 个坐席）、16 欧元（最多 35 个）、25 欧元（不限）。',
+        detailEn: 'The software is free. The stated minimum is 2 cores and 6 GB of RAM, plus 4 GB if Elasticsearch runs on the same server; the example for up to 40 agents is 6 cores and 6 GB, plus 6 GB for Elasticsearch. The docs make no disk recommendation. If you would rather not self-host, the hosted plans in October 2026, billed annually and excluding VAT, are €7 per agent a month (up to 5 agents), €16 (up to 35) and €25 (unlimited).',
+        sources: [src('硬件要求', 'Hardware requirements', 'https://docs.zammad.org/en/latest/prerequisites/hardware.html'), src('价格', 'Pricing', 'https://zammad.com/en/pricing')],
+      },
+      caveats: {
+        verdict: 'caution',
+        label: '搜索和报表要靠 Elasticsearch',
+        labelEn: 'Search and reports depend on Elasticsearch',
+        detail: 'Elasticsearch 官方写的是“可选但强烈建议”：不装也能运行，但搜索会变慢而且很受限，报表、搜索邮件附件内容这些功能要靠它。自己部署，更新、备份和可用性都由自己负责；官方的自托管支持合同每年 2,999 欧元起（不含增值税）。用 Docker 部署，官方只支持 Zammad 应用本身，不管 Docker 的问题。',
+        detailEn: 'The docs call Elasticsearch “optional but strongly recommended”: Zammad runs without it, but search is slower and very limited, and features such as reports and searching inside email attachments rely on it. When you self-host, updates, backups and availability are yours; official support contracts for self-hosted installs start at €2,999 a year excluding VAT. If you deploy with Docker, support covers only the Zammad application, not Docker itself.',
+        sources: [src('软件要求', 'Software requirements', 'https://docs.zammad.org/en/latest/prerequisites/software.html'), src('价格', 'Pricing', 'https://zammad.com/en/pricing'), src('Docker Compose 安装', 'Docker Compose guide', 'https://docs.zammad.org/en/latest/install/docker-compose.html')],
+      },
+    },
+    checkedAt: '2026-10-13',
+    confirmed: true,             // 作者 2026-10-13 确认
+  },
 
-  // 制造与仓储
-  candidate({ id: 'erpnext', name: 'ERPNext', industry: 'manufacturing', uses: ['erp'], repo: 'frappe/erpnext', homepage: 'https://frappe.io/erpnext', spdx: 'GPL-3.0', lastPush: '2026-10-09',
-    what: '开源的企业资源管理系统。', whatEn: 'Free and open-source enterprise resource planning.' }),
-  candidate({ id: 'odoo', name: 'Odoo', industry: 'manufacturing', uses: ['erp'], repo: 'odoo/odoo', homepage: 'https://www.odoo.com', spdx: null, lastPush: '2026-10-09',
-    what: '一整套开源的企业应用，覆盖销售、库存、生产、财务。', whatEn: 'A suite of open-source business apps covering sales, inventory, manufacturing and accounting.' }),
-  candidate({ id: 'dolibarr', name: 'Dolibarr', industry: 'manufacturing', uses: ['erp'], repo: 'Dolibarr/dolibarr', homepage: 'https://www.dolibarr.org', spdx: 'GPL-3.0', lastPush: '2026-10-09',
-    what: '面向中小企业的 ERP 和 CRM。', whatEn: 'ERP and CRM for small and medium businesses.' }),
-  candidate({ id: 'jsherp', name: '管伊佳 ERP', nameEn: 'jshERP (管伊佳)', industry: 'manufacturing', uses: ['erp', 'inventory'], repo: 'jishenghua/jshERP', homepage: 'https://www.gyjerp.com', spdx: 'Apache-2.0', lastPush: '2026-10-06',
-    what: '国产的进销存加财务系统，原名华夏 ERP，基于 Spring Boot。', whatEn: 'A purchasing, sales, inventory and finance system from China, built on Spring Boot.' }),
-  candidate({ id: 'inventree', name: 'InvenTree', industry: 'manufacturing', uses: ['inventory'], repo: 'inventree/InvenTree', homepage: 'https://docs.inventree.org', spdx: 'MIT', lastPush: '2026-10-09',
-    what: '开源的库存管理系统。', whatEn: 'An open-source inventory management system.' }),
+  // 制造与仓储。作者 2026-10-13 定：这个分类只放一个 ERP。选 Odoo 是 Claude 按星标和搜索量提的，作者当天看过预览，确认。
+  // 原来的五个候选（ERPNext、Odoo、Dolibarr、管伊佳 ERP、InvenTree）只有许可证和推送日期，已删除。
+  {
+    id: 'odoo',
+    name: 'Odoo',
+    industry: 'manufacturing',
+    uses: ['erp'],
+    what: '一整套企业应用：销售、采购、库存、生产、开票，按模块安装。社区版开源，企业版收费。',
+    whatEn: 'A suite of business apps (sales, purchasing, inventory, manufacturing, invoicing) installed module by module. The Community edition is open source; Enterprise is paid.',
+    repoUrl: `${GH}odoo/odoo`,
+    homepage: 'https://www.odoo.com',
+    logo: '/oss/logos/odoo.png',
+    facts: {
+      commercial: {
+        verdict: 'good',
+        label: '社区版可以商用',
+        labelEn: 'Yes, for the Community edition',
+        detail: '社区版是 LGPL-3.0。自己部署、商用不受限制；改了它本身的代码再分发，改动部分要开源。企业版是另一份协议：只有持有有效的企业版订阅、用户数相符时才能使用，也不能分发。',
+        detailEn: 'The Community edition is LGPL-3.0. You can host it and use it commercially without restriction; if you modify its own code and distribute it, those changes must be open. Enterprise is under a separate license: it can only be used with a valid Enterprise subscription for the correct number of users, and cannot be redistributed.',
+        sources: [license(`${GH}odoo/odoo/blob/20.0/LICENSE`), src('许可证说明', 'Licenses', 'https://www.odoo.com/documentation/20.0/legal/licenses.html')],
+      },
+      alive: alive('2026-10-13', 'odoo/odoo'),
+      deploy: {
+        verdict: 'caution',
+        label: '中等',
+        labelEn: 'Moderate',
+        detail: '官方提供安装包：Odoo 20 的 deb 包目前支持 Ubuntu 24.04，rpm 包支持 Fedora 42，先装好 PostgreSQL 再装；也可以从源码装。Windows 安装包官方说只适合测试或单人本机使用，不建议用于生产。正式上线，文档要求用多进程模式，并在前面架反向代理配 HTTPS。',
+        detailEn: 'There are official packages: the Odoo 20 deb package currently supports Ubuntu 24.04 and the rpm package supports Fedora 42, with PostgreSQL installed first; a source install is also documented. The Windows installer is described as suitable for testing or single-user local use, and production deployment on Windows is discouraged. For production the docs call for the multi-processing server behind a reverse proxy with HTTPS.',
+        sources: [src('安装包', 'Packaged installers', 'https://www.odoo.com/documentation/20.0/administration/on_premise/packages.html'), src('部署文档', 'Deployment guide', 'https://www.odoo.com/documentation/20.0/administration/on_premise/deploy.html')],
+      },
+      cost: {
+        verdict: 'caution',
+        label: '社区版免费，企业版按用户收费',
+        labelEn: 'Community is free; Enterprise is per user',
+        short: '企业版收费',
+        shortEn: 'Paid tiers',
+        detail: '社区版免费。服务器多大，官方给的是算法：一个工作进程大约支撑 6 个同时在线的用户，进程数上限是 CPU 数 × 2 + 1；文档的例子是 60 人同时在线、4 核 8 线程，Odoo 本身约需 3 GB 内存。企业版 2026 年 10 月官网的美元标价（按年付）：Standard 每用户每月 31.10 美元，只能用官方托管；Custom 每用户每月 61.00 美元，自己部署企业版要买这一档。新订单头 12 个月有折扣，分别是 24.90 和 49.00 美元。只用一个应用，官方托管免费、不限用户数。',
+        detailEn: 'The Community edition is free. For server size the docs give a formula: one worker handles about 6 concurrent users, and the maximum number of workers is CPUs × 2 + 1. Their example is 60 concurrent users on 4 CPUs with 8 threads, needing about 3 GB of RAM for Odoo itself. Enterprise list prices in US dollars in October 2026, billed yearly: Standard at $31.10 per user a month, on Odoo’s own hosting only; Custom at $61.00 per user a month, the plan required to run Enterprise on your own server. New orders get a 12-month discount, to $24.90 and $49.00. Using a single app on Odoo’s hosting is free for unlimited users.',
+        sources: [src('部署文档', 'Deployment guide', 'https://www.odoo.com/documentation/20.0/administration/on_premise/deploy.html'), src('价格', 'Pricing', 'https://www.odoo.com/pricing')],
+      },
+      caveats: {
+        verdict: 'caution',
+        label: '社区版没有完整财务和车间功能',
+        labelEn: 'Community lacks full accounting and shop-floor tools',
+        detail: '官方的版本对比表里，社区版有库存、采购、生产（MRP）和设备维护，但这些标的是没有：完整的财务（社区版只有开票）、条码、车间看板和排程、PLM、质量管理、手机 App、Studio 定制工具。版本升级服务也只给企业版：文档写的是有企业版订阅才免费把数据库升到最新版本。',
+        detailEn: 'In the official editions comparison, Community includes Inventory, Purchase, Manufacturing (MRP) and Maintenance, but these are marked as not included: full accounting (Community has invoicing only), barcode, shop floor, control panel and scheduling, PLM, Quality, the mobile apps and Studio. Version upgrades are also an Enterprise service: the docs say upgrading a database to the latest version is free with Odoo Enterprise.',
+        sources: [src('版本对比', 'Editions comparison', 'https://www.odoo.com/page/editions'), src('升级文档', 'Upgrade guide', 'https://www.odoo.com/documentation/20.0/administration/upgrade.html')],
+      },
+    },
+    checkedAt: '2026-10-13',
+    confirmed: true,             // 作者 2026-10-13 确认
+  },
 
   // AI：实时数字人。2026-10-10 第一批读者（教育行业的老板和领导）提出的需求：教育和电商都要用数字人，只按行业分会漏掉。
   // 所以单独设了 AI 分类。起初还让它们同时出现在教育和电商零售下面，作者 2026-10-13 看过后去掉了：数字人只留在 AI 分类，不要再挂到别的行业下。

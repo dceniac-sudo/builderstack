@@ -1,7 +1,7 @@
 // “按行业找开源项目”的数据结构。中文和英文各一份文字，英文字段以 En 结尾。
 
-// 分类：大多是行业，'ai' 是各行业都用得上的 AI 能力
-export type OssIndustry = 'education' | 'ai' | 'ecommerce' | 'restaurant' | 'healthcare' | 'manufacturing';
+// 分类：大多是行业，'ai' 和 'helpdesk'（客服与工单）是各行业都用得上的
+export type OssIndustry = 'education' | 'ai' | 'ecommerce' | 'restaurant' | 'helpdesk' | 'manufacturing';
 
 // 用途的 id，每个行业各有一组，定义在 src/data/oss.ts 的 OSS_USES 里
 export type OssUse = string;

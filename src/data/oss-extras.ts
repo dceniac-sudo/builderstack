@@ -58,15 +58,6 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
       confirmed: false,
     },
   },
-  'frappe-lms': {
-    fit: {
-      considerIf: '想尽快搭起一个简单的课程站：有了域名之后，官方脚本一条命令就能装好。',
-      considerIfEn: 'You want a simple course site up quickly: once you have a domain, the official script installs it with one command.',
-      lookElsewhereIf: '打算改代码、又不想把改动后的源码提供给学员（AGPL-3.0），或者需要不依赖 Zoom 的直播课。',
-      lookElsewhereIfEn: 'You plan to change the code and do not want to offer learners your modified source (AGPL-3.0), or you need live classes that do not depend on Zoom.',
-      confirmed: true,
-    },
-  },
   'canvas-lms': {
     fit: {
       considerIf: '想用很多高校在用的那套系统，而且有工程师能安装和维护 Ruby、PostgreSQL、Redis 和 Apache。',
@@ -94,30 +85,12 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
       confirmed: true,
     },
   },
-  gibbon: {
-    fit: {
-      considerIf: '办学校，想把老师、学生、家长和行政的日常管理放在一套系统里，用普通的 PHP 加 MySQL 主机就能跑。',
-      considerIfEn: 'You run a school and want the day-to-day administration for teachers, students, parents and staff in one system, on an ordinary PHP and MySQL host.',
-      lookElsewhereIf: '需要界面和文档都是完整的本国语言：界面翻译由志愿者维护，文档是英文的。',
-      lookElsewhereIfEn: 'You need the interface and documentation fully in your own language: translations are volunteer-run and the docs are in English.',
-      confirmed: true,
-    },
-  },
   jupyterhub: {
     fit: {
       considerIf: '教编程或数据课，想让班上每个学生都有自己的 Notebook 环境，而且有人能管理一台 Linux 服务器。',
       considerIfEn: 'You teach programming or data classes and want every student to have their own notebook environment, and someone can administer a Linux server.',
       lookElsewhereIf: '团队里没人能配置登录方式和学生环境的启动方式：官方镜像不带任何配置，默认用服务器上的系统账号登录。',
       lookElsewhereIfEn: 'Nobody on the team can configure login and how each student’s environment starts: the official image ships with no configuration and logs in with system accounts by default.',
-      confirmed: true,
-    },
-  },
-  veyon: {
-    fit: {
-      considerIf: '管着一间在同一个局域网里的机房，想看学生屏幕、广播教师屏幕、锁屏。',
-      considerIfEn: 'You run a computer lab on one local network and want to watch student screens, broadcast the teacher’s screen and lock screens.',
-      lookElsewhereIf: '学生在远程上课或者不在同一个网络里：所有电脑必须在同一个 TCP/IP 网络中。',
-      lookElsewhereIfEn: 'Your students are remote or on different networks: all the computers have to be on the same TCP/IP network.',
       confirmed: true,
     },
   },
@@ -217,6 +190,34 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
       confirmed: true,
     },
   },
+  // 下面三条是 Claude 2026-10-13 按各自的五件事起草的，作者当天和条目一起看过，确认。
+  chatwoot: {
+    fit: {
+      considerIf: '想把网站在线聊天、邮件和社交消息收进同一个收件箱，团队里有人能维护一台 Linux 服务器；核心是 MIT，社区版免费。',
+      considerIfEn: 'You want website live chat, email and social messaging in one inbox, and someone on your team can run a Linux server; the core is MIT and the Community edition is free.',
+      lookElsewhereIf: '免费就要角色权限、SLA、单点登录或者换成自己的品牌：这些不在社区版里，要按坐席付费，每坐席每月 19 或 99 美元。',
+      lookElsewhereIfEn: 'You need roles and permissions, SLAs, single sign-on or your own branding for free: none of these are in the Community edition, and the paid tiers are $19 or $99 per agent a month.',
+      confirmed: true,
+    },
+  },
+  zammad: {
+    fit: {
+      considerIf: '客户主要通过邮件来找你，想把来信变成工单统一处理，服务器能给到 10 GB 左右的内存（含 Elasticsearch）。',
+      considerIfEn: 'Most customers reach you by email, you want every message turned into a ticket in one place, and you can give the server about 10 GB of RAM including Elasticsearch.',
+      lookElsewhereIf: '只有一台小服务器：最低也要 6 GB 内存，不装 Elasticsearch 搜索会很受限。打算改代码后对外提供服务又不想公开改动的，也别选，它是 AGPL-3.0。',
+      lookElsewhereIfEn: 'You only have a small server: the minimum is 6 GB of RAM, and without Elasticsearch search is very limited. Also skip it if you plan to modify the code and serve it to others without publishing your changes; it is AGPL-3.0.',
+      confirmed: true,
+    },
+  },
+  odoo: {
+    fit: {
+      considerIf: '想把销售、采购、库存和生产放进一套系统，社区版里的开票、库存、采购、生产（MRP）够用，团队里有人能维护 Linux 服务器和 PostgreSQL。',
+      considerIfEn: 'You want sales, purchasing, inventory and manufacturing in one system, the Community edition’s invoicing, inventory, purchase and MRP are enough, and someone can run a Linux server with PostgreSQL.',
+      lookElsewhereIf: '离不开完整的财务、条码、车间排程、PLM 或质量管理：这些只在企业版里，自己部署企业版的标价是每用户每月 61 美元。',
+      lookElsewhereIfEn: 'You depend on full accounting, barcode scanning, shop-floor scheduling, PLM or quality management: these are Enterprise only, and running Enterprise on your own server is listed at $61 per user a month.',
+      confirmed: true,
+    },
+  },
 };
 
 // 英文详情页在搜索结果里显示的摘要：先说结论（免不免费、什么许可证、要花多少、最要紧的一条注意事项），160 个字符以内。
@@ -224,13 +225,10 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
 // 改了五件事里的数（价格、配置）要回来同步这里。没写的项目用 whatEn。
 const SEARCH_SUMMARY_EN: Record<string, string> = {
   moodle: 'Free under GPL-3.0: host it and charge for courses. Runs on 1 GB of RAM. The catch: selling hosting or support under the Moodle name needs permission.',
-  'frappe-lms': 'Free under AGPL-3.0. Run it unmodified with no obligations; change the code and you must offer users your source. One-command install. Live classes need Zoom.',
   'canvas-lms': 'Free under AGPL-3.0, but hard to self-host: a 19-section install guide and 8 GB of RAM. Change the code and you must offer users your source.',
   kolibri: 'Free under MIT, commercial use allowed. Installers for Windows, Linux, macOS, Raspberry Pi and Android. Built for offline classrooms, not for selling courses.',
   bigbluebutton: 'Free under LGPL-3.0, paid classes allowed. The server is the cost: the stated production minimum is 8 cores, 16 GB of RAM and 250 Mbps symmetrical bandwidth.',
-  gibbon: 'Free under GPL-3.0 for schools to host and use. Five-step install on PHP and MySQL. A small school needs 2 CPUs and 4 to 8 GB of RAM.',
   jupyterhub: 'Free under BSD-3-Clause, commercial use allowed. Memory grows with concurrent users. Login and each student’s environment are yours to configure.',
-  veyon: 'Free under GPL-2.0 for your own computer labs. No server needed, 2 GB of RAM per computer. All machines must be on one network.',
   woocommerce: 'The plugin is free (GPL), with no platform fee or revenue share. Woo’s own estimate: hosting $25 to $350 a month, extensions $29 to $299 a year each.',
   prestashop: 'Free under OSL-3.0. Modify the core and run a public store on it, and your version must be OSL-3.0 too. Official hosted plan from €24 a month before VAT.',
   bagisto: 'Free under MIT, commercial use allowed. One Docker command starts a full store. Official cloud hosting from $25 a month. Multi-vendor is a $449 extension.',
@@ -241,6 +239,9 @@ const SEARCH_SUMMARY_EN: Record<string, string> = {
   tastyigniter: 'Free under MIT. Online ordering and reservations are in the free core; table ordering and dine-in extensions are $49 a year each. It is not a point of sale.',
   livetalking: 'Free under Apache-2.0, commercial use allowed. Videos you publish on video platforms must carry its watermark. Needs a GPU: RTX 3060 or better.',
   openavatarchat: 'The project is Apache-2.0. Two of its models need a license check before commercial use: SenseVoice and one FlashHead component. Needs a GPU or paid APIs.',
+  chatwoot: 'The core is free under MIT. Roles, SLAs, SSO and custom branding are paid: $19 or $99 per agent a month when self-hosted. Runs on 2 cores and 4 GB of RAM.',
+  zammad: 'Free under AGPL-3.0. Needs 2 cores and 6 GB of RAM, plus 4 GB for Elasticsearch, which search and reports depend on. Hosted plans from €7 per agent a month.',
+  odoo: 'The Community edition is free under LGPL-3.0, but leaves out full accounting, barcode, shop floor, PLM and Quality. Enterprise is $31.10 per user a month.',
 };
 
 // 英文详情页的标题默认是“Is 项目名 free? Pricing, license and caveats”。名字里已经带 open source 的不适合这么问，在这里单独写。
