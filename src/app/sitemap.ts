@@ -7,22 +7,17 @@ export const dynamic = 'force-static';
 const SITE = 'https://dceniac.com';
 
 // 站点地图，构建时生成 /sitemap.xml，给搜索引擎看全站有哪些页面。
-// 只列线上真有内容的页面：还没有项目的分类页不列，草稿不列。文章只有英文版。
+// 只列线上真有内容的页面：还没有项目的分类页不列，草稿不列。
+// 只列英文页面（作者 2026-10-13 定）：站点做给英文读者，中文页面照常能打开，但不放进站点地图。
 export default function sitemap(): MetadataRoute.Sitemap {
-  // 中英文都有的页面：两个地址各列一条，并互相标明是对方的另一种语言
-  const both = (path: string, lastModified?: string): MetadataRoute.Sitemap =>
-    ['', '/zh'].map((prefix) => ({
-      url: `${SITE}${prefix}${path}`,
-      lastModified,
-      alternates: { languages: { en: `${SITE}${path}`, 'zh-CN': `${SITE}/zh${path}` } },
-    }));
+  const page = (path: string, lastModified?: string) => ({ url: `${SITE}${path}`, lastModified });
 
   return [
-    ...both('/'),
-    ...both('/oss/'),
-    ...OSS_INDUSTRIES.filter((i) => ossProjectsOf(i.id).length > 0).flatMap((i) => both(`/oss/${i.id}/`)),
-    ...OSS_PROJECTS.flatMap((p) => both(`/oss/${p.industry}/${p.id}/`, p.checkedAt)),
-    { url: `${SITE}/notes/` },
-    ...NOTES_DATA.filter((n) => n.hasPage).map((n) => ({ url: `${SITE}/notes/${n.id}/`, lastModified: n.date })),
+    page('/'),
+    page('/oss/'),
+    ...OSS_INDUSTRIES.filter((i) => ossProjectsOf(i.id).length > 0).map((i) => page(`/oss/${i.id}/`)),
+    ...OSS_PROJECTS.map((p) => page(`/oss/${p.industry}/${p.id}/`, p.checkedAt)),
+    page('/notes/'),
+    ...NOTES_DATA.filter((n) => n.hasPage).map((n) => page(`/notes/${n.id}/`, n.date)),
   ];
 }
