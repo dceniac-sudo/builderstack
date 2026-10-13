@@ -6,7 +6,7 @@ import { OssIndustriesPage } from '@/components/OssIndustriesPage';
 import { OssProjectPage } from '@/components/OssProjectPage';
 import type { OssFactView, OssIndustryView, OssProjectView } from '@/components/OssParts';
 import { IndustryCopy, OSS_INDUSTRIES, OSS_PROJECTS, OSS_USES, ossIndustry, ossProjectsOf } from '@/data/oss';
-import { ossExtras } from '@/data/oss-extras';
+import { ossExtras, ossSearchSummaryEn, ossSearchTitleEn } from '@/data/oss-extras';
 import { localePath, type Language } from '@/lib/i18n-path';
 import { pageMetadata } from '@/lib/site-meta';
 import type { OssFact, OssFactKey, OssProject } from '@/types/oss';
@@ -102,8 +102,8 @@ export function ossProjectMetadata(lang: Language, industryId: string, id: strin
   const en = lang === 'en';
   const name = en ? p.nameEn ?? p.name : p.name;
   return pageMetadata(lang, `/oss/${p.industry}/${p.id}/`, {
-    title: en ? `${name}: commercial use, deployment and cost` : `${name}：能不能商用、部署难不难、成本多少`,
-    description: en ? p.whatEn : p.what,
+    title: en ? ossSearchTitleEn(p.id, name) : `${name}：能不能商用、部署难不难、成本多少`,
+    description: en ? ossSearchSummaryEn(p.id) ?? p.whatEn : p.what,
   });
 }
 

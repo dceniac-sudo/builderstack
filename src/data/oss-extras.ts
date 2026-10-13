@@ -219,6 +219,43 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
   },
 };
 
+// 英文详情页在搜索结果里显示的摘要：先说结论（免不免费、什么许可证、要花多少、最要紧的一条注意事项），160 个字符以内。
+// 2026-10-13 按搜索量改的：人们搜的是 pricing、free、cost，不是 commercial use。内容都来自各项目已确认的五件事，没有新的事实。
+// 改了五件事里的数（价格、配置）要回来同步这里。没写的项目用 whatEn。
+const SEARCH_SUMMARY_EN: Record<string, string> = {
+  moodle: 'Free under GPL-3.0: host it and charge for courses. Runs on 1 GB of RAM. The catch: selling hosting or support under the Moodle name needs permission.',
+  'frappe-lms': 'Free under AGPL-3.0. Run it unmodified with no obligations; change the code and you must offer users your source. One-command install. Live classes need Zoom.',
+  'canvas-lms': 'Free under AGPL-3.0, but hard to self-host: a 19-section install guide and 8 GB of RAM. Change the code and you must offer users your source.',
+  kolibri: 'Free under MIT, commercial use allowed. Installers for Windows, Linux, macOS, Raspberry Pi and Android. Built for offline classrooms, not for selling courses.',
+  bigbluebutton: 'Free under LGPL-3.0, paid classes allowed. The server is the cost: the stated production minimum is 8 cores, 16 GB of RAM and 250 Mbps symmetrical bandwidth.',
+  gibbon: 'Free under GPL-3.0 for schools to host and use. Five-step install on PHP and MySQL. A small school needs 2 CPUs and 4 to 8 GB of RAM.',
+  jupyterhub: 'Free under BSD-3-Clause, commercial use allowed. Memory grows with concurrent users. Login and each student’s environment are yours to configure.',
+  veyon: 'Free under GPL-2.0 for your own computer labs. No server needed, 2 GB of RAM per computer. All machines must be on one network.',
+  woocommerce: 'The plugin is free (GPL), with no platform fee or revenue share. Woo’s own estimate: hosting $25 to $350 a month, extensions $29 to $299 a year each.',
+  prestashop: 'Free under OSL-3.0. Modify the core and run a public store on it, and your version must be OSL-3.0 too. Official hosted plan from €24 a month before VAT.',
+  bagisto: 'Free under MIT, commercial use allowed. One Docker command starts a full store. Official cloud hosting from $25 a month. Multi-vendor is a $449 extension.',
+  medusa: 'The core is free under MIT. Staff roles and single sign-on need an Enterprise license. Self-host on 2 GB of RAM, or Medusa Cloud from $29 a month.',
+  saleor: 'Free under BSD-3-Clause, one version with no feature limits. Hard to self-host: six services to assemble. Saleor Cloud for commercial use from $1,599 a month.',
+  shopware: 'The code is MIT and the Community Edition is free. Above €1M in yearly sales you need a paid plan, from €600 a month, to keep buying and updating extensions.',
+  opensourcepos: 'Free under MIT terms plus one rule: the footer credit stays on every page, so no reselling under your own brand. Runs on 512 MB of RAM. No card reader support.',
+  tastyigniter: 'Free under MIT. Online ordering and reservations are in the free core; table ordering and dine-in extensions are $49 a year each. It is not a point of sale.',
+  livetalking: 'Free under Apache-2.0, commercial use allowed. Videos you publish on video platforms must carry its watermark. Needs a GPU: RTX 3060 or better.',
+  openavatarchat: 'The project is Apache-2.0. Two of its models need a license check before commercial use: SenseVoice and one FlashHead component. Needs a GPU or paid APIs.',
+};
+
+// 英文详情页的标题默认是“Is 项目名 free? Pricing, license and caveats”。名字里已经带 open source 的不适合这么问，在这里单独写。
+const SEARCH_TITLE_EN: Record<string, string> = {
+  opensourcepos: 'Open Source Point of Sale: pricing, license and caveats',
+};
+
+export function ossSearchSummaryEn(id: string): string | undefined {
+  return SEARCH_SUMMARY_EN[id];
+}
+
+export function ossSearchTitleEn(id: string, name: string): string {
+  return SEARCH_TITLE_EN[id] ?? `Is ${name} free? Pricing, license and caveats`;
+}
+
 // 一个项目能显示出来的附加内容：没确认的部分在线上构建里去掉
 export function ossExtras(id: string): OssExtras {
   const extras = ALL_EXTRAS[id] ?? {};
