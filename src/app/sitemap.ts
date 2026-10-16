@@ -1,5 +1,4 @@
 import type { MetadataRoute } from 'next';
-import { NOTES_DATA } from '@/data/notes';
 import { OSS_INDUSTRIES, OSS_PROJECTS, ossProjectsOf } from '@/data/oss';
 
 export const dynamic = 'force-static';
@@ -17,7 +16,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page('/oss/'),
     ...OSS_INDUSTRIES.filter((i) => ossProjectsOf(i.id).length > 0).map((i) => page(`/oss/${i.id}/`)),
     ...OSS_PROJECTS.map((p) => page(`/oss/${p.industry}/${p.id}/`, p.checkedAt)),
-    page('/notes/'),
-    ...NOTES_DATA.filter((n) => n.hasPage).map((n) => page(`/notes/${n.id}/`, n.date)),
   ];
 }

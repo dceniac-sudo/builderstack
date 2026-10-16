@@ -43,7 +43,7 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
       lookElsewhereIfEn: 'Nobody on the team can maintain a server, or you plan to sell hosting, training or support under the Moodle name.',
       confirmed: true,
     },
-    // 2026-10-13 截自 Moodle 官方演示站的 Digital Literacy 课程页。演示站截图能不能放到线上还没核对过官方的素材和商标条款，所以先不确认。
+    // 2026-10-13 截自 Moodle 官方演示站的 Digital Literacy 课程页。2026-10-16 核对了 Moodle 的商标条款（只限制暗示背书、用进名称和域名等，没提截图），作者当天确认上线。
     shot: {
       src: '/oss/shots/moodle.jpg',
       width: 1280,
@@ -55,7 +55,7 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
       sourceUrl: 'https://school.moodledemo.net/',
       sourceLabel: '打开演示站',
       sourceLabelEn: 'Try the demo',
-      confirmed: false,
+      confirmed: true,
     },
   },
   'canvas-lms': {
@@ -190,6 +190,16 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
       confirmed: true,
     },
   },
+  // Claude 2026-10-16 按五件事起草，作者当天和条目一起确认
+  livekit: {
+    fit: {
+      considerIf: '团队里有开发，要把视频会议、直播或 AI 实时语音做进自己的产品里，又不想按分钟给云服务付钱。',
+      considerIfEn: 'You have developers and want video meetings, live streaming or real-time voice AI inside your own product, without paying a cloud service by the minute.',
+      lookElsewhereIf: '想要装上就能开会的成品：会议界面和登录要自己做，录制还要另外部署 Egress。没有自己的域名、开不了一整段 UDP 端口，也别自己部署，先用官方云的免费档。',
+      lookElsewhereIfEn: 'You want a meeting app that works out of the box: the interface and login are yours to build, and recording means deploying Egress as well. If you have no domain of your own or cannot open a full UDP port range, skip self-hosting and start on the official cloud’s free tier.',
+      confirmed: true,
+    },
+  },
   // 下面三条是 Claude 2026-10-13 按各自的五件事起草的，作者当天和条目一起看过，确认。
   chatwoot: {
     fit: {
@@ -238,6 +248,7 @@ const SEARCH_SUMMARY_EN: Record<string, string> = {
   opensourcepos: 'Free under MIT terms plus one rule: the footer credit stays on every page, so no reselling under your own brand. Runs on 512 MB of RAM. No card reader support.',
   tastyigniter: 'Free under MIT. Online ordering and reservations are in the free core; table ordering and dine-in extensions are $49 a year each. It is not a point of sale.',
   livetalking: 'Free under Apache-2.0, commercial use allowed. Videos you publish on video platforms must carry its watermark. Needs a GPU: RTX 3060 or better.',
+  livekit: 'Free under Apache-2.0. A toolkit, not a meeting app. Self-hosting needs a domain and UDP ports 50000-60000. LiveKit Cloud is free to start, then $50 a month.',
   openavatarchat: 'The project is Apache-2.0. Two of its models need a license check before commercial use: SenseVoice and one FlashHead component. Needs a GPU or paid APIs.',
   chatwoot: 'The core is free under MIT. Roles, SLAs, SSO and custom branding are paid: $19 or $99 per agent a month when self-hosted. Runs on 2 cores and 4 GB of RAM.',
   zammad: 'Free under AGPL-3.0. Needs 2 cores and 6 GB of RAM, plus 4 GB for Elasticsearch, which search and reports depend on. Hosted plans from €7 per agent a month.',

@@ -19,17 +19,11 @@ const COPY = {
   },
 };
 
-// “笔记”页（旧首页的内容）的标题和简介
-export const NOTES_COPY = {
-  title: 'Articles',
-  description: 'Hands-on write-ups: how it was built, what it cost, and where it got stuck.',
-};
-
-// path 是不带语言前缀的路径，比如 '/' 或 '/notes/xxx/'
+// path 是不带语言前缀的路径，比如 '/' 或 '/oss/education/'
 export function pageMetadata(
   lang: Language,
   path: string,
-  override?: { title: string; description: string; article?: boolean; enOnly?: boolean }   // enOnly：这个页面没有中文版
+  override?: { title: string; description: string }
 ): Metadata {
   const copy = COPY[lang];
   const title = override ? `${override.title} — BuilderStack` : copy.title;
@@ -46,7 +40,7 @@ export function pageMetadata(
     icons: { icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }] },
     alternates: {
       canonical: url,
-      languages: override?.enOnly ? { en: path } : { en: path, 'zh-CN': `/zh${path}` },
+      languages: { en: path, 'zh-CN': `/zh${path}` },
     },
     openGraph: {
       title,
@@ -54,7 +48,7 @@ export function pageMetadata(
       url,
       siteName: 'BuilderStack',
       locale: copy.locale,
-      type: override?.article ? 'article' : 'website',
+      type: 'website',
       images: [{ url: '/og.png', width: 1200, height: 630, alt: 'BuilderStack' }],
     },
     twitter: {

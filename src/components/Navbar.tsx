@@ -7,7 +7,7 @@ import { Logo } from '@/components/Logo';
 import { useI18n, localePath, X_HANDLE } from '@/lib/i18n';
 
 interface NavbarProps {
-  active?: 'industries' | 'notes';    // 当前在哪个栏目；首页不传
+  active?: 'industries';    // 当前在哪个栏目；首页不传
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ active }) => {
@@ -39,12 +39,11 @@ export const Navbar: React.FC<NavbarProps> = ({ active }) => {
           </span>
         </Link>
 
-        {/* 两个栏目。文章只有英文版，中文页面上不显示这一栏 */}
+        {/* 栏目。文章一栏作者 2026-10-16 去掉了，文章页也删了 */}
         <nav className="flex items-center gap-1 text-sm font-medium mr-auto">
           {([
             { id: 'industries', href: '/oss/', label: t.nav.industries },
-            { id: 'notes', href: '/notes/', label: t.nav.notes },
-          ] as const).filter((item) => item.id !== 'notes' || lang === 'en').map((item) => (
+          ] as const).map((item) => (
             <Link
               key={item.id}
               href={localePath(lang, item.href)}

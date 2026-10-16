@@ -98,7 +98,10 @@ export const OSS_USES: Record<OssIndustry, { id: string; label: string; labelEn:
     { id: 'live', label: '直播课堂', labelEn: 'Live classes' },
     { id: 'coding', label: '编程教学', labelEn: 'Teaching code' },
   ],
-  ai: [{ id: 'avatar', label: '实时数字人', labelEn: 'Digital humans' }],
+  ai: [
+    { id: 'avatar', label: '实时数字人', labelEn: 'Digital humans' },
+    { id: 'realtime', label: '实时音视频', labelEn: 'Real-time voice & video' },
+  ],
   ecommerce: [
     { id: 'store', label: '自建商城', labelEn: 'Online store' },
     { id: 'engine', label: '电商引擎', labelEn: 'Commerce engine' },
@@ -1161,6 +1164,85 @@ const ALL_PROJECTS: OssProject[] = [
     },
     checkedAt: '2026-10-13',
     confirmed: true,             // 作者 2026-10-13 确认
+  },
+
+  // AI：实时音视频。作者 2026-10-16 提出要收 LiveKit（他自己部署过，用来做视频会议）。放在 AI 分类、按“实时语音和数字人的底座”写是 Claude 的建议。
+  // 下面的内容是 Claude 2026-10-16 从许可证、官方文档和价格页查的，不是作者的实测记录。作者要求 Server 和 Egress 都写上，补完后当天确认。
+  {
+    id: 'livekit',
+    name: 'LiveKit',
+    industry: 'ai',
+    uses: ['realtime'],
+    what: '一套实时音视频的开源组件：LiveKit Server 转发音视频，Egress 负责录制和推流直播。可以拿来自己做视频会议、直播间，也能做 AI 语音客服和数字人实时对话的底座。',
+    whatEn: 'A set of open-source real-time audio and video components: LiveKit Server routes the media, Egress records and live-streams it. Build your own video meetings or live rooms with it, or use it under AI voice agents and digital humans.',
+    repoUrl: `${GH}livekit/livekit`,
+    homepage: 'https://livekit.com/',
+    logo: '/oss/logos/livekit.png',
+    facts: {
+      commercial: {
+        verdict: 'good',
+        label: '可以商用',
+        labelEn: 'Yes',
+        detail: 'LiveKit Server、Egress 和做 AI 语音对话的 Agents 框架都是 Apache-2.0，可以商用和二次开发，改了代码也不用开源。',
+        detailEn: 'LiveKit Server, Egress and the Agents framework for voice AI are all Apache-2.0: commercial use and modification are allowed, and you do not have to publish your changes.',
+        sources: [
+          license(`${GH}livekit/livekit/blob/master/LICENSE`),
+          src('Egress 的许可证', 'Egress license', `${GH}livekit/egress/blob/main/LICENSE`),
+          src('Agents 的许可证', 'Agents license', `${GH}livekit/agents/blob/main/LICENSE`),
+        ],
+      },
+      alive: alive('2026-10-15', 'livekit/livekit'),
+      deploy: {
+        verdict: 'caution',
+        label: '中等',
+        labelEn: 'Moderate',
+        detail: 'LiveKit Server：官方有配置生成器（livekit/generate 镜像），一次生成 Caddy、Redis、docker compose 和启动脚本，在一台 Linux 云主机上跑这个脚本就能起来。前提是有自己的域名：主域名和 TURN 用的域名都要指到这台机器，证书不能自签（Caddy 会自动申请）。防火墙要开 80、443、7881（TCP）、3478（UDP）和 50000 到 60000 一整段 UDP 端口。Egress：生成器不管它，要另起一个 Docker 服务（livekit/egress），配上 Server 的地址和 API 密钥，连到和 Server 同一个 Redis。录整间会议靠容器里的 Chrome，容器要加 SYS_ADMIN 权限，否则 Chrome 起不来。录好的文件存到 S3、Azure 或谷歌云存储。两样都有官方的 Helm 包，可以部署到 Kubernetes。',
+        detailEn: 'LiveKit Server: an official config generator (the livekit/generate image) produces Caddy, Redis, docker compose and a startup script in one go; run the script on a Linux VM and it is up. You need your own domain: the main domain and the TURN domain must both point at the machine, and self-signed certificates do not work (Caddy obtains them automatically). Open ports 80, 443, 7881 (TCP), 3478 (UDP) and the whole UDP range 50000 to 60000. Egress: the generator does not cover it. Run it as a separate Docker service (livekit/egress) with the server’s URL and API key, connected to the same Redis as the server. Full-room recording runs Chrome inside the container, which needs the SYS_ADMIN capability or Chrome fails to start. Recordings go to S3, Azure or Google Cloud Storage. Both have official Helm charts for Kubernetes.',
+        sources: [
+          src('云主机部署', 'Deploying to a VM', 'https://docs.livekit.io/home/self-hosting/vm/'),
+          src('Server 部署说明', 'Server deployment guide', 'https://docs.livekit.io/home/self-hosting/deployment/'),
+          src('Egress 的部署', 'Self-hosting Egress', 'https://docs.livekit.io/home/self-hosting/egress/'),
+        ],
+      },
+      cost: {
+        verdict: 'caution',
+        label: '软件免费，钱花在服务器和带宽',
+        labelEn: 'Free software; you pay for servers and bandwidth',
+        short: '看规模',
+        shortEn: 'Depends on scale',
+        detail: '自己部署不收费，钱花在两类机器上。LiveKit Server 的瓶颈是 CPU 和带宽：官方压测里，一台 16 核的谷歌云 c2-standard-16 撑 150 人互相看视频的大会议，CPU 到 85%；官方建议生产环境用计算优化型的机器和万兆网卡。Egress 每个实例建议至少 4 核 4 GB，录整间会议要占 2 到 6 核，一个实例同时只录一间，要同时录几间就得开几个实例。不想自己运维可以用官方的 LiveKit Cloud：免费档每月 5,000 参会人分钟、50 GB 流量；付费档每月 50 美元起，超出部分每参会人分钟 0.0005 美元，流量每 GB 0.12 美元。',
+        detailEn: 'Self-hosting is free; the money goes on two kinds of machines. LiveKit Server is bound by CPU and bandwidth: in the official benchmark, one 16-core Google Cloud c2-standard-16 handled a 150-person video meeting where everyone sees everyone, at 85% CPU, and the docs recommend compute-optimized machines and 10 Gbps networking for production. Each Egress instance should have at least 4 CPUs and 4 GB; a full-room recording takes 2 to 6 CPUs, and one instance records one room at a time, so you need as many instances as rooms you record at once. If you would rather not run it all, LiveKit Cloud has a free tier with 5,000 participant minutes and 50 GB of transfer a month; paid plans start at $50 a month, with overage at $0.0005 per participant minute and $0.12 per GB.',
+        sources: [
+          src('官方压测', 'Benchmarks', 'https://docs.livekit.io/home/self-hosting/benchmark/'),
+          src('LiveKit Cloud 价格', 'LiveKit Cloud pricing', 'https://livekit.com/pricing'),
+        ],
+      },
+      caveats: {
+        verdict: 'caution',
+        label: '是开发包，不是装上就能开会的软件',
+        labelEn: 'A toolkit, not a ready-made meeting app',
+        detail: '会议界面、登录和权限要自己的开发团队做。官方的会议示例 LiveKit Meet 是开源的，但 README 只讲了本地开发，没讲生产部署。Egress 里的 Chrome 默认关着沙箱，要打开得自己加配置和 seccomp 规则。',
+        detailEn: 'The meeting interface, login and permissions are for your own developers to build. The official sample app, LiveKit Meet, is open source, but its README only covers local development, not production. The Chrome inside Egress runs with its sandbox off by default; turning it on takes an extra setting and a seccomp profile.',
+        sources: [
+          src('LiveKit Meet', 'LiveKit Meet', `${GH}livekit-examples/meet#readme`),
+          src('Egress 的部署', 'Self-hosting Egress', 'https://docs.livekit.io/home/self-hosting/egress/'),
+        ],
+      },
+    },
+    needs: {
+      verdict: 'caution',
+      label: '至少 LiveKit Server 和 Redis；要录制或直播再加 Egress',
+      labelEn: 'At least LiveKit Server and Redis; add Egress to record or live-stream',
+      detail: 'LiveKit Server 必装，负责房间和音视频转发。Redis 生产环境推荐，装 Egress 就必须有，两边要连同一个。Egress 负责把会议录成 MP4 或 HLS，或者用 RTMP 推到 YouTube Live、Twitch 这类平台直播，录好的文件要一个 S3、Azure 或谷歌云的存储桶。另外还要一个自己的域名。Ingress（把外面的 RTMP 推流接进房间）和 Agents（AI 语音对话）按需要再装，只开会用不上。',
+      detailEn: 'LiveKit Server is required: it runs the rooms and routes the media. Redis is recommended for production and required once you add Egress; both must use the same one. Egress records meetings to MP4 or HLS, or live-streams them over RTMP to platforms like YouTube Live and Twitch; recordings need an S3, Azure or Google Cloud bucket. You also need a domain of your own. Ingress (bringing outside RTMP streams into a room) and Agents (voice AI) are optional and not needed for meetings alone.',
+      sources: [
+        src('Server 部署说明', 'Server deployment guide', 'https://docs.livekit.io/home/self-hosting/deployment/'),
+        src('Egress 介绍', 'Egress overview', 'https://docs.livekit.io/home/egress/overview/'),
+        src('Egress 的部署', 'Self-hosting Egress', 'https://docs.livekit.io/home/self-hosting/egress/'),
+      ],
+    },
+    checkedAt: '2026-10-16',
+    confirmed: true,             // 作者 2026-10-16 确认
   },
 ];
 

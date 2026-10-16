@@ -15,7 +15,6 @@ export const DICTIONARY = {
     nav: {
       followX: `Follow @${X_HANDLE}`,
       industries: 'Categories',
-      notes: 'Articles',
     },
     oss: {
       crumb: 'Open source by industry',
@@ -64,15 +63,6 @@ export const DICTIONARY = {
       ctaBody: 'Tell me the industry and what you need solved. I will look at it next.',
       ctaButton: `Message @${X_HANDLE} on X`,
     },
-    notes: {
-      heading: 'Articles',
-      sub: 'Hands-on write-ups: how it was built, what it cost, and where it got stuck.',
-      read: 'Read',
-    },
-    article: {
-      back: 'All articles',
-      cta: 'I post hands-on notes like this on X.',
-    },
     footer: {
       copyright: 'BuilderStack © 2026',
     },
@@ -81,7 +71,6 @@ export const DICTIONARY = {
     nav: {
       followX: `关注 @${X_HANDLE}`,
       industries: '分类',
-      notes: '文章',
     },
     oss: {
       crumb: '按行业找开源项目',
@@ -130,15 +119,6 @@ export const DICTIONARY = {
       ctaBody: '告诉我行业和想解决的事，下一个就评估它。',
       ctaButton: `在 X 上私信 @${X_HANDLE}`,
     },
-    notes: {
-      heading: '文章',
-      sub: '亲手做过的事：怎么搭的、花了多少、卡在哪。',
-      read: '读全文',
-    },
-    article: {
-      back: '全部文章',
-      cta: '我在 X 上持续发这类亲手试过的笔记。',
-    },
     footer: {
       copyright: 'BuilderStack © 2026',
     },
@@ -162,11 +142,6 @@ export const I18nProvider: React.FC<{ lang: Language; children: React.ReactNode 
     } catch {}
     const { pathname, search, hash } = window.location;
     const base = pathname.replace(/^\/zh(?=\/|$)/, '') || '/';
-    // 文章只有英文版，从文章页切到中文就回中文首页
-    if (newLang === 'zh' && /^\/notes(\/|$)/.test(base)) {
-      window.location.assign('/zh/');
-      return;
-    }
     window.location.assign(localePath(newLang, base) + search + hash);
   };
 
