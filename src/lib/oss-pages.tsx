@@ -2,7 +2,7 @@ import React from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { OssDirectory } from '@/components/OssDirectory';
-import { OssIndustriesPage } from '@/components/OssIndustriesPage';
+import { OssIndustriesPage, type OssCategoryGroup } from '@/components/OssIndustriesPage';
 import { OssProjectPage } from '@/components/OssProjectPage';
 import type { OssCategoryView, OssFactView, OssProjectView } from '@/components/OssParts';
 import {
@@ -178,13 +178,17 @@ export function renderOssHome(lang: Language) {
   return directory(lang, 'all', 'all');
 }
 
+// 分类页：每个行业一栏，列出这个行业里出现的用途；不属于任何行业的用途放在最后一栏“各行业通用”
 export function renderOssIndustries(lang: Language) {
-  return (
-    <OssIndustriesPage
-      uses={OSS_USES.map((u) => useView(u, lang)).filter((u) => u.count > 0)}
-      industries={OSS_INDUSTRIES.map((i) => industryView(i, lang)).filter((i) => i.count > 0)}
-    />
-  );
+  const uses = OSS_USES.map((u) => useView(u, lang)).filter((u) => u.count > 0);
+  const groups: OssCategoryGroup[] = OSS_INDUSTRIES.filter((i) => ossProjectsOfIndustry(i.id).length > 0).map((i) => {
+    const inIndustry = ossProjectsOfIndustry(i.id);
+    const view = industryView(i, lang);
+    return { id: i.id, label: view.label, href: view.href, items: uses.filter((u) => inIndustry.some((p) => p.use === u.id)) };
+  });
+  const anyIndustry = uses.filter((u) => ossProjectsOfUse(u.id).every((p) => p.industries.length === 0));
+  if (anyIndustry.length > 0) groups.push({ id: 'any', label: lang === 'en' ? 'Any industry' : '各行业通用', items: anyIndustry });
+  return <OssIndustriesPage groups={groups} />;
 }
 
 export function renderOssIndustry(lang: Language, industryId: string) {
