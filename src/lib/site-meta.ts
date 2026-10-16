@@ -3,16 +3,16 @@ import type { Language } from '@/lib/i18n';
 
 const SITE = 'https://dceniac.com';
 
-// 首页现在是“按行业找开源项目”，站点默认的标题和简介跟着它走
+// 首页是开源项目目录（2026-10-16 起按要解决的事和行业两种方式找），站点默认的标题和简介跟着它走
 const COPY = {
   en: {
-    title: 'BuilderStack — Open-source software you can actually use, by industry',
+    title: 'BuilderStack — Open-source software your business can actually use',
     description:
       'For small-team owners and managers. Each project answers five questions: commercial use, maintenance, deployment, cost and caveats, with sources.',
     locale: 'en_US',
   },
   zh: {
-    title: 'BuilderStack — 按行业找能拿来用的开源项目',
+    title: 'BuilderStack — 找能直接拿来用的开源项目',
     description:
       '给小团队的老板和技术负责人。每个项目回答五件事：能不能商用、还活不活着、部署难不难、成本多少、注意事项，每条都带出处。',
     locale: 'zh_CN',

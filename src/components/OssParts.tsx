@@ -5,7 +5,7 @@ import { OssFactKey, OssVerdict } from '@/types/oss';
 import { useI18n, X_HANDLE } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
-// “按行业找开源项目”各页面共用的小部件和数据形状。
+// 开源项目各页面共用的小部件和数据形状。
 // 页面拿到的是已经按当前语言取好文字的数据（见 src/lib/oss-pages.tsx），另一种语言的文字不进页面。
 
 export interface OssFactView {
@@ -21,10 +21,11 @@ export interface OssProjectView {
   name: string;
   logo?: string;
   what: string;
-  industry: string;
-  industryLabel: string;
-  alsoIn: string[];            // 还出现在哪些分类下
-  uses: string[];
+  use: string;                 // 所属用途
+  useLabel: string;
+  useHref: string;             // 用途页
+  industries: string[];        // 出现在哪些行业里
+  scenarios: { id: string; label: string; text: string }[];   // 在各行业里拿它做什么，只有写了场景的行业
   href: string;                // 项目详情页
   repoUrl: string;
   homepage?: string;
@@ -35,14 +36,14 @@ export interface OssProjectView {
   confirmed: boolean;
 }
 
-export interface OssIndustryView {
+// 用途和行业共用的形状
+export interface OssCategoryView {
   id: string;
   label: string;
-  title: string;               // 分类页的大标题
+  title: string;               // 用途页或行业页的大标题
   description: string;
-  count: number;               // 能显示出来的项目数；可以是 0，分类照常显示
-  href: string;                // 分类页的地址
-  uses: { id: string; label: string }[];
+  count: number;               // 能显示出来的项目数
+  href: string;                // 用途页 /oss/<用途>/ 或行业页 /for/<行业>/
 }
 
 export type RowFactKey = Exclude<OssFactKey, 'caveats'>;

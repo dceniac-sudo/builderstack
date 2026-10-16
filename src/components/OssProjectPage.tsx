@@ -39,7 +39,7 @@ const SOURCE_LINK = 'text-[var(--sub)] underline decoration-[#CFCFCA] underline-
 // “别的选择”里每个项目带出来的两个结论：读者换项目，多半是因为许可证或者部署难度
 const ALT_FACTS: RowFactKey[] = ['commercial', 'deploy'];
 
-// 一个项目的详情页，从上往下：适不适合、界面截图、五件事（每行有结论、依据和出处）、同一用途的其他项目。
+// 一个项目的详情页，从上往下：适不适合、各行业怎么用（只有跨行业的项目有）、界面截图、五件事（每行有结论、依据和出处）、同一用途的其他项目。
 // 适不适合放在最前面：从搜索进来的人先要知道适不适合自己，再看依据。
 export const OssProjectPage: React.FC<OssProjectPageProps> = ({ project: p, fit, shot, alternatives }) => {
   const { lang, t } = useI18n();
@@ -62,8 +62,8 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({ project: p, fit,
             {o.crumb}
           </Link>
           {' / '}
-          <Link href={localePath(lang, `/oss/${p.industry}/`)} className="hover:text-[var(--ink)]">
-            {p.industryLabel}
+          <Link href={p.useHref} className="hover:text-[var(--ink)]">
+            {p.useLabel}
           </Link>
         </p>
 
@@ -116,6 +116,25 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({ project: p, fit,
                 <div key={label} className={cn('grid grid-cols-1 gap-x-8 gap-y-1 py-3.5 sm:grid-cols-[9rem_1fr]', i > 0 && 'border-t border-[var(--line)]')}>
                   <dt className="text-[13px] text-[var(--sub)] sm:pt-0.5">{label}</dt>
                   <dd className="min-w-0 text-base">{text}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )}
+
+        {/* 跨行业的项目：在各行业里拿它做什么（2026-10-16 起） */}
+        {p.scenarios.length > 0 && (
+          <section className="rise mt-9" style={{ animationDelay: `${fit ? 245 : 210}ms` }}>
+            <h2 className={H2}>{o.inIndustries}</h2>
+            <dl className="mt-3 border-y border-[var(--line)]">
+              {p.scenarios.map((s, i) => (
+                <div key={s.id} className={cn('grid grid-cols-1 gap-x-8 gap-y-1 py-3.5 sm:grid-cols-[9rem_1fr]', i > 0 && 'border-t border-[var(--line)]')}>
+                  <dt className="text-[13px] text-[var(--sub)] sm:pt-0.5">
+                    <Link href={localePath(lang, `/for/${s.id}/`)} className="hover:text-[var(--ink)]">
+                      {s.label}
+                    </Link>
+                  </dt>
+                  <dd className="min-w-0 text-base">{s.text}</dd>
                 </div>
               ))}
             </dl>

@@ -5,17 +5,20 @@ import Link from 'next/link';
 import { Check, ChevronDown, Search } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { SiteFooter } from '@/components/SiteFooter';
-import { Dot, OssCta, OssIndustryView, OssLogo, OssProjectView, ROW_FACTS } from '@/components/OssParts';
+import { Dot, OssCategoryView, OssCta, OssLogo, OssProjectView, ROW_FACTS } from '@/components/OssParts';
 import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
 interface OssDirectoryProps {
-  title: string;
+  title: string;                   // 首页的大标题，“全部”且没选用途时用
+  homeHref: string;
   sub: string;
-  industries: OssIndustryView[];
-  projects: OssProjectView[];      // 所有行业的项目
-  initialIndustry: string;         // 打开页面时选中的行业
-  active?: 'industries';           // 行业页在顶栏里高亮“行业”
+  industries: OssCategoryView[];   // 第一排的行业标签（前面再加一个“全部”）
+  uses: OssCategoryView[];         // 第二排的用途
+  projects: OssProjectView[];      // 全部项目
+  initialIndustry: string;         // 打开页面时选中的行业，'all' 是全部
+  initialUse: string;              // 打开页面时选中的用途，'all' 是全部
+  active?: 'industries';           // 行业页和用途页在顶栏里高亮“分类”
 }
 
 // 表头和每一行共用的列。宽屏上四个结论列是固定宽度，左边都留给名字和介绍；窄一些的屏幕上按比例分。
@@ -24,55 +27,77 @@ const COLS = 'md:grid-cols-[minmax(0,2.2fr)_repeat(4,minmax(0,1fr))_24px] lg:gri
 const FACT_ROW = 'grid grid-cols-[1fr_auto] items-baseline gap-x-4 gap-y-1 py-2.5 md:grid-cols-[140px_116px_minmax(0,1fr)]';
 const TEXT_LINK = 'py-1 underline decoration-[#CFCFCA] underline-offset-[3px] transition-colors hover:decoration-[var(--ink)]';
 
-// 首页和行业页共用的目录：居中的标题区和搜索框，下面一张表。
-// 筛选并在表头里：最上面一排是分类，第二排是想解决的事和“只看能直接商用的”开关。
+// 首页、用途页和行业页共用的目录：居中的标题区和搜索框，下面一张表。
+// 筛选并在表头里（用户 2026-10-11 选定的“并进表头”）：最上面一排是“全部”和各行业，第二排是用途和“只看能直接商用的”开关。
+// 2026-10-16 起用途是主分类、行业是视图：同一个项目可以出现在几个行业里，在某个行业里有专门的用法时，行里写那句用法。
 // 点开一行时，这一行的四个结论从行里挪到下面，和依据写在一起，同样的话不说两遍（用户 2026-10-11 选定）。
-export const OssDirectory: React.FC<OssDirectoryProps> = ({ title, sub, industries, projects, initialIndustry, active }) => {
+export const OssDirectory: React.FC<OssDirectoryProps> = ({ title, homeHref, sub, industries, uses: allUses, projects, initialIndustry, initialUse, active }) => {
   const { lang, t } = useI18n();
   const o = t.oss;
   const [industry, setIndustry] = useState(initialIndustry);
-  const [use, setUse] = useState('all');
+  const [use, setUse] = useState(initialUse);
   const [onlyCommercial, setOnlyCommercial] = useState(false);
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState<Record<string, boolean>>({});
   const [touched, setTouched] = useState(false);   // 筛选过之后，行的入场动画换成更短的那种
 
-  const current = industries.find((i) => i.id === industry);
-  // 分类页上换标签时，大标题、浏览器标题和地址都跟着换成那个分类的；首页的标题不分行业，不用换。
-  const followTab = active === 'industries';
-  const heading = followTab && current ? current.title : title;
-  const pickIndustry = (i: OssIndustryView) => {
-    change(() => { setIndustry(i.id); setUse('all'); });
-    if (followTab && i.id !== industry) {
-      window.history.replaceState(null, '', i.href);
-      document.title = `${i.title} — BuilderStack`;
+  // 大标题和地址跟着筛选走，筛到哪儿就能把地址直接发给别人：
+  // 选了行业是行业页，“全部”里选了用途是用途页，都没选是首页。
+  const pageFor = (ind: string, u: string) => {
+    const i = industries.find((x) => x.id === ind);
+    if (i) return { title: i.title, href: i.href };
+    const x = allUses.find((y) => y.id === u);
+    if (x) return { title: x.title, href: x.href };
+    return { title, href: homeHref };
+  };
+  const heading = pageFor(industry, use).title;
+  const pick = (ind: string, u: string) => {
+    change(() => { setIndustry(ind); setUse(u); });
+    const next = pageFor(ind, u);
+    if (next.href !== pageFor(industry, use).href) {
+      window.history.replaceState(null, '', next.href);
+      document.title = `${next.title} — BuilderStack`;
     }
   };
-  // 一个分类下的项目：本来就属于它的，加上标了“也出现在这里”的（比如餐饮门店里的通用收银系统同时出现在电商零售下面）
-  const inIndustry = useMemo(() => projects.filter((p) => p.industry === industry || p.alsoIn.includes(industry)), [projects, industry]);
-  // “想解决的事”先列这个分类自己的，再补上从别的分类带过来的项目的
-  const uses = useMemo(() => {
-    const known = new Map<string, string>();
-    (current?.uses ?? []).forEach((u) => known.set(u.id, u.label));
-    industries.forEach((i) => i.uses.forEach((u) => { if (!known.has(u.id)) known.set(u.id, u.label); }));
-    return Array.from(known, ([id, label]) => ({ id, label })).filter((u) => inIndustry.some((p) => p.uses.includes(u.id)));
-  }, [current, industries, inIndustry]);
+
+  // 行业视图里，从别的用途跨过来的项目（写了这个行业的用法的）排在后面，先看这个行业的本行
+  const inIndustry = useMemo(() => {
+    if (industry === 'all') return projects;
+    const own = projects.filter((p) => p.industries.includes(industry));
+    const crossing = (p: OssProjectView) => p.scenarios.some((s) => s.id === industry);
+    return [...own.filter((p) => !crossing(p)), ...own.filter(crossing)];
+  }, [projects, industry]);
+  // 第二排只列这个视图里有项目的用途，顺序按全站的用途顺序
+  const uses = useMemo(() => allUses.filter((u) => inIndustry.some((p) => p.use === u.id)), [allUses, inIndustry]);
 
   const shown = useMemo(() => {
     const q = query.trim().toLowerCase();
-    // 有搜索词时在所有行业里找，否则只看选中的行业
+    // 有搜索词时在全部项目里找，否则只看选中的行业
     const pool = q ? projects : inIndustry;
     return pool.filter(
       (p) =>
-        (q || use === 'all' || p.uses.includes(use)) &&
+        (q || use === 'all' || p.use === use) &&
         (!onlyCommercial || p.facts.commercial.verdict === 'good') &&
-        (!q || p.name.toLowerCase().includes(q) || p.what.toLowerCase().includes(q) || p.industryLabel.toLowerCase().includes(q))
+        (!q ||
+          p.name.toLowerCase().includes(q) ||
+          p.what.toLowerCase().includes(q) ||
+          p.useLabel.toLowerCase().includes(q) ||
+          p.scenarios.some((s) => s.text.toLowerCase().includes(q) || s.label.toLowerCase().includes(q)))
     );
   }, [projects, inIndustry, use, onlyCommercial, query]);
 
-  const live = industries.filter((i) => i.count > 0);
   const checkedAt = projects.map((p) => p.checkedAt).sort().pop() ?? '';
-  const change = (fn: () => void) => {
+  const tabs = [{ id: 'all', label: o.all, count: projects.length }, ...industries.filter((i) => i.count > 0)];
+  // “全部”下不放 11 个用途按钮（一堵按钮墙），改成按用途分组的表，每组一行小标题；选了行业才出用途按钮（2026-10-16 定）
+  // 用途页（“全部”里选了一个用途）只露出“全部”和当前这个用途，让人看得出筛的是哪一类、点一下能回去
+  const chipUses = industry !== 'all' ? uses : uses.filter((u) => u.id === use);
+  const showUseChips = industry !== 'all' ? uses.length > 1 : use !== 'all';
+  const grouped = industry === 'all' && use === 'all' && !query.trim();
+  const groups = useMemo(() => {
+    if (!grouped) return [{ id: '', label: '', href: '', items: shown }];
+    return allUses.map((u) => ({ id: u.id, label: u.label, href: u.href, items: shown.filter((p) => p.use === u.id) })).filter((g) => g.items.length > 0);
+  }, [grouped, allUses, shown]);
+  function change(fn: () => void) {
     setTouched(true);
     fn();
   };
@@ -85,7 +110,7 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({ title, sub, industri
         <div className="dot-fade relative mx-auto max-w-[1120px] overflow-hidden px-5 pb-8 pt-10 text-center sm:px-10 sm:pb-12 sm:pt-[72px]">
           <p className="rise relative inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-white px-3.5 py-[5px] text-[13px] text-[var(--sub)] shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--good)]" />
-            {o.homeBadge(projects.length, live.length, checkedAt)}
+            {o.homeBadge(projects.length, allUses.filter((u) => u.count > 0).length, checkedAt)}
           </p>
           <h1
             className={cn(
@@ -128,12 +153,12 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({ title, sub, industri
       <main className="mx-auto w-full max-w-[1120px] flex-1 px-5 sm:px-10">
         <div className="mt-5 rounded-[14px] border border-[var(--line)] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] [overflow:clip] md:mt-8">
           <div className="flex flex-wrap items-stretch gap-x-6 border-b border-[var(--line)] px-3.5 md:px-[18px]">
-            {industries.map((i) => (
+            {tabs.map((i) => (
               <button
                 key={i.id}
                 type="button"
                 aria-pressed={i.id === industry}
-                onClick={() => pickIndustry(i)}
+                onClick={() => pick(i.id, 'all')}
                 className={cn(
                   '-mb-px inline-flex min-h-12 items-center gap-[7px] whitespace-nowrap text-[15px] transition-colors md:min-h-[52px]',
                   i.id === industry ? 'font-semibold shadow-[inset_0_-2px_0_var(--ink)]' : 'text-[var(--sub)] hover:text-[var(--ink)]'
@@ -146,15 +171,15 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({ title, sub, industri
           </div>
 
           <div className="md:flex md:items-start md:gap-2 md:px-[18px] md:py-3">
-            {uses.length > 1 && (
+            {showUseChips && (
               <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2 px-3.5 py-3 md:p-0">
                 <span className="mr-1 text-[13px] text-[var(--sub)] md:mr-1.5">{o.pick}</span>
-                {[{ id: 'all', label: o.all }, ...uses].map((u) => (
+                {[{ id: 'all', label: o.all }, ...chipUses].map((u) => (
                   <button
                     key={u.id}
                     type="button"
                     aria-pressed={use === u.id}
-                    onClick={() => change(() => setUse(u.id))}
+                    onClick={() => pick(industry, u.id)}
                     className={cn(
                       'inline-flex min-h-10 items-center gap-[7px] whitespace-nowrap rounded-lg border px-3 text-sm transition-colors md:min-h-[34px]',
                       use === u.id
@@ -164,7 +189,7 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({ title, sub, industri
                   >
                     {u.label}
                     <span className={cn('text-[12.5px] font-normal', use === u.id ? 'text-[#C9C9C4]' : 'text-[var(--sub)]')}>
-                      {u.id === 'all' ? inIndustry.length : inIndustry.filter((p) => p.uses.includes(u.id)).length}
+                      {u.id === 'all' ? inIndustry.length : inIndustry.filter((p) => p.use === u.id).length}
                     </span>
                   </button>
                 ))}
@@ -174,7 +199,7 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({ title, sub, industri
             <label
               className={cn(
                 'flex min-h-12 cursor-pointer items-center justify-between gap-2.5 whitespace-nowrap px-3.5 text-sm md:ml-auto md:min-h-[34px] md:shrink-0 md:px-0',
-                uses.length > 1 && 'max-md:border-t max-md:border-[var(--line)]'
+                showUseChips && 'max-md:border-t max-md:border-[var(--line)]'
               )}
             >
               {o.only}
@@ -200,8 +225,21 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({ title, sub, industri
             <span className="hidden md:block" />
           </div>
 
-          {shown.map((p, i) => {
+          {groups.map((g, gi) => (
+            <React.Fragment key={g.id || 'rows'}>
+              {g.id && (
+                <div className={cn('flex items-baseline gap-2 px-3.5 pb-2 pt-4 md:px-[18px]', gi > 0 && 'border-t border-[var(--line)]')}>
+                  <Link href={g.href} className="text-[13.5px] font-semibold underline-offset-[3px] hover:underline">
+                    {g.label}
+                  </Link>
+                  <span className="text-[12.5px] text-[var(--sub)]">{g.items.length}</span>
+                </div>
+              )}
+          {g.items.map((p, j) => {
+            const i = groups.slice(0, gi).reduce((n, x) => n + x.items.length, 0) + j;
             const isOpen = !!open[p.id];
+            // 在选中的行业里有专门的用法，就先说这句用法；点开后再补上它本身是什么
+            const scenario = !query.trim() ? p.scenarios.find((s) => s.id === industry)?.text : undefined;
             const verdict = (key: (typeof ROW_FACTS)[number]) => (
               <span className="inline-flex items-center gap-[7px] whitespace-nowrap text-sm font-medium">
                 <Dot verdict={p.facts[key].verdict} />
@@ -210,8 +248,8 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({ title, sub, industri
             );
             return (
               <div
-                key={`${p.industry}-${p.id}`}
-                className={cn(touched ? 'swap-in' : 'rise', i > 0 && 'border-t border-[var(--line)]')}
+                key={p.id}
+                className={cn(touched ? 'swap-in' : 'rise', (grouped || i > 0) && 'border-t border-[var(--line)]')}
                 style={{ animationDelay: `${touched ? i * 18 : 340 + i * 35}ms` }}
               >
                 <button
@@ -230,15 +268,13 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({ title, sub, industri
                     <span className="min-w-0">
                       <span className="block text-[15.5px] font-semibold leading-[1.3]">
                         {p.name}
-                        {p.industry !== industry && !query.trim() && (
-                          <span className="ml-2 rounded-md border border-[var(--line)] px-1.5 py-px align-[1px] text-[11.5px] font-medium text-[var(--sub)]">{p.industryLabel}</span>
-                        )}
                         {p.handsOn && (
                           <span className="ml-2 rounded-md bg-[#E8F3EC] px-1.5 py-px align-[1px] text-[11.5px] font-medium text-[var(--good)]">{o.handsOn}</span>
                         )}
                         {!p.confirmed && <span className="ml-2 text-xs font-normal text-[var(--sub)]">{o.draft}</span>}
                       </span>
-                      <span className={cn('block text-[13px] text-[var(--sub)]', !isOpen && 'truncate')}>{p.what}</span>
+                      <span className={cn('block text-[13px] text-[var(--sub)]', !isOpen && 'truncate')}>{scenario ?? p.what}</span>
+                      {scenario && isOpen && <span className="mt-0.5 block text-[13px] text-[var(--sub)]">{p.what}</span>}
                     </span>
                   </span>
                   {!isOpen &&
@@ -297,6 +333,8 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({ title, sub, industri
               </div>
             );
           })}
+            </React.Fragment>
+          ))}
 
           {shown.length === 0 && (
             <p className="px-[18px] py-11 text-center text-[var(--sub)]">{inIndustry.length === 0 && !query.trim() ? o.emptyCategory : o.empty}</p>

@@ -1,46 +1,146 @@
 import { OssFact, OssIndustry, OssProject, OssSource } from '@/types/oss';
 import { SHOW_DRAFTS } from '@/data/drafts';
 
+// 2026-10-16 起的结构（作者让 Claude 定）：用途是主分类，行业是视图。
+// 起因：很多项目跨行业，比如 LiveKit 在教育里做直播课和远程实训互动、在电商里做直播带货，只按行业分装不下。
+// 依据：有搜索量的分类词全是用途（open source lms / erp / pos / help desk），几乎没人按“某行业开源”搜；老板逛站时又会按行业看。
+// 所以每个项目只属于一个用途（用途页 /oss/<用途>/，对着搜索词），同时可以出现在多个行业里（行业页 /for/<行业>/，给老板逛）。
+// 原来的“AI”和“客服与工单”两个分类不是行业，拆成了“实时数字人”“在线客服”“工单”三个用途。
+
+export interface UseCopy {
+  id: string;
+  label: string;               // 筛选按钮上的字
+  labelEn: string;
+  title: string;               // 用途页的大标题
+  titleEn: string;
+  description: string;         // 分类列表、搜索结果和分享卡片里的简介
+  descriptionEn: string;
+}
+
 export interface IndustryCopy {
   id: OssIndustry;
   label: string;
   labelEn: string;
-  title: string;               // 行业页标题前半句（黑色）
+  title: string;               // 行业页的大标题
   titleEn: string;
-  tagline: string;             // 行业页标题后半句（灰色）
-  taglineEn: string;
-  description: string;         // 行业卡片、搜索结果和分享卡片里的简介
+  description: string;
   descriptionEn: string;
 }
 
-const TAGLINE = '每个先回答五件事，再决定要不要装。';
-const TAGLINE_EN = 'Five answers for each one, before you install anything.';
-
-// 行业分类，按这里的顺序显示。作者 2026-10-11 定：所有分类都正常显示、可以点进去，不写“评估中”；还没有项目的分类内容先空着，由作者后面加。
-// 教育以外的分类最初是 2026-10-09 按作者“多做几个分类”的要求加的；2026-10-13 作者去掉了医疗诊所，加了客服与工单。
-export const OSS_INDUSTRIES: IndustryCopy[] = [
-  // AI 排在第一个标签（作者 2026-10-13 定）。首页默认选中第一个有项目的分类，所以首页打开就是 AI。
+// 用途，按这里的顺序显示。英文名尽量用有搜索量的说法（LMS、POS、ERP、help desk）。
+export const OSS_USES: UseCopy[] = [
   {
-    id: 'ai',
-    label: 'AI',
-    labelEn: 'AI',
-    title: '能拿来用的开源 AI 项目',
-    titleEn: 'Open-source AI you can actually use',
-    tagline: TAGLINE,
-    taglineEn: TAGLINE_EN,
-    description: '各行业都用得上的 AI 能力，先从实时数字人开始。',
-    descriptionEn: 'AI capabilities that cut across industries, starting with real-time digital humans.',
+    id: 'lms',
+    label: '在线课程与考试',
+    labelEn: 'LMS',
+    title: '能拿来用的开源学习平台（LMS）',
+    titleEn: 'Open-source LMS you can actually use',
+    description: '开课、作业、测验和成绩放在一个平台里。',
+    descriptionEn: 'Learning management systems: courses, assignments, quizzes and grades in one place.',
   },
+  {
+    id: 'live-video',
+    label: '直播与视频会议',
+    labelEn: 'Live video & meetings',
+    title: '能拿来用的开源直播和视频会议',
+    titleEn: 'Open-source live video and video conferencing you can actually use',
+    description: '装上就能开会的成品，和自己开发直播、会议用的组件。',
+    descriptionEn: 'Ready-made meeting software, and the building blocks for your own live video and meetings.',
+  },
+  {
+    id: 'coding',
+    label: '编程教学环境',
+    labelEn: 'Coding classrooms',
+    title: '能拿来用的开源编程教学环境',
+    titleEn: 'Open-source coding classrooms you can actually use',
+    description: '一个班的学生各有自己的编程环境。',
+    descriptionEn: 'Every student in a class gets their own coding environment.',
+  },
+  {
+    id: 'store',
+    label: '网店',
+    labelEn: 'Online store',
+    title: '能拿来用的开源网店系统',
+    titleEn: 'Open-source ecommerce platforms you can actually use',
+    description: '带现成店面和后台的自建网店。',
+    descriptionEn: 'Self-hosted stores with a ready-made storefront and admin.',
+  },
+  {
+    id: 'headless',
+    label: '电商后端',
+    labelEn: 'Headless commerce',
+    title: '能拿来用的开源电商后端',
+    titleEn: 'Open-source headless commerce you can actually use',
+    description: '给开发团队的电商后端，店面自己做。',
+    descriptionEn: 'Commerce back ends for developer teams; you build the storefront.',
+  },
+  {
+    id: 'pos',
+    label: '收银',
+    labelEn: 'Point of sale',
+    title: '能拿来用的开源收银系统',
+    titleEn: 'Open-source POS systems you can actually use',
+    description: '网页版收银，带库存和报表。',
+    descriptionEn: 'Web-based point of sale with inventory and reports.',
+  },
+  {
+    id: 'ordering',
+    label: '点餐订座',
+    labelEn: 'Ordering & reservations',
+    title: '能拿来用的开源点餐订座系统',
+    titleEn: 'Open-source online ordering and reservations you can actually use',
+    description: '餐厅自己的在线点餐和订座网站。',
+    descriptionEn: 'A restaurant’s own online ordering and table booking site.',
+  },
+  {
+    id: 'live-chat',
+    label: '在线客服',
+    labelEn: 'Live chat',
+    title: '能拿来用的开源在线客服',
+    titleEn: 'Open-source live chat and shared inboxes you can actually use',
+    description: '网站聊天、邮件和社交消息收进一个收件箱。',
+    descriptionEn: 'Website chat, email and social messages in one inbox.',
+  },
+  {
+    id: 'help-desk',
+    label: '工单',
+    labelEn: 'Help desk',
+    title: '能拿来用的开源工单系统',
+    titleEn: 'Open-source help desk and ticketing systems you can actually use',
+    description: '各个渠道进来的问题都变成工单处理。',
+    descriptionEn: 'Requests from every channel become tickets.',
+  },
+  {
+    id: 'erp',
+    label: 'ERP',
+    labelEn: 'ERP',
+    title: '能拿来用的开源 ERP',
+    titleEn: 'Open-source ERP you can actually use',
+    description: '销售、采购、库存和生产放在一套系统里。',
+    descriptionEn: 'Sales, purchasing, inventory and manufacturing in one system.',
+  },
+  {
+    id: 'avatars',
+    label: '实时数字人',
+    labelEn: 'AI avatars',
+    title: '能拿来用的开源实时数字人',
+    titleEn: 'Open-source real-time AI avatars you can actually use',
+    description: '能对口型说话、实时对话的数字人。',
+    descriptionEn: 'Digital humans that lip-sync and hold real-time conversations.',
+  },
+];
+
+// 行业，按这里的顺序显示。行业页列出这个行业里出现的项目，按用途分开筛。
+// 作者 2026-10-13 定过：医疗诊所去掉；数字人不挂到教育和电商零售下面；Open Source Point of Sale 不挂到电商零售下面。
+export const OSS_INDUSTRIES: IndustryCopy[] = [
   {
     id: 'education',
     label: '教育',
     labelEn: 'Education',
     title: '教育行业能拿来用的开源项目',
-    titleEn: 'Open-source LMS and education software you can actually use',   // 2026-10-13 按搜索量加上 LMS：open source lms 是教育这边搜得最多的词
-    tagline: TAGLINE,
-    taglineEn: TAGLINE_EN,
-    description: '网校、考试、直播课堂和编程教学。',
-    descriptionEn: 'Learning management systems (LMS), exams, live classes and teaching code.',
+    titleEn: 'Open-source software a school or training business can actually use',
+    description: '网校、考试、直播课和编程教学。',
+    descriptionEn: 'Online courses, exams, live classes and teaching code.',
   },
   {
     id: 'ecommerce',
@@ -48,10 +148,8 @@ export const OSS_INDUSTRIES: IndustryCopy[] = [
     labelEn: 'E-commerce & retail',
     title: '电商零售能拿来用的开源项目',
     titleEn: 'Open-source software an online store can actually use',
-    tagline: TAGLINE,
-    taglineEn: TAGLINE_EN,
-    description: '自建商城、小程序商城和电商引擎。',
-    descriptionEn: 'Self-hosted stores and commerce engines.',
+    description: '自建网店、电商后端和直播带货。',
+    descriptionEn: 'Self-hosted stores, headless commerce and live selling.',
   },
   {
     id: 'restaurant',
@@ -59,63 +157,19 @@ export const OSS_INDUSTRIES: IndustryCopy[] = [
     labelEn: 'Restaurants & shops',
     title: '餐饮门店能拿来用的开源项目',
     titleEn: 'Open-source software a restaurant or shop can actually use',
-    tagline: TAGLINE,
-    taglineEn: TAGLINE_EN,
-    description: '收银、点餐、订座和门店管理。',
-    descriptionEn: 'Point of sale, online ordering, reservations and store management.',
+    description: '收银、点餐和订座。',
+    descriptionEn: 'Point of sale, online ordering and reservations.',
   },
-  // 作者 2026-10-13 定：去掉医疗诊所，加客服与工单。英文标题用 help desk 和 ticketing，是按搜索量取的词（customer support 这个说法几乎没人搜）。
-  {
-    id: 'helpdesk',
-    label: '客服与工单',
-    labelEn: 'Customer support & helpdesk',
-    title: '能拿来用的开源客服与工单系统',
-    titleEn: 'Open-source help desk and ticketing systems you can actually use',
-    tagline: TAGLINE,
-    taglineEn: TAGLINE_EN,
-    description: '在线客服、多渠道收件箱和工单系统。',
-    descriptionEn: 'Live chat, shared inboxes and ticketing systems.',
-  },
-  // 作者 2026-10-13 定：制造与仓储留着，只放一个 ERP。
   {
     id: 'manufacturing',
     label: '制造与仓储',
     labelEn: 'Manufacturing & warehousing',
     title: '制造与仓储能拿来用的开源项目',
     titleEn: 'Open-source software a factory or warehouse can actually use',
-    tagline: TAGLINE,
-    taglineEn: TAGLINE_EN,
     description: 'ERP：销售、采购、库存和生产放在一套系统里。',
     descriptionEn: 'ERP: sales, purchasing, inventory and manufacturing in one system.',
   },
 ];
-
-// 每个行业下的用途，用于行业页里的筛选
-export const OSS_USES: Record<OssIndustry, { id: string; label: string; labelEn: string }[]> = {
-  education: [
-    { id: 'course', label: '在线课程', labelEn: 'Online courses' },
-    { id: 'exam', label: '考试测评', labelEn: 'Exams' },
-    { id: 'live', label: '直播课堂', labelEn: 'Live classes' },
-    { id: 'coding', label: '编程教学', labelEn: 'Teaching code' },
-  ],
-  ai: [
-    { id: 'avatar', label: '实时数字人', labelEn: 'Digital humans' },
-    { id: 'realtime', label: '实时音视频', labelEn: 'Real-time voice & video' },
-  ],
-  ecommerce: [
-    { id: 'store', label: '自建商城', labelEn: 'Online store' },
-    { id: 'engine', label: '电商引擎', labelEn: 'Commerce engine' },
-  ],
-  restaurant: [
-    { id: 'pos', label: '收银', labelEn: 'Point of sale' },
-    { id: 'ordering', label: '点餐订座', labelEn: 'Ordering & reservations' },
-  ],
-  helpdesk: [
-    { id: 'chat', label: '在线客服', labelEn: 'Live chat & inbox' },
-    { id: 'ticketing', label: '工单系统', labelEn: 'Ticketing' },
-  ],
-  manufacturing: [{ id: 'erp', label: 'ERP', labelEn: 'ERP' }],
-};
 
 const CHECKED_AT = '2026-10-09';
 const GH = 'https://github.com/';
@@ -162,8 +216,8 @@ const ALL_PROJECTS: OssProject[] = [
     id: 'moodle',
     logo: '/oss/logos/moodle.png',
     name: 'Moodle',
-    industry: 'education',
-    uses: ['course', 'exam'],
+    use: 'lms',
+    industries: [{ id: 'education' }],
     what: '老牌的开源学习平台，课程、作业、测验、成绩都有。',
     whatEn: 'The long-established open-source learning platform: courses, assignments, quizzes and grades.',
     repoUrl: `${GH}moodle/moodle`,
@@ -210,8 +264,8 @@ const ALL_PROJECTS: OssProject[] = [
     id: 'canvas-lms',
     logo: '/oss/logos/canvas-lms.jpg',
     name: 'Canvas LMS',
-    industry: 'education',
-    uses: ['course'],
+    use: 'lms',
+    industries: [{ id: 'education' }],
     what: 'Instructure 公司开源的学习管理系统，海外高校用得多。',
     whatEn: 'The learning management system open-sourced by Instructure, widely used by universities.',
     repoUrl: `${GH}instructure/canvas-lms`,
@@ -251,8 +305,8 @@ const ALL_PROJECTS: OssProject[] = [
     id: 'kolibri',
     logo: '/oss/logos/kolibri.png',
     name: 'Kolibri',
-    industry: 'education',
-    uses: ['course'],
+    use: 'lms',
+    industries: [{ id: 'education' }],
     what: '为没有稳定网络的地方做的离线学习平台。',
     whatEn: 'An offline-first learning platform for places without reliable internet.',
     repoUrl: `${GH}learningequality/kolibri`,
@@ -301,8 +355,8 @@ const ALL_PROJECTS: OssProject[] = [
     id: 'bigbluebutton',
     logo: '/oss/logos/bigbluebutton.png',
     name: 'BigBlueButton',
-    industry: 'education',
-    uses: ['live'],
+    use: 'live-video',
+    industries: [{ id: 'education' }],
     what: '为上课设计的网页会议系统，有白板、分组讨论和录制。',
     whatEn: 'A web conferencing system designed for classes, with a whiteboard, breakout rooms and recording.',
     repoUrl: `${GH}bigbluebutton/bigbluebutton`,
@@ -351,8 +405,8 @@ const ALL_PROJECTS: OssProject[] = [
     id: 'jupyterhub',
     logo: '/oss/logos/jupyterhub.png',
     name: 'JupyterHub',
-    industry: 'education',
-    uses: ['coding'],
+    use: 'coding',
+    industries: [{ id: 'education' }],
     what: '多人共用的 Jupyter 笔记本服务器，一个班的学生各有自己的环境。',
     whatEn: 'A multi-user Jupyter notebook server: every student in a class gets their own environment.',
     repoUrl: `${GH}jupyterhub/jupyterhub`,
@@ -411,8 +465,8 @@ const ALL_PROJECTS: OssProject[] = [
     id: 'woocommerce',
     name: 'WooCommerce',
     logo: '/oss/logos/woocommerce.png',
-    industry: 'ecommerce',
-    uses: ['store'],
+    use: 'store',
+    industries: [{ id: 'ecommerce' }],
     what: '装在 WordPress 上的网店插件，带商品、订单、支付和后台，其余功能靠扩展加。',
     whatEn: 'A store plugin for WordPress with products, orders, payments and an admin; further features come as extensions.',
     repoUrl: `${GH}woocommerce/woocommerce`,
@@ -472,8 +526,8 @@ const ALL_PROJECTS: OssProject[] = [
     id: 'prestashop',
     name: 'PrestaShop',
     logo: '/oss/logos/prestashop.jpg',
-    industry: 'ecommerce',
-    uses: ['store'],
+    use: 'store',
+    industries: [{ id: 'ecommerce' }],
     what: '老牌的开源网店系统，带现成的店面和后台，功能靠模块和主题扩展。',
     whatEn: 'A long-established open-source online store with a ready storefront and back office, extended through modules and themes.',
     repoUrl: `${GH}PrestaShop/PrestaShop`,
@@ -531,8 +585,8 @@ const ALL_PROJECTS: OssProject[] = [
     id: 'bagisto',
     name: 'Bagisto',
     logo: '/oss/logos/bagisto.png',
-    industry: 'ecommerce',
-    uses: ['store'],
+    use: 'store',
+    industries: [{ id: 'ecommerce' }],
     what: '基于 Laravel 的开源网店系统，带现成的店面和管理后台。',
     whatEn: 'An open-source online store built with Laravel, with a ready storefront and admin panel.',
     repoUrl: `${GH}bagisto/bagisto`,
@@ -591,8 +645,8 @@ const ALL_PROJECTS: OssProject[] = [
     id: 'medusa',
     name: 'Medusa',
     logo: '/oss/logos/medusa.jpg',
-    industry: 'ecommerce',
-    uses: ['engine'],
+    use: 'headless',
+    industries: [{ id: 'ecommerce' }],
     what: '面向开发者的电商后端和管理后台，用 TypeScript 写，店面自己接或者用官方的 Next.js 模板。',
     whatEn: 'A commerce backend and admin for developers, written in TypeScript; you build the storefront or start from the official Next.js starter.',
     repoUrl: `${GH}medusajs/medusa`,
@@ -652,8 +706,8 @@ const ALL_PROJECTS: OssProject[] = [
     id: 'saleor',
     name: 'Saleor',
     logo: '/oss/logos/saleor.png',
-    industry: 'ecommerce',
-    uses: ['engine'],
+    use: 'headless',
+    industries: [{ id: 'ecommerce' }],
     what: '只提供 GraphQL 接口的电商后端，用 Python 写；管理后台和店面是另外两个仓库。',
     whatEn: 'An API-only commerce backend with a GraphQL interface, written in Python; the dashboard and storefront live in two separate repositories.',
     repoUrl: `${GH}saleor/saleor`,
@@ -713,8 +767,8 @@ const ALL_PROJECTS: OssProject[] = [
     id: 'shopware',
     name: 'Shopware',
     logo: '/oss/logos/shopware.png',
-    industry: 'ecommerce',
-    uses: ['store'],
+    use: 'store',
+    industries: [{ id: 'ecommerce' }],
     what: '德国的开源网店系统，带现成的店面和后台，官方商店里有三千多个扩展。',
     whatEn: 'An open-source online store platform from Germany with a ready storefront and admin, and more than 3,100 extensions in its store.',
     repoUrl: `${GH}shopware/shopware`,
@@ -777,8 +831,8 @@ const ALL_PROJECTS: OssProject[] = [
   {
     id: 'opensourcepos',
     name: 'Open Source Point of Sale',
-    industry: 'restaurant',
-    uses: ['pos'],
+    use: 'pos',
+    industries: [{ id: 'restaurant' }],
     what: '网页版的收银系统，带库存、进货、客户、报表和小票打印。',
     whatEn: 'A web-based point of sale with inventory, receivings, customers, reports and receipt printing.',
     repoUrl: `${GH}opensourcepos/opensourcepos`,
@@ -825,8 +879,8 @@ const ALL_PROJECTS: OssProject[] = [
   {
     id: 'tastyigniter',
     name: 'TastyIgniter',
-    industry: 'restaurant',
-    uses: ['ordering'],
+    use: 'ordering',
+    industries: [{ id: 'restaurant' }],
     what: '餐厅自己的在线点餐和订座网站，带后台管理，支持多家分店。',
     whatEn: 'A restaurant’s own online ordering and table reservation site, with an admin back office and multi-location support.',
     repoUrl: `${GH}tastyigniter/TastyIgniter`,
@@ -878,8 +932,8 @@ const ALL_PROJECTS: OssProject[] = [
   {
     id: 'chatwoot',
     name: 'Chatwoot',
-    industry: 'helpdesk',
-    uses: ['chat'],
+    use: 'live-chat',
+    industries: [],
     what: '把网站在线聊天、邮件和社交消息收进同一个收件箱的客服系统，自带帮助中心。',
     whatEn: 'A customer support inbox that brings website live chat, email and social messaging into one place, with a built-in help center.',
     repoUrl: `${GH}chatwoot/chatwoot`,
@@ -928,8 +982,8 @@ const ALL_PROJECTS: OssProject[] = [
   {
     id: 'zammad',
     name: 'Zammad',
-    industry: 'helpdesk',
-    uses: ['ticketing'],
+    use: 'help-desk',
+    industries: [],
     what: '网页版的工单系统：邮件、在线聊天、电话和社交消息进来都变成工单，在一个界面里处理。',
     whatEn: 'A web-based helpdesk and ticketing system: email, chat, phone and social media messages all become tickets handled in one interface.',
     repoUrl: `${GH}zammad/zammad`,
@@ -979,8 +1033,8 @@ const ALL_PROJECTS: OssProject[] = [
   {
     id: 'odoo',
     name: 'Odoo',
-    industry: 'manufacturing',
-    uses: ['erp'],
+    use: 'erp',
+    industries: [{ id: 'manufacturing' }],
     what: '一整套企业应用：销售、采购、库存、生产、开票，按模块安装。社区版开源，企业版收费。',
     whatEn: 'A suite of business apps (sales, purchasing, inventory, manufacturing, invoicing) installed module by module. The Community edition is open source; Enterprise is paid.',
     repoUrl: `${GH}odoo/odoo`,
@@ -1035,8 +1089,8 @@ const ALL_PROJECTS: OssProject[] = [
   {
     id: 'livetalking',
     name: 'LiveTalking',
-    industry: 'ai',
-    uses: ['avatar'],
+    use: 'avatars',
+    industries: [],
     what: '实时交互的流式数字人引擎：输入文字或音频，数字人对口型说话，画面推到浏览器或直播平台。',
     whatEn: 'A real-time streaming digital human engine: feed it text or audio and the avatar lip-syncs, streamed to a browser or a live platform.',
     repoUrl: `${GH}lipku/LiveTalking`,
@@ -1096,8 +1150,8 @@ const ALL_PROJECTS: OssProject[] = [
   {
     id: 'openavatarchat',
     name: 'OpenAvatarChat',
-    industry: 'ai',
-    uses: ['avatar'],
+    use: 'avatars',
+    industries: [],
     what: '模块化的数字人对话系统：语音识别、大模型、语音合成、数字人形象四块都可以换。',
     whatEn: 'A modular digital human chat system: speech recognition, the LLM, text-to-speech and the avatar can each be swapped.',
     repoUrl: `${GH}HumanAIGC-Engineering/OpenAvatarChat`,
@@ -1166,13 +1220,17 @@ const ALL_PROJECTS: OssProject[] = [
     confirmed: true,             // 作者 2026-10-13 确认
   },
 
-  // AI：实时音视频。作者 2026-10-16 提出要收 LiveKit（他自己部署过，用来做视频会议）。放在 AI 分类、按“实时语音和数字人的底座”写是 Claude 的建议。
+  // 直播与视频会议。作者 2026-10-16 提出要收 LiveKit（他自己部署过，用来做视频会议）。起初放在 AI 分类，作者觉得勉强，
+  // 当天改成用途为主的结构后归到“直播与视频会议”。两个行业的场景是作者自己的说法：教育做直播课和远程实训互动，电商做直播带货。
   // 下面的内容是 Claude 2026-10-16 从许可证、官方文档和价格页查的，不是作者的实测记录。作者要求 Server 和 Egress 都写上，补完后当天确认。
   {
     id: 'livekit',
     name: 'LiveKit',
-    industry: 'ai',
-    uses: ['realtime'],
+    use: 'live-video',
+    industries: [
+      { id: 'education', scenario: '直播课、远程实训互动', scenarioEn: 'Live classes and remote hands-on training' },
+      { id: 'ecommerce', scenario: '直播带货', scenarioEn: 'Live selling' },
+    ],
     what: '一套实时音视频的开源组件：LiveKit Server 转发音视频，Egress 负责录制和推流直播。可以拿来自己做视频会议、直播间，也能做 AI 语音客服和数字人实时对话的底座。',
     whatEn: 'A set of open-source real-time audio and video components: LiveKit Server routes the media, Egress records and live-streams it. Build your own video meetings or live rooms with it, or use it under AI voice agents and digital humans.',
     repoUrl: `${GH}livekit/livekit`,
@@ -1209,7 +1267,7 @@ const ALL_PROJECTS: OssProject[] = [
         label: '软件免费，钱花在服务器和带宽',
         labelEn: 'Free software; you pay for servers and bandwidth',
         short: '看规模',
-        shortEn: 'Depends on scale',
+        shortEn: 'Varies',
         detail: '自己部署不收费，钱花在两类机器上。LiveKit Server 的瓶颈是 CPU 和带宽：官方压测里，一台 16 核的谷歌云 c2-standard-16 撑 150 人互相看视频的大会议，CPU 到 85%；官方建议生产环境用计算优化型的机器和万兆网卡。Egress 每个实例建议至少 4 核 4 GB，录整间会议要占 2 到 6 核，一个实例同时只录一间，要同时录几间就得开几个实例。不想自己运维可以用官方的 LiveKit Cloud：免费档每月 5,000 参会人分钟、50 GB 流量；付费档每月 50 美元起，超出部分每参会人分钟 0.0005 美元，流量每 GB 0.12 美元。',
         detailEn: 'Self-hosting is free; the money goes on two kinds of machines. LiveKit Server is bound by CPU and bandwidth: in the official benchmark, one 16-core Google Cloud c2-standard-16 handled a 150-person video meeting where everyone sees everyone, at 85% CPU, and the docs recommend compute-optimized machines and 10 Gbps networking for production. Each Egress instance should have at least 4 CPUs and 4 GB; a full-room recording takes 2 to 6 CPUs, and one instance records one room at a time, so you need as many instances as rooms you record at once. If you would rather not run it all, LiveKit Cloud has a free tier with 5,000 participant minutes and 50 GB of transfer a month; paid plans start at $50 a month, with overage at $0.0005 per participant minute and $0.12 per GB.',
         sources: [
@@ -1246,13 +1304,34 @@ const ALL_PROJECTS: OssProject[] = [
   },
 ];
 
-export const OSS_PROJECTS: OssProject[] = ALL_PROJECTS.filter((p) => p.confirmed || SHOW_DRAFTS);
+// 线上只放确认过的项目，按用途的顺序排，“全部”里同一用途的项目挨在一起
+const USE_ORDER = new Map(OSS_USES.map((u, i) => [u.id, i]));
+export const OSS_PROJECTS: OssProject[] = ALL_PROJECTS.filter((p) => p.confirmed || SHOW_DRAFTS).sort(
+  (a, b) => (USE_ORDER.get(a.use) ?? 99) - (USE_ORDER.get(b.use) ?? 99)
+);
 
-// 一个分类下的项目：本来就属于它的，加上标了“也出现在这里”的
-export function ossProjectsOf(industry: OssIndustry): OssProject[] {
-  return OSS_PROJECTS.filter((p) => p.industry === industry || (p.alsoIn ?? []).includes(industry));
+// 用途页和项目页都在 /oss/ 下面，构建时检查 id 不重名、每个项目的用途都存在
+ALL_PROJECTS.forEach((p) => {
+  if (!USE_ORDER.has(p.use)) throw new Error(`Unknown use "${p.use}" on project ${p.id}`);
+  if (USE_ORDER.has(p.id)) throw new Error(`Project id "${p.id}" clashes with a use page`);
+});
+
+export function ossProjectsOfUse(use: string): OssProject[] {
+  return OSS_PROJECTS.filter((p) => p.use === use);
+}
+
+export function ossProjectsOfIndustry(industry: OssIndustry): OssProject[] {
+  return OSS_PROJECTS.filter((p) => p.industries.some((i) => i.id === industry));
+}
+
+export function ossUse(id: string): UseCopy | undefined {
+  return OSS_USES.find((u) => u.id === id);
 }
 
 export function ossIndustry(id: string): IndustryCopy | undefined {
   return OSS_INDUSTRIES.find((i) => i.id === id);
+}
+
+export function ossProject(id: string): OssProject | undefined {
+  return OSS_PROJECTS.find((p) => p.id === id);
 }

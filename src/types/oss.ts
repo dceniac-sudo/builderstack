@@ -1,10 +1,18 @@
 // “按行业找开源项目”的数据结构。中文和英文各一份文字，英文字段以 En 结尾。
 
-// 分类：大多是行业，'ai' 和 'helpdesk'（客服与工单）是各行业都用得上的
-export type OssIndustry = 'education' | 'ai' | 'ecommerce' | 'restaurant' | 'helpdesk' | 'manufacturing';
+// 2026-10-16 起的结构：用途是主分类，一个项目只属于一个用途；行业是视图，一个项目可以出现在多个行业里。
+// 起因是很多项目跨行业（LiveKit 在教育里做直播课，在电商里做直播带货），只按行业分装不下。
+export type OssIndustry = 'education' | 'ecommerce' | 'restaurant' | 'manufacturing';
 
-// 用途的 id，每个行业各有一组，定义在 src/data/oss.ts 的 OSS_USES 里
+// 用途的 id，全站一组，定义在 src/data/oss.ts 的 OSS_USES 里。也是用途页的地址 /oss/<用途>/，不能和项目 id 重名。
 export type OssUse = string;
+
+// 项目出现在哪个行业里。scenario 是“在这个行业里拿它做什么”，只在跨行业、做法不一样时写
+export interface OssIndustryFit {
+  id: OssIndustry;
+  scenario?: string;
+  scenarioEn?: string;
+}
 
 // 每个项目回答的五件事
 export type OssFactKey = 'commercial' | 'alive' | 'deploy' | 'cost' | 'caveats';
@@ -34,9 +42,8 @@ export interface OssProject {
   name: string;
   nameEn?: string;             // 英文页面显示的名字，不写就用 name
   logo?: string;               // 项目图标，放在 public/oss/logos/ 下；没有就显示名字的第一个字
-  industry: OssIndustry;       // 所属分类
-  alsoIn?: OssIndustry[];      // 还会出现在哪些分类下，比如通用的收银系统放在餐饮门店里，同时出现在电商零售里
-  uses: OssUse[];              // 用途，用于筛选
+  use: OssUse;                 // 所属用途，只有一个
+  industries: OssIndustryFit[];  // 出现在哪些行业里；可以是空的，那就只在“全部”和用途页里出现
   what: string;                // 一句话说它是干什么的
   whatEn: string;
   repoUrl: string;
