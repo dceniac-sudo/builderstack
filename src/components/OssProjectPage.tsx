@@ -29,6 +29,7 @@ export interface OssShotView {
 
 interface OssProjectPageProps {
   project: OssProjectView;
+  priceAnswer?: string;  // 第一屏的一句价格结论，只有搜索里真有人搜价格的项目才有
   fit?: OssFitView;
   shot?: OssShotView;
   alternatives: OssProjectView[];  // 同一用途下的其他项目
@@ -41,7 +42,7 @@ const ALT_FACTS: RowFactKey[] = ['commercial', 'deploy'];
 
 // 一个项目的详情页，从上往下：适不适合、各行业怎么用（只有跨行业的项目有）、界面截图、五件事（每行有结论、依据和出处）、同一用途的其他项目。
 // 适不适合放在最前面：从搜索进来的人先要知道适不适合自己，再看依据。
-export const OssProjectPage: React.FC<OssProjectPageProps> = ({ project: p, fit, shot, alternatives }) => {
+export const OssProjectPage: React.FC<OssProjectPageProps> = ({ project: p, priceAnswer, fit, shot, alternatives }) => {
   const { lang, t } = useI18n();
   const o = t.oss;
   const rows = ALL_FACTS.flatMap((key) => {
@@ -80,6 +81,11 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({ project: p, fit,
         <p className="rise mt-4 text-[17px] text-[var(--sub)]" style={{ animationDelay: '70ms' }}>
           {p.what}
         </p>
+        {priceAnswer && (
+          <p className="rise mt-3 text-base" style={{ animationDelay: '105ms' }}>
+            <span className="font-semibold">{o.priceAnswer}:</span> {priceAnswer}
+          </p>
+        )}
 
         <div className="rise mt-5 flex flex-wrap gap-2" style={{ animationDelay: '140ms' }}>
           <a

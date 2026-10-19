@@ -238,11 +238,11 @@ const SEARCH_SUMMARY_EN: Record<string, string> = {
   'canvas-lms': 'Free under AGPL-3.0, but hard to self-host: a 19-section install guide and 8 GB of RAM. Change the code and you must offer users your source.',
   kolibri: 'Free under MIT, commercial use allowed. Installers for Windows, Linux, macOS, Raspberry Pi and Android. Built for offline classrooms, not for selling courses.',
   bigbluebutton: 'Free under LGPL-3.0, paid classes allowed. The server is the cost: the stated production minimum is 8 cores, 16 GB of RAM and 250 Mbps symmetrical bandwidth.',
-  jupyterhub: 'Free under BSD-3-Clause, commercial use allowed. Memory grows with concurrent users. Login and each student’s environment are yours to configure.',
+  jupyterhub: 'JupyterHub is a multi-user Jupyter notebook server: each student gets their own environment. Free under BSD-3-Clause; memory grows with concurrent users.',
   woocommerce: 'The plugin is free (GPL), with no platform fee or revenue share. Woo’s own estimate: hosting $25 to $350 a month, extensions $29 to $299 a year each.',
   prestashop: 'Free under OSL-3.0. Modify the core and run a public store on it, and your version must be OSL-3.0 too. Official hosted plan from €24 a month before VAT.',
   bagisto: 'Free under MIT, commercial use allowed. One Docker command starts a full store. Official cloud hosting from $25 a month. Multi-vendor is a $449 extension.',
-  medusa: 'The core is free under MIT. Staff roles and single sign-on need an Enterprise license. Self-host on 2 GB of RAM, or Medusa Cloud from $29 a month.',
+  medusa: 'Medusa is a TypeScript commerce platform: a backend and admin, you build the storefront. The core is free under MIT; staff roles and SSO need Enterprise.',
   saleor: 'Free under BSD-3-Clause, one version with no feature limits. Hard to self-host: six services to assemble. Saleor Cloud for commercial use from $1,599 a month.',
   shopware: 'The code is MIT and the Community Edition is free. Above €1M in yearly sales you need a paid plan, from €600 a month, to keep buying and updating extensions.',
   opensourcepos: 'Free under MIT terms plus one rule: the footer credit stays on every page, so no reselling under your own brand. Runs on 512 MB of RAM. No card reader support.',
@@ -256,12 +256,26 @@ const SEARCH_SUMMARY_EN: Record<string, string> = {
 };
 
 // 英文详情页的标题默认是“Is 项目名 free? Pricing, license and caveats”。名字里已经带 open source 的不适合这么问，在这里单独写。
+// 2026-10-19 按 Search Console 的真实查询改了两个：jupyterhub 被搜的是 what is jupyterhub，medusa 被搜的是 medusa platform / commerce。
 const SEARCH_TITLE_EN: Record<string, string> = {
   opensourcepos: 'Open Source Point of Sale: pricing, license and caveats',
+  jupyterhub: 'What is JupyterHub? Is it free? Pricing, license and caveats',
+  medusa: 'Is the Medusa commerce platform free? Pricing and caveats',
+};
+
+// 英文详情页第一屏的一句价格结论，放在项目简介下面。只给 Search Console 里真有人搜价格的项目写（2026-10-19：odoo pricing、is odoo free、woocommerce pricing）。
+// 内容都来自已确认的成本一项；改了成本里的数要同步这里。
+const PRICE_ANSWER_EN: Record<string, string> = {
+  woocommerce: 'The plugin is free, with no platform fee or revenue share. You pay for hosting (Woo estimates $25 to $350 a month) and any paid extensions ($29 to $299 a year each).',
+  odoo: 'Community is free. Enterprise is $31.10 per user a month on Odoo’s hosting, or $61.00 to run it on your own server, billed yearly ($24.90 and $49.00 for the first 12 months). Light Users are $8.90.',
 };
 
 export function ossSearchSummaryEn(id: string): string | undefined {
   return SEARCH_SUMMARY_EN[id];
+}
+
+export function ossPriceAnswerEn(id: string): string | undefined {
+  return PRICE_ANSWER_EN[id];
 }
 
 export function ossSearchTitleEn(id: string, name: string): string {

@@ -17,7 +17,7 @@ import {
   ossProjectsOfUse,
   ossUse,
 } from '@/data/oss';
-import { ossExtras, ossSearchSummaryEn, ossSearchTitleEn } from '@/data/oss-extras';
+import { ossExtras, ossPriceAnswerEn, ossSearchSummaryEn, ossSearchTitleEn } from '@/data/oss-extras';
 import { localePath, type Language } from '@/lib/i18n-path';
 import { pageMetadata } from '@/lib/site-meta';
 import type { OssFact, OssFactKey, OssProject } from '@/types/oss';
@@ -214,6 +214,7 @@ function renderOssProject(lang: Language, id: string) {
   return (
     <OssProjectPage
       project={projectView(p, lang)}
+      priceAnswer={en ? ossPriceAnswerEn(p.id) : undefined}
       fit={fit && { considerIf: en ? fit.considerIfEn : fit.considerIf, lookElsewhereIf: en ? fit.lookElsewhereIfEn : fit.lookElsewhereIf, confirmed: fit.confirmed }}
       shot={
         shot && {
