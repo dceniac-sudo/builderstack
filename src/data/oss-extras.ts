@@ -234,7 +234,7 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
 // 2026-10-13 按搜索量改的：人们搜的是 pricing、free、cost，不是 commercial use。内容都来自各项目已确认的五件事，没有新的事实。
 // 改了五件事里的数（价格、配置）要回来同步这里。没写的项目用 whatEn。
 const SEARCH_SUMMARY_EN: Record<string, string> = {
-  moodle: 'Free under GPL-3.0: host it and charge for courses. Runs on 1 GB of RAM. The catch: selling hosting or support under the Moodle name needs permission.',
+  moodle: 'Free to self-host under GPL-3.0, on 1 GB of RAM. Moodle’s own hosting, MoodleCloud, is about $170 to $2,110 a year for 50 to 750 users, with no plugins.',
   'canvas-lms': 'Free under AGPL-3.0, but hard to self-host: a 19-section install guide and 8 GB of RAM. Change the code and you must offer users your source.',
   kolibri: 'Free under MIT, commercial use allowed. Installers for Windows, Linux, macOS, Raspberry Pi and Android. Built for offline classrooms, not for selling courses.',
   bigbluebutton: 'Free under LGPL-3.0, paid classes allowed. The server is the cost: the stated production minimum is 8 cores, 16 GB of RAM and 250 Mbps symmetrical bandwidth.',
@@ -257,16 +257,19 @@ const SEARCH_SUMMARY_EN: Record<string, string> = {
 
 // 英文详情页的标题默认是“Is 项目名 free? Pricing, license and caveats”。名字里已经带 open source 的不适合这么问，在这里单独写。
 // 2026-10-19 按 Search Console 的真实查询改了两个：jupyterhub 被搜的是 what is jupyterhub，medusa 被搜的是 medusa platform / commerce。
+// 2026-10-22：moodle 被搜的是 moodle pricing。
 const SEARCH_TITLE_EN: Record<string, string> = {
+  moodle: 'Moodle pricing: is it free? MoodleCloud plans and caveats',
   opensourcepos: 'Open Source Point of Sale: pricing, license and caveats',
   jupyterhub: 'What is JupyterHub? Is it free? Pricing, license and caveats',
   medusa: 'Is the Medusa commerce platform free? Pricing and caveats',
 };
 
-// 英文详情页第一屏的一句价格结论，放在项目简介下面。只给 Search Console 里真有人搜价格的项目写（2026-10-19：odoo pricing、is odoo free、woocommerce pricing）。
+// 英文详情页第一屏的一句价格结论，放在项目简介下面。只给 Search Console 里真有人搜价格的项目写（2026-10-19：odoo pricing、is odoo free、woocommerce pricing；2026-10-22：moodle pricing）。
 // 内容都来自已确认的成本一项；改了成本里的数要同步这里。
 const PRICE_ANSWER_EN: Record<string, string> = {
   woocommerce: 'The plugin is free, with no platform fee or revenue share. You pay for hosting (Woo estimates $25 to $350 a month) and any paid extensions ($29 to $299 a year each).',
+  moodle: 'Free to self-host; you pay for the server. Moodle’s own hosting, MoodleCloud, is about $170 a year for 50 users up to $2,110 for 750, charged in AUD. Selling courses via Stripe starts at the $500 plan.',
   odoo: 'Community is free. Enterprise is $31.10 per user a month on Odoo’s hosting, or $61.00 to run it on your own server, billed yearly ($24.90 and $49.00 for the first 12 months). Light Users are $8.90.',
 };
 

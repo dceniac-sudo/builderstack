@@ -244,9 +244,12 @@ const ALL_PROJECTS: OssProject[] = [
         verdict: 'good',
         label: '低',
         labelEn: 'Low',
-        detail: '软件免费。官方给的最低配置是 1GHz 处理器、512MB 内存，建议双核、1GB 以上；磁盘按 5GB 起算，另加课程内容。',
-        detailEn: 'The software is free. The stated minimum is a 1 GHz CPU and 512 MB of RAM; dual core and 1 GB or more is recommended. Plan for 5 GB of disk plus your course content.',
-        sources: [src('安装文档', 'Install guide', 'https://docs.moodle.org/en/Installing_Moodle')],
+        detail: '软件免费。官方给的最低配置是 1GHz 处理器、512MB 内存，建议双核、1GB 以上；磁盘按 5GB 起算，另加课程内容。不想自己部署，可以用官方托管的 MoodleCloud：按年付，50 人约 170 美元，200 人约 500 美元（从这一档起能用 Stripe 卖课），750 人约 2,110 美元；实际按澳元结算，不能装插件。',
+        detailEn: 'The software is free. The stated minimum is a 1 GHz CPU and 512 MB of RAM; dual core and 1 GB or more is recommended. Plan for 5 GB of disk plus your course content. Moodle’s own hosting, MoodleCloud, is billed yearly: about $170 for 50 users, $500 for 200 (the first plan that can sell courses via Stripe), up to $2,110 for 750. It is charged in AUD, and you cannot install plugins.',
+        sources: [
+          src('安装文档', 'Install guide', 'https://docs.moodle.org/en/Installing_Moodle'),
+          src('MoodleCloud 价格页', 'MoodleCloud pricing', 'https://www.moodlecloud.com/standard-plans/'),
+        ],
       },
       caveats: {
         verdict: 'caution',
