@@ -37,10 +37,10 @@ export interface OssExtras {
 const ALL_EXTRAS: Record<string, OssExtras> = {
   moodle: {
     fit: {
-      considerIf: '想把课程、作业、测验和成绩放在一套系统里，而且团队里有人能维护 Web 服务器、PHP 和数据库。',
-      considerIfEn: 'You want courses, assignments, quizzes and grades in one system, and someone on your team can run a web server, PHP and a database.',
-      lookElsewhereIf: '团队里没人能维护服务器，或者打算用 Moodle 这个名字对外卖托管、培训、技术支持。',
-      lookElsewhereIfEn: 'Nobody on the team can maintain a server, or you plan to sell hosting, training or support under the Moodle name.',
+      considerIf: '想把课程、作业、测验和成绩放在一套系统里。团队里有人能维护 Web 服务器、PHP 和数据库就自己部署；没有的话，750 人以内可以用官方托管的 MoodleCloud。',
+      considerIfEn: 'You want courses, assignments, quizzes and grades in one system. Self-host it if someone on your team can run a web server, PHP and a database; if not, Moodle’s own MoodleCloud covers up to 750 users.',
+      lookElsewhereIf: '没人能维护服务器，却要装插件或者超过 750 人：MoodleCloud 不能装插件，最高一档 750 人。打算用 Moodle 这个名字对外卖托管、培训、技术支持的，也别选。',
+      lookElsewhereIfEn: 'Nobody can maintain a server, yet you need plugins or more than 750 users: MoodleCloud allows no plugins and tops out at 750. Also skip it if you plan to sell hosting, training or support under the Moodle name.',
       confirmed: true,
     },
     // 2026-10-13 截自 Moodle 官方演示站的 Digital Literacy 课程页。2026-10-16 核对了 Moodle 的商标条款（只限制暗示背书、用进名称和域名等，没提截图），作者当天确认上线。
@@ -214,8 +214,8 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
     fit: {
       considerIf: '客户主要通过邮件来找你，想把来信变成工单统一处理，服务器能给到 10 GB 左右的内存（含 Elasticsearch）。',
       considerIfEn: 'Most customers reach you by email, you want every message turned into a ticket in one place, and you can give the server about 10 GB of RAM including Elasticsearch.',
-      lookElsewhereIf: '只有一台小服务器：最低也要 6 GB 内存，不装 Elasticsearch 搜索会很受限。打算改代码后对外提供服务又不想公开改动的，也别选，它是 AGPL-3.0。',
-      lookElsewhereIfEn: 'You only have a small server: the minimum is 6 GB of RAM, and without Elasticsearch search is very limited. Also skip it if you plan to modify the code and serve it to others without publishing your changes; it is AGPL-3.0.',
+      lookElsewhereIf: '只有一台小服务器又不想付托管费：自己部署最低也要 6 GB 内存，不装 Elasticsearch 搜索会很受限；官方托管版每坐席每月 7 欧元起。打算改代码后对外提供服务又不想公开改动的，也别选，它是 AGPL-3.0。',
+      lookElsewhereIfEn: 'You only have a small server and do not want to pay for hosting: self-hosting needs at least 6 GB of RAM, and without Elasticsearch search is very limited; the hosted plans start at €7 per agent a month. Also skip it if you plan to modify the code and serve it to others without publishing your changes; it is AGPL-3.0.',
       confirmed: true,
     },
   },
