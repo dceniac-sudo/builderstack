@@ -9,7 +9,7 @@ import { ALL_FACTS, Dot, OssCta, OssLogo, OssProjectView, RowFactKey } from '@/c
 import { useI18n, localePath } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
-// 适不适合和截图的内容在 src/data/oss-extras.ts，这里拿到的是已经按当前语言取好的文字
+// 适不适合、截图和直接对比的内容在 src/data/oss-extras.ts，这里拿到的是已经按当前语言取好的文字
 export interface OssFitView {
   considerIf: string;
   lookElsewhereIf: string;
@@ -27,22 +27,34 @@ export interface OssShotView {
   confirmed: boolean;
 }
 
+export interface OssComparisonView {
+  otherId: string;
+  otherName: string;
+  otherHref: string;
+  heading: string;
+  pickThis: string;
+  pickOther: string;
+  confirmed: boolean;
+}
+
 interface OssProjectPageProps {
   project: OssProjectView;
   priceAnswer?: string;  // 第一屏的一句价格结论，只有搜索里真有人搜价格的项目才有
   fit?: OssFitView;
   shot?: OssShotView;
+  comparisons?: OssComparisonView[];
   alternatives: OssProjectView[];  // 同一用途下的其他项目
 }
 
+const SITE = 'https://dceniac.com';
 const H2 = 'text-[19px] font-semibold tracking-[-0.01em]';
 const SOURCE_LINK = 'text-[var(--sub)] underline decoration-[#CFCFCA] underline-offset-[3px] transition-colors hover:text-[var(--ink)] hover:decoration-[var(--ink)]';
 // “别的选择”里每个项目带出来的两个结论：读者换项目，多半是因为许可证或者部署难度
 const ALT_FACTS: RowFactKey[] = ['commercial', 'deploy'];
 
-// 一个项目的详情页，从上往下：适不适合、各行业怎么用（只有跨行业的项目有）、界面截图、五件事（每行有结论、依据和出处）、同一用途的其他项目。
+// 一个项目的详情页，从上往下：适不适合、各行业怎么用（只有跨行业的项目有）、界面截图、五件事（每行有结论、依据和出处）、直接对比、同一用途的其他项目。
 // 适不适合放在最前面：从搜索进来的人先要知道适不适合自己，再看依据。
-export const OssProjectPage: React.FC<OssProjectPageProps> = ({ project: p, priceAnswer, fit, shot, alternatives }) => {
+export const OssProjectPage: React.FC<OssProjectPageProps> = ({ project: p, priceAnswer, fit, shot, comparisons, alternatives }) => {
   const { lang, t } = useI18n();
   const o = t.oss;
   const rows = ALL_FACTS.flatMap((key) => {
@@ -53,8 +65,45 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({ project: p, pric
   // 上面多出来的每一块，把下面各行的入场往后推一拍
   const rowsDelay = 210 + (fit ? 70 : 0) + (shot ? 70 : 0);
 
+  const licenseUrl = p.facts.commercial.sources[0]?.url;
+  const image = shot ? `${SITE}${shot.src}` : p.logo ? `${SITE}${p.logo}` : undefined;
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: o.crumb, item: `${SITE}${localePath(lang, '/')}` },
+          { '@type': 'ListItem', position: 2, name: p.useLabel, item: `${SITE}${p.useHref}` },
+          { '@type': 'ListItem', position: 3, name: p.name, item: `${SITE}${p.href}` },
+        ],
+      },
+      {
+        '@type': 'SoftwareApplication',
+        name: p.name,
+        description: p.what,
+        url: `${SITE}${p.href}`,
+        applicationCategory: 'BusinessApplication',
+        applicationSubCategory: p.useLabel,
+        ...(image ? { image } : {}),
+        ...(licenseUrl ? { license: licenseUrl } : {}),
+        sameAs: Array.from(new Set([p.repoUrl, ...(p.homepage ? [p.homepage] : [])])),
+        offers: {
+          '@type': 'Offer',
+          price: '0',
+          priceCurrency: 'USD',
+          description: priceAnswer ?? p.facts.cost.detail ?? p.facts.cost.label,
+        },
+      },
+    ],
+  };
+
   return (
     <div className="flex-1 flex flex-col text-[15px] leading-[1.6]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+      />
       <Navbar active="industries" />
 
       <main className="mx-auto w-full max-w-[860px] flex-1 px-5 pt-10 sm:px-10 sm:pt-16">
@@ -205,6 +254,30 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({ project: p, pric
           <time dateTime={p.checkedAt}>{p.checkedAt}</time>
           {lang === 'zh' ? '。' : '.'}
         </p>
+
+        {comparisons &&
+          comparisons.map((c) => (
+            <section key={c.otherId} className="mt-12">
+              <h2 className={H2}>
+                {c.heading}
+                {!c.confirmed && draftTag}
+              </h2>
+              <dl className="mt-3 border-y border-[var(--line)]">
+                <div className="grid grid-cols-1 gap-x-8 gap-y-1 py-3.5 sm:grid-cols-[9rem_1fr]">
+                  <dt className="text-[13px] text-[var(--sub)] sm:pt-0.5">{o.pickProject(p.name)}</dt>
+                  <dd className="min-w-0 text-base">{c.pickThis}</dd>
+                </div>
+                <div className="grid grid-cols-1 gap-x-8 gap-y-1 border-t border-[var(--line)] py-3.5 sm:grid-cols-[9rem_1fr]">
+                  <dt className="text-[13px] sm:pt-0.5">
+                    <Link href={c.otherHref} className={SOURCE_LINK}>
+                      {o.pickProject(c.otherName)}
+                    </Link>
+                  </dt>
+                  <dd className="min-w-0 text-base">{c.pickOther}</dd>
+                </div>
+              </dl>
+            </section>
+          ))}
 
         {alternatives.length > 0 && (
           <section className="mt-12">

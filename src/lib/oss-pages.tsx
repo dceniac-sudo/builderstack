@@ -208,7 +208,22 @@ function renderOssProject(lang: Language, id: string) {
   const p = ossProject(id);
   if (!p) notFound();
   const en = lang === 'en';
-  const { fit, shot } = ossExtras(p.id);
+  const { fit, shot, comparisons } = ossExtras(p.id);
+  const comparisonViews = comparisons?.flatMap((c) => {
+    const other = ossProject(c.otherId);
+    if (!other) return [];
+    return [
+      {
+        otherId: other.id,
+        otherName: en ? other.nameEn ?? other.name : other.name,
+        otherHref: localePath(lang, `/oss/${other.id}/`),
+        heading: en ? c.headingEn : c.heading,
+        pickThis: en ? c.pickThisEn : c.pickThis,
+        pickOther: en ? c.pickOtherEn : c.pickOther,
+        confirmed: c.confirmed,
+      },
+    ];
+  });
   // “别的选择”：同一个用途下的其他项目
   const alternatives = ossProjectsOfUse(p.use).filter((x) => x.id !== p.id);
   return (
@@ -228,6 +243,7 @@ function renderOssProject(lang: Language, id: string) {
           confirmed: shot.confirmed,
         }
       }
+      comparisons={comparisonViews && comparisonViews.length > 0 ? comparisonViews : undefined}
       alternatives={alternatives.map((x) => projectView(x, lang))}
     />
   );

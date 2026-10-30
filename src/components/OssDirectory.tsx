@@ -41,16 +41,17 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({ title, homeHref, sub
   const [open, setOpen] = useState<Record<string, boolean>>({});
   const [touched, setTouched] = useState(false);   // 筛选过之后，行的入场动画换成更短的那种
 
-  // 大标题和地址跟着筛选走，筛到哪儿就能把地址直接发给别人：
+  // 大标题、副标题和地址跟着筛选走，筛到哪儿就能把地址直接发给别人：
   // 选了行业是行业页，“全部”里选了用途是用途页，都没选是首页。
   const pageFor = (ind: string, u: string) => {
     const i = industries.find((x) => x.id === ind);
-    if (i) return { title: i.title, href: i.href };
+    if (i) return { title: i.title, sub: i.description, href: i.href };
     const x = allUses.find((y) => y.id === u);
-    if (x) return { title: x.title, href: x.href };
-    return { title, href: homeHref };
+    if (x) return { title: x.title, sub: x.description, href: x.href };
+    return { title, sub, href: homeHref };
   };
-  const heading = pageFor(industry, use).title;
+  const current = pageFor(industry, use);
+  const heading = current.title;
   const pick = (ind: string, u: string) => {
     change(() => { setIndustry(ind); setUse(u); });
     const next = pageFor(ind, u);
@@ -123,7 +124,7 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({ title, homeHref, sub
             {heading}
           </h1>
           <p className="rise relative mx-auto mt-3.5 max-w-[34em] text-[clamp(15px,1.4vw,18px)] text-[var(--sub)]" style={{ animationDelay: '140ms' }}>
-            {sub}
+            {current.sub}
           </p>
           <label
             className="rise relative mx-auto mt-[26px] flex h-12 max-w-[520px] items-center gap-2.5 rounded-xl border border-[#D9D9D5] bg-white px-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-[border-color,box-shadow] duration-150 focus-within:border-[var(--ink)] focus-within:shadow-[0_0_0_4px_rgba(20,20,20,0.08)]"
@@ -238,6 +239,7 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({ title, homeHref, sub
           {g.items.map((p, j) => {
             const i = groups.slice(0, gi).reduce((n, x) => n + x.items.length, 0) + j;
             const isOpen = !!open[p.id];
+            const toggle = () => setOpen((prev) => ({ ...prev, [p.id]: !isOpen }));
             // 在选中的行业里有专门的用法，就先说这句用法；点开后再补上它本身是什么
             const scenario = !query.trim() ? p.scenarios.find((s) => s.id === industry)?.text : undefined;
             const verdict = (key: (typeof ROW_FACTS)[number]) => (
@@ -252,12 +254,10 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({ title, homeHref, sub
                 className={cn(touched ? 'swap-in' : 'rise', (grouped || i > 0) && 'border-t border-[var(--line)]')}
                 style={{ animationDelay: `${touched ? i * 18 : 340 + i * 35}ms` }}
               >
-                <button
-                  type="button"
-                  onClick={() => setOpen((prev) => ({ ...prev, [p.id]: !isOpen }))}
-                  aria-expanded={isOpen}
+                <div
+                  onClick={toggle}
                   className={cn(
-                    'relative grid w-full grid-cols-2 items-center gap-x-3.5 gap-y-2.5 py-3.5 pl-3.5 pr-11 text-left transition-colors duration-150 hover:bg-[var(--wash)]',
+                    'relative grid w-full cursor-pointer grid-cols-2 items-center gap-x-3.5 gap-y-2.5 py-3.5 pl-3.5 pr-11 text-left transition-colors duration-150 hover:bg-[var(--wash)]',
                     'md:min-h-[68px] md:gap-3 md:px-[18px] md:py-3',
                     COLS,
                     isOpen && 'bg-[var(--wash)]'
@@ -267,7 +267,13 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({ title, homeHref, sub
                     <OssLogo project={p} />
                     <span className="min-w-0">
                       <span className="block text-[15.5px] font-semibold leading-[1.3]">
-                        {p.name}
+                        <Link
+                          href={p.href}
+                          onClick={(e) => e.stopPropagation()}
+                          className="underline-offset-[3px] hover:underline"
+                        >
+                          {p.name}
+                        </Link>
                         {p.handsOn && (
                           <span className="ml-2 rounded-md bg-[#E8F3EC] px-1.5 py-px align-[1px] text-[11.5px] font-medium text-[var(--good)]">{o.handsOn}</span>
                         )}
@@ -284,17 +290,25 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({ title, homeHref, sub
                         {verdict(key)}
                       </span>
                     ))}
-                  <ChevronDown
-                    aria-hidden="true"
-                    className={cn(
-                      'absolute right-3.5 top-[18px] h-[18px] w-[18px] text-[var(--sub)] transition-transform duration-[250ms] md:static',
-                      isOpen && 'rotate-180'
-                    )}
-                  />
-                </button>
+                  <button
+                    type="button"
+                    aria-expanded={isOpen}
+                    aria-label={p.name}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggle();
+                    }}
+                    className="absolute right-3 top-[15px] grid h-6 w-6 place-items-center rounded-md text-[var(--sub)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)] md:static"
+                  >
+                    <ChevronDown
+                      aria-hidden="true"
+                      className={cn('h-[18px] w-[18px] transition-transform duration-[250ms]', isOpen && 'rotate-180')}
+                    />
+                  </button>
+                </div>
 
                 <div className={cn('grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none', isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]')}>
-                  <div className={cn('overflow-hidden transition-[visibility] duration-300', isOpen ? 'visible' : 'invisible')}>
+                  <div className="min-h-0 overflow-hidden">
                     <div className="bg-[var(--wash)] px-3.5 pb-[18px] pt-1 md:pl-16 md:pr-[18px]">
                       <dl>
                         {ROW_FACTS.map((key, n) => (
@@ -318,11 +332,11 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({ title, homeHref, sub
                         )}
                       </dl>
                       <div className="flex flex-wrap gap-x-[18px] gap-y-1 border-t border-[var(--line)] pt-2 text-[13.5px]">
-                        <Link href={p.href} className={TEXT_LINK}>
+                        <Link href={p.href} tabIndex={isOpen ? undefined : -1} className={TEXT_LINK}>
                           {o.seeSources}
                         </Link>
                         {p.homepage && (
-                          <a href={p.homepage} target="_blank" rel="noopener noreferrer" className={TEXT_LINK}>
+                          <a href={p.homepage} tabIndex={isOpen ? undefined : -1} target="_blank" rel="noopener noreferrer" className={TEXT_LINK}>
                             {o.site}
                           </a>
                         )}

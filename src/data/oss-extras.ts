@@ -1,7 +1,7 @@
 import { SHOW_DRAFTS } from '@/data/drafts';
 
-// 项目详情页上五件事之外的内容：适不适合、界面截图。按项目 id 对应，和 oss.ts 分开放。
-// 两样都各自带 confirmed：作者确认过才上线，没确认的只在本地预览里出现（NEXT_PUBLIC_SHOW_DRAFTS=1）。
+// 项目详情页上五件事之外的内容：适不适合、界面截图、直接对比。按项目 id 对应，和 oss.ts 分开放。
+// 各项都各自带 confirmed：作者确认过才上线，没确认的只在本地预览里出现（NEXT_PUBLIC_SHOW_DRAFTS=1）。
 
 // 适不适合：两句话，都要能从这个项目的五件事里找到依据。这是判断，不替作者定，起草后等作者确认。
 export interface OssFit {
@@ -27,9 +27,22 @@ export interface OssShot {
   confirmed: boolean;
 }
 
+// 直接对比：只给搜索里真有人搜“A vs B”的项目对写，内容全部来自两边已确认的五件事，不加新事实。
+export interface OssComparison {
+  otherId: string;
+  heading: string;
+  headingEn: string;
+  pickThis: string;
+  pickThisEn: string;
+  pickOther: string;
+  pickOtherEn: string;
+  confirmed: boolean;
+}
+
 export interface OssExtras {
   fit?: OssFit;
   shot?: OssShot;
+  comparisons?: OssComparison[];
 }
 
 // “适不适合”都是 Claude 2026-10-13 按各项目的五件事起草的，作者当天逐条看过，全部确认。
@@ -57,6 +70,18 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
       sourceLabelEn: 'Try the demo',
       confirmed: true,
     },
+    comparisons: [
+      {
+        otherId: 'canvas-lms',
+        heading: 'Moodle 对比 Canvas LMS',
+        headingEn: 'Moodle vs Canvas LMS',
+        pickThis: '机器和运维都轻得多（官方建议双核、1GB 以上内存，配 Web 服务器、PHP 和数据库，安装文档八步），不想管服务器还有官方托管 MoodleCloud（50 到 750 人每年约 170 到 2,110 美元，不能装插件）。仓库持续更新；GPL-3.0 只在分发改过的版本时要求开源。',
+        pickThisEn: 'Much lighter to run (dual core and 1 GB+ RAM recommended; web server, PHP and a database in an 8-step guide), with official MoodleCloud hosting if you want no server at all (~$170 to $2,110/year for 50 to 750 users, no plugins). Actively pushed in October 2026; GPL-3.0 only triggers if you distribute modified code.',
+        pickOther: '明确想要高校常用的那套系统，而且团队有工程师能扛更重的运维：单机建议至少 8GB 内存，Ubuntu 生产部署指南十九节（Ruby、Node、PostgreSQL、Redis、Apache），还要单独部署富文本编辑器服务。它是 AGPL-3.0（改了代码让学员通过网络使用就要提供源码），公开仓库自 2026 年 4 月底起没有新推送。',
+        pickOtherEn: 'You specifically want the platform widely used by universities and have engineers for a heavier stack: 8 GB+ RAM on one server, a 19-section Ubuntu install (Ruby, Node, PostgreSQL, Redis, Apache) plus a separate rich-editor service. AGPL-3.0 requires offering source to network users if you modify the code, and the public repository has had no pushes since late April 2026.',
+        confirmed: true,
+      },
+    ],
   },
   'canvas-lms': {
     fit: {
@@ -66,6 +91,18 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
       lookElsewhereIfEn: 'You are a small team with nobody dedicated to operations: the production guide has nineteen sections and recommends at least 8 GB of RAM on one server. Also think twice if a repository with no pushes since late April 2026 worries you.',
       confirmed: true,
     },
+    comparisons: [
+      {
+        otherId: 'moodle',
+        heading: 'Canvas LMS 对比 Moodle',
+        headingEn: 'Canvas LMS vs Moodle',
+        pickThis: '明确想要海外高校常用的那套系统，而且有工程团队维护 Ubuntu 十九节生产部署（Ruby、Node、PostgreSQL、Redis、Apache 加独立的富文本编辑器服务，单机至少 8GB 内存），也不改核心代码或接受 AGPL-3.0 向网络用户提供修改后源码。',
+        pickThisEn: 'You want the platform widely used by universities, have engineers to run its 19-section Ubuntu setup (Ruby, Node, PostgreSQL, Redis, Apache plus a separate rich-editor service on 8 GB+ RAM), and either run it unmodified or accept AGPL-3.0 source sharing for network users.',
+        pickOther: '小团队想省机器和运维：Moodle 建议双核、1GB 以上内存（PHP 加数据库，八步安装），750 人以内还能直接买官方托管 MoodleCloud（每年约 170 到 2,110 美元，不能装插件）；GPL-3.0 不改代码分发无额外义务，仓库 2026 年 10 月仍在更新。',
+        pickOtherEn: 'You want lower server and ops overhead: Moodle runs on 1 GB+ RAM (PHP and a database, 8-step guide) or on official MoodleCloud hosting up to 750 users (~$170 to $2,110/year, no plugins), stays under GPL-3.0, and has active commits in October 2026.',
+        confirmed: true,
+      },
+    ],
   },
   kolibri: {
     fit: {
@@ -104,6 +141,18 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
       lookElsewhereIfEn: 'You do not want to maintain WordPress, a theme and a stack of plugins, or most of what you need is a paid extension: recurring billing and bookings are both yearly purchases.',
       confirmed: true,
     },
+    comparisons: [
+      {
+        otherId: 'prestashop',
+        heading: 'WooCommerce 对比 PrestaShop',
+        headingEn: 'WooCommerce vs PrestaShop',
+        pickThis: '已经在用 WordPress（或看重它的插件生态），想在后台装个插件就开店。GPL 协议自己建站改代码不要求开源，也没有平台抽成；预算主要花在主机（官方估每月 25 到 350 美元）和按年付费的功能扩展（如周期扣款每年 279 美元、预约每年 249 美元）。',
+        pickThisEn: 'You already run WordPress (or want its plugin ecosystem) and want a store added straight from the admin. GPL adds no source-sharing duty when running your own shop, with no platform fee; budget for hosting (Woo estimates $25 to $350/month) and yearly paid extensions such as Subscriptions ($279/year) or Bookings ($249/year).',
+        pickOther: '不想要 WordPress 底座，想要一套自带店面和后台的独立网店，或者想直接买官方托管版（按年付每月 24 欧元、按月付 29 欧元，不含税）。要留神两点：改了核心代码对外开店须按 OSL-3.0 开源改动，而且跨大版本升级官方建议新建店铺迁数据、重装模块。',
+        pickOtherEn: 'You want a standalone store and back office without WordPress, or an official hosted plan (€24/month billed yearly or €29 month-to-month, before VAT). Watch two trade-offs: OSL-3.0 requires licensing core modifications under OSL-3.0 if you run a public store on them, and major-version upgrades mean migrating data to a fresh install and reinstalling modules.',
+        confirmed: true,
+      },
+    ],
   },
   prestashop: {
     fit: {
@@ -113,6 +162,18 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
       lookElsewhereIfEn: 'You plan to modify the core and do not want to license those changes under OSL-3.0, or you cannot accept rebuilding the store, moving data and reinstalling modules at each major version.',
       confirmed: true,
     },
+    comparisons: [
+      {
+        otherId: 'woocommerce',
+        heading: 'PrestaShop 对比 WooCommerce',
+        headingEn: 'PrestaShop vs WooCommerce',
+        pickThis: '想要一套不依赖 WordPress、带现成店面和后台的独立网店，或者想用官方托管套餐（按年付每月 24 欧元、按月付 29 欧元，不含税，基于 PrestaShop 8）。前提是不改核心代码（否则对外开店须按 OSL-3.0 授权），也能接受跨大版本升级时新装店铺迁移数据、重装模块。',
+        pickThisEn: 'You want a standalone store and back office without running WordPress, or an official hosted plan (€24/month billed yearly or €29 month-to-month, before VAT, based on PrestaShop 8) — provided you leave the core unmodified (OSL-3.0 applies to public stores running modified core) and can live with migrating to a fresh install on major-version upgrades.',
+        pickOther: '已经有 WordPress 站，或者不想跨大版本重建店铺、改代码不想受网络分发条款约束：WooCommerce 是 GPL 插件，后台直接安装，没有平台抽成；代价是要一并维护 WordPress 和插件栈，周期扣款（每年 279 美元）、预约（每年 249 美元）等扩展按年付费。',
+        pickOtherEn: 'You already run WordPress, want GPL licensing without network-use copyleft on your own store, or want to avoid major-version store rebuilds: WooCommerce installs from the WordPress admin with no platform fee, in exchange for maintaining WordPress plus yearly paid extensions like Subscriptions ($279/year) and Bookings ($249/year).',
+        confirmed: true,
+      },
+    ],
   },
   bagisto: {
     fit: {
@@ -265,12 +326,16 @@ const SEARCH_TITLE_EN: Record<string, string> = {
   medusa: 'Is the Medusa commerce platform free? Pricing and caveats',
 };
 
-// 英文详情页第一屏的一句价格结论，放在项目简介下面。只给 Search Console 里真有人搜价格的项目写（2026-10-19：odoo pricing、is odoo free、woocommerce pricing；2026-10-22：moodle pricing）。
+// 英文详情页第一屏的一句价格结论，放在项目简介下面。给有搜索展示和价格查询的前排项目直接作答。
 // 内容都来自已确认的成本一项；改了成本里的数要同步这里。
 const PRICE_ANSWER_EN: Record<string, string> = {
   woocommerce: 'The plugin is free, with no platform fee or revenue share. You pay for hosting (Woo estimates $25 to $350 a month) and any paid extensions ($29 to $299 a year each).',
   moodle: 'Free to self-host; you pay for the server. Moodle’s own hosting, MoodleCloud, is about $170 a year for 50 users up to $2,110 for 750, charged in AUD. Selling courses via Stripe starts at the $500 plan.',
   odoo: 'Community is free. Enterprise is $31.10 per user a month on Odoo’s hosting, or $61.00 to run it on your own server, billed yearly ($24.90 and $49.00 for the first 12 months). Light Users are $8.90.',
+  livekit: 'Free to self-host under Apache-2.0; you pay for the servers and bandwidth (plus a 4-CPU, 4 GB instance per concurrent room recording if you run Egress). LiveKit Cloud has a free tier (5,000 participant minutes and 50 GB a month), then starts at $50 a month.',
+  jupyterhub: 'Free under BSD-3-Clause; you pay only for the Linux server. It needs at least 1 GB of RAM to install, and memory scales as concurrent users × per-user memory limit + 128 MB (estimating 40% to 60% of class size online at once).',
+  chatwoot: 'The Community edition is free to self-host (from 2 cores and 4 GB of RAM). Paid self-hosted tiers for roles, SLAs, SSO and custom branding are $19 or $99 per agent a month; Chatwoot Cloud has a free plan up to 2 agents, then $19, $39 or $99 per agent a month.',
+  medusa: 'The core is free under MIT (self-hosting needs a 2 GB+ RAM host, PostgreSQL and Redis). Managed Medusa Cloud plans start at $29, $99 and $299 a month with no fee on sales volume; staff roles (RBAC) and SSO require an Enterprise plan priced on request.',
 };
 
 export function ossSearchSummaryEn(id: string): string | undefined {
@@ -289,5 +354,6 @@ export function ossSearchTitleEn(id: string, name: string): string {
 export function ossExtras(id: string): OssExtras {
   const extras = ALL_EXTRAS[id] ?? {};
   const visible = <T extends { confirmed: boolean }>(item?: T) => (item && (item.confirmed || SHOW_DRAFTS) ? item : undefined);
-  return { fit: visible(extras.fit), shot: visible(extras.shot) };
+  const comparisons = extras.comparisons?.filter((c) => c.confirmed || SHOW_DRAFTS);
+  return { fit: visible(extras.fit), shot: visible(extras.shot), comparisons: comparisons && comparisons.length > 0 ? comparisons : undefined };
 }
