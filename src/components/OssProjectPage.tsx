@@ -6,6 +6,7 @@ import { ChevronRight } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { SiteFooter } from '@/components/SiteFooter';
 import { ALL_FACTS, Dot, OssCta, OssLogo, OssProjectView, RowFactKey } from '@/components/OssParts';
+import { LiveKitCalculator } from '@/components/LiveKitCalculator';
 import { useI18n, localePath } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
@@ -254,6 +255,9 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({ project: p, pric
           <time dateTime={p.checkedAt}>{p.checkedAt}</time>
           {lang === 'zh' ? '。' : '.'}
         </p>
+
+        {/* LiveKit 英文页的带宽和账单估算器（2026-11-04 起），见 LiveKitCalculator.tsx */}
+        {lang === 'en' && p.id === 'livekit' && <LiveKitCalculator />}
 
         {comparisons &&
           comparisons.map((c) => (

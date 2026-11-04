@@ -120,6 +120,33 @@ export const OSS_USES: UseCopy[] = [
     descriptionEn: 'Sales, purchasing, inventory and manufacturing in one system.',
   },
   {
+    id: 'crm',
+    label: '客户管理（CRM）',
+    labelEn: 'CRM',
+    title: '能拿来用的开源客户管理（CRM）',
+    titleEn: 'Open-source CRM you can actually use',
+    description: '客户线索、商机跟进和销售流程放在一套系统里。',
+    descriptionEn: 'Contacts, deals and sales pipelines in one system.',
+  },
+  {
+    id: 'invoicing',
+    label: '开票与收款',
+    labelEn: 'Invoicing & billing',
+    title: '能拿来用的开源开票与收款系统',
+    titleEn: 'Open-source invoicing and billing software you can actually use',
+    description: '给客户发报价单和账单、在线收款、管周期扣款。',
+    descriptionEn: 'Quotes, invoices, client portals and recurring billing.',
+  },
+  {
+    id: 'automation',
+    label: '工作流自动化',
+    labelEn: 'Workflow automation',
+    title: '能拿来用的开源工作流自动化',
+    titleEn: 'Open-source workflow automation you can actually use',
+    description: '把不同系统的接口、定时任务和 AI 节点串成自动流程。',
+    descriptionEn: 'Connect APIs, schedules, webhooks and AI steps into automated workflows.',
+  },
+  {
     id: 'avatars',
     label: '实时数字人',
     labelEn: 'AI avatars',
@@ -191,8 +218,8 @@ function agpl(licenseUrl: string): OssFact {
 }
 
 // 按最近一次推送距离核对日的天数给结论：90 天内算在更新，一年内算放缓，更久算停滞
-function alive(lastPush: string, repo: string, archived = false): OssFact {
-  const days = Math.round((Date.parse(CHECKED_AT) - Date.parse(lastPush)) / 86400000);
+function alive(lastPush: string, repo: string, archived = false, checkedAt = CHECKED_AT): OssFact {
+  const days = Math.round((Date.parse(checkedAt) - Date.parse(lastPush)) / 86400000);
   const verdict = archived || days > 365 ? 'bad' : days <= 90 ? 'good' : 'caution';
   return {
     verdict,
@@ -1304,6 +1331,195 @@ const ALL_PROJECTS: OssProject[] = [
     },
     checkedAt: '2026-10-16',
     confirmed: true,             // 作者 2026-10-16 确认
+  },
+
+  // 通用业务软件（工作流自动化、CRM、开票收款）。2026-11-04 按仓库许可证原文、提交记录、官方部署文档和价格页起草，没有亲自部署；作者当天确认上线。
+  {
+    id: 'n8n',
+    name: 'n8n',
+    logo: '/oss/logos/n8n.png',
+    use: 'automation',
+    industries: [],
+    what: '节点式的工作流自动化平台：把各种软件的接口、Webhook、定时任务和 AI 步骤连成自动流程。源码公开但不是标准开源（Fair-code），社区版可以免费自建。',
+    whatEn: 'A node-based workflow automation platform that chains app APIs, webhooks, schedules and AI steps into automated flows. Source-available (fair-code) rather than OSI open source, with a free self-hosted Community edition.',
+    repoUrl: `${GH}n8n-io/n8n`,
+    homepage: 'https://n8n.io/',
+    facts: {
+      commercial: {
+        verdict: 'caution',
+        label: '内部自用可以，不能做成付费服务卖给别人',
+        labelEn: 'Internal business use only; no paid hosting or resale',
+        short: '限内部用',
+        shortEn: 'Internal only',
+        detail: '主仓库采用 Sustainable Use License 1.0（Fair-code，不是 OSI 标准开源协议），带 .ee 后缀的目录另有企业版协议。公司内部拿来跑业务流程，或者代运营机构在自己的内部实例里替客户跑流程（不给外部客户开 n8n 账号）都免费允许；但不能把它包装成托管服务、贴牌嵌入产品，或向外部用户开放 n8n 来收费，也不能删改版权声明。',
+        detailEn: 'Licensed under the Sustainable Use License 1.0 (fair-code, not OSI open source), with .ee directories under a separate Enterprise license. Free use covers internal business purposes — including an agency running workflows on its own internal instance where clients get no n8n login — and non-commercial use. Hosting n8n for others, white-labeling it, or exposing it to paying external users requires a commercial license, and copyright notices must stay intact.',
+        sources: [license(`${GH}n8n-io/n8n/blob/master/LICENSE.md`)],
+      },
+      alive: alive('2026-11-04', 'n8n-io/n8n', false, '2026-11-04'),
+      deploy: {
+        verdict: 'caution',
+        label: '中等',
+        labelEn: 'Moderate',
+        detail: '单容器一条 Docker 命令就能在 5678 端口跑起来（默认用 SQLite）；正式上线官方提供 Docker Compose 模板，建议换用 PostgreSQL 并配好反向代理和 HTTPS。官方的 Docker Compose 部署指南要求机器至少 2 核 CPU、4 GB 内存。',
+        detailEn: 'A single Docker command starts n8nio/n8n on port 5678 using SQLite by default. For production, official Docker Compose templates pair it with PostgreSQL behind a reverse proxy and HTTPS. The official Docker Compose guide requires at least 2 vCPUs and 4 GB of RAM.',
+        sources: [
+          src('Docker Compose 安装', 'Docker Compose guide', 'https://docs.n8n.io/deploy/host-n8n/install-options/install-using-docker-compose'),
+          src('Docker 安装', 'Docker guide', 'https://docs.n8n.io/deploy/host-n8n/install-options/install-with-docker'),
+          src('PostgreSQL 模板', 'Docker Compose with Postgres', `${GH}n8n-io/n8n-hosting/tree/main/docker-compose/withPostgres`),
+        ],
+      },
+      cost: {
+        verdict: 'caution',
+        label: '社区版自建免费，团队版每月 800 美元起',
+        labelEn: 'Free Community edition; paid self-hosted from $800 a month',
+        short: '团队版贵',
+        shortEn: 'Paid tiers',
+        detail: '自己部署社区版免费，不限工作流数量、执行次数和用户数，钱只花在服务器上（至少 2 核、4 GB 内存）。2026 年 11 月官网标价：自托管付费版 Business 每月 800 美元（按年付，限 100 人以下公司，含每月 40,000 次执行；20 人以下初创公司可申请半价即每月 400 美元），企业版另议。不想自己运维，官方托管的 n8n Cloud 按整条工作流跑完的次数计费（不按节点步数或人数算）：Starter 按年付每月 20 美元（月付约 24 美元，含 2,500 次执行、5 路并发），Pro 按年付每月 50 美元（月付约 60 美元，含 10,000 次执行、最高 50 路并发）。',
+        detailEn: 'Self-hosting the Community edition is free with unlimited workflows, executions and users; you pay only for the server (at least 2 vCPUs and 4 GB of RAM). List prices in November 2026: the paid self-hosted Business plan is $800 a month billed annually (for companies under 100 employees, including 40,000 monthly executions; startups under 20 employees can apply for 50% off at $400 a month), and Enterprise is custom. Official n8n Cloud hosting bills per completed workflow execution rather than per step or user: Starter is $20 a month billed annually (~$24 monthly, 2,500 executions, 5 concurrent) and Pro is $50 a month billed annually (~$60 monthly, 10,000 executions, up to 50 concurrent).',
+        sources: [
+          src('价格', 'Pricing', 'https://n8n.io/pricing/'),
+          src('Docker Compose 安装', 'Docker Compose guide', 'https://docs.n8n.io/deploy/host-n8n/install-options/install-using-docker-compose'),
+        ],
+      },
+      caveats: {
+        verdict: 'caution',
+        label: '社区版不能在成员间共享流程和凭据，也没有 SSO 和 Git',
+        labelEn: 'Community omits workflow sharing, SSO and Git version control',
+        detail: '官方的社区版功能说明写明：社区版没有项目（Projects）和跨人共享——一条工作流或一套账号凭据只有实例所有者和创建者本人能看能改，多人协作很不方便。单点登录（SAML / LDAP）、多环境隔离、Git 版本控制、全局变量、外部密钥库、日志流推送和多主节点高可用也都在付费版里（多 Worker 队列模式社区版可以用）。另外，文件夹整理、编辑器里固定调试数据等三项免费功能，要先在后台填邮箱领一个免费的社区版激活码才打开。',
+        detailEn: 'According to the official Community edition feature list, Community leaves out Projects and workflow or credential sharing: only the instance owner and the person who created a workflow or credential can access it. SSO (SAML / LDAP), environments, Git version control, custom variables, external secrets, log streaming and multi-main high availability are also paid-only (queue mode with workers is included). Folders, debug data pinning and custom execution data are free, but require registering an email address for a free Community license key.',
+        sources: [
+          src('社区版功能范围', 'Community edition features', 'https://docs.n8n.io/deploy/host-n8n/community-edition-features'),
+          src('价格', 'Pricing', 'https://n8n.io/pricing/'),
+        ],
+      },
+    },
+    checkedAt: '2026-11-04',
+    confirmed: true,             // 作者 2026-11-04 确认
+  },
+  {
+    id: 'twenty',
+    name: 'Twenty',
+    logo: '/oss/logos/twenty.png',
+    use: 'crm',
+    industries: [],
+    what: '开源的客户管理（CRM）系统：管联系人、公司和商机，支持自定义字段和数据对象。',
+    whatEn: 'An open-source CRM for contacts, companies and deals, with custom fields and data objects.',
+    repoUrl: `${GH}twentyhq/twenty`,
+    homepage: 'https://twenty.com/',
+    facts: {
+      commercial: {
+        verdict: 'caution',
+        label: '可以商用，改了代码对外提供要开源',
+        labelEn: 'Yes, but changes served over a network must be shared',
+        detail: '核心代码是 AGPL-3.0，带 @license Enterprise 标记的文件归官方商业协议（要买付费订阅），SDK 和界面组件包是 MIT。许可证里专门加了一条“应用例外”：通过 REST / GraphQL 接口、Webhook 或 SDK 开发自己的闭源扩展和外部集成，不触发 AGPL 传染；但直接修改 Twenty 本身的代码并通过网络给员工或客户使用，仍要按 AGPL-3.0 提供修改后的源码。',
+        detailEn: 'The core is AGPL-3.0, while files marked @license Enterprise fall under Twenty’s commercial license (requiring a paid subscription) and SDK/UI packages are MIT. An explicit Twenty Application Exception under AGPLv3 Section 7 lets you build proprietary apps and integrations over Twenty’s REST/GraphQL APIs, webhooks and SDKs without triggering copyleft; modifying Twenty itself and serving users over a network still requires offering your modified source.',
+        sources: [license(`${GH}twentyhq/twenty/blob/main/LICENSE`)],
+      },
+      alive: alive('2026-11-04', 'twentyhq/twenty', false, '2026-11-04'),
+      deploy: {
+        verdict: 'caution',
+        label: '中等',
+        labelEn: 'Moderate',
+        detail: '官方有一键安装脚本，也可以直接跑 Docker Compose，一套拉起 4 个服务：主服务（server）、后台任务（worker）、PostgreSQL 和 Redis。官方文档写明机器内存至少要 2 GB，低于 2 GB 进程会崩溃。上线前要配好 SERVER_URL、生成随机的 ENCRYPTION_KEY，并且数据库密码不能带 @、/、#、% 这类特殊字符，否则连接串解析会报错。',
+        detailEn: 'There is a one-line install script as well as an official Docker Compose stack running four services: server, worker, PostgreSQL and Redis. The docs state a hard minimum of 2 GB of RAM (processes crash below that). Before going live you set SERVER_URL, generate a random ENCRYPTION_KEY, and keep special URL characters (@, /, #, %) out of PG_DATABASE_PASSWORD so the unencoded database URL parses cleanly.',
+        sources: [
+          src('Docker Compose 安装', 'Docker Compose guide', 'https://docs.twenty.com/developers/self-host/capabilities/docker-compose'),
+          src('Compose 配置文件', 'docker-compose.yml', `${GH}twentyhq/twenty/blob/main/packages/twenty-docker/docker-compose.yml`),
+        ],
+      },
+      cost: {
+        verdict: 'caution',
+        label: '基础版自建免费，行级权限和 SSO 按人收费',
+        labelEn: 'Free Pro tier when self-hosted; SSO and row permissions are per user',
+        short: '高级功能收费',
+        shortEn: 'Paid tiers',
+        detail: '自己部署的基础档（Pro）免费，不限用户数、数据对象和记录条数，最多建 5 个工作区，带字段级的自定义角色权限，钱只花在至少 2 GB 内存的服务器上。2026 年 11 月官网标价：自托管要行级权限和单点登录，需订 Organization 档，按年付每用户每月 19 美元（月付 25 美元）；大型企业版每年 50,000 美元起。不想自己运维，官方托管的 Twenty Cloud 按年付是 Pro 每用户每月 9 美元（月付 12 美元）、Organization 每用户每月 39 美元（月付 51 美元）。',
+        detailEn: 'Self-hosting the Pro tier is free for unlimited users, objects and records (up to 5 workspaces, with field-level custom roles); you only pay for a 2 GB+ RAM server. List prices in November 2026: adding row-level permissions and SSO on a self-hosted install requires the Organization plan at $19 per user a month billed yearly ($25 monthly), with Enterprise starting at $50,000 a year. Official Twenty Cloud hosting is $9 per user a month billed yearly ($12 monthly) for Pro and $39 per user a month billed yearly ($51 monthly) for Organization.',
+        sources: [
+          src('价格', 'Pricing', 'https://twenty.com/pricing'),
+          src('Docker Compose 安装', 'Docker Compose guide', 'https://docs.twenty.com/developers/self-host/capabilities/docker-compose'),
+        ],
+      },
+      caveats: {
+        verdict: 'caution',
+        label: '免费自建管不到“销售只看自己的客户”，丢了密钥没法恢复',
+        labelEn: 'Free self-hosting lacks row-level permissions; losing ENCRYPTION_KEY breaks stored secrets',
+        detail: '免费自建档的权限只到“字段级”（比如不让某角色改某个字段），做不到“行级权限”（比如销售甲看不见销售乙跟进的商机和客户）——这在多人销售团队里往往是刚需，和 SAML / OIDC 单点登录、自定义 AI 模型一样锁在每用户每月 19 美元的付费档里。另外，部署时设的 ENCRYPTION_KEY 必须自己备份好，一旦丢失，数据库里加密存的邮箱授权和密钥就全部作废。',
+        detailEn: 'The free self-hosted tier stops at field-level permissions: hiding specific deals or contacts between sales reps requires row-level permissions, which — along with SAML / OIDC SSO and custom AI models — sits in the paid $19/user/month Organization plan. Back up your ENCRYPTION_KEY safely as well: losing it permanently breaks encrypted OAuth tokens and secrets stored in the database.',
+        sources: [
+          src('价格', 'Pricing', 'https://twenty.com/pricing'),
+          src('Docker Compose 安装', 'Docker Compose guide', 'https://docs.twenty.com/developers/self-host/capabilities/docker-compose'),
+        ],
+      },
+    },
+    checkedAt: '2026-11-04',
+    confirmed: true,             // 作者 2026-11-04 确认
+  },
+  {
+    id: 'invoiceninja',
+    name: 'Invoice Ninja',
+    logo: '/oss/logos/invoiceninja.png',
+    use: 'invoicing',
+    industries: [],
+    what: '给小团队和自由职业者用的开票与收款系统：发报价单和账单、周期扣款，客户在自己的付款页上查账付款。源码公开（ELv2），不是标准开源。',
+    whatEn: 'Invoicing and billing for small businesses and freelancers: quotes, invoices, recurring billing and a client payment portal. Source-available under ELv2 rather than OSI open source.',
+    repoUrl: `${GH}invoiceninja/invoiceninja`,
+    homepage: 'https://invoiceninja.com/',
+    facts: {
+      commercial: {
+        verdict: 'caution',
+        label: '自己公司用可以，不能做成托管服务卖给别人',
+        labelEn: 'Yes for your own business; no competing SaaS hosting',
+        short: '禁做托管',
+        shortEn: 'No SaaS',
+        detail: '采用 Elastic License 2.0（ELv2，源码开放协议，不是 OSI 标准开源协议）。自己公司部署来给客户开票收款、修改代码内部使用都免费允许；官方的许可说明还明确允许主机商或 IT 服务商替客户安装独立的实例。不能做的是：把它包装成托管 SaaS 服务对外售卖、作为付费 SaaS 的附加功能提供、绕过许可证密钥校验，或者不买去品牌授权就删改界面和账单上的版权标识。',
+        detailEn: 'Licensed under Elastic License 2.0 (ELv2, source-available rather than OSI open source). Running and modifying it for your own business is free, and the official license FAQ explicitly allows web hosts and IT providers to install isolated instances for clients. You cannot offer it as a managed SaaS, bundle it into a commercial SaaS product, circumvent license-key checks, or strip Invoice Ninja branding without a white-label license.',
+        sources: [
+          license(`${GH}invoiceninja/invoiceninja/blob/v5-stable/LICENSE`),
+          src('许可说明', 'License FAQ', 'https://invoiceninja.github.io/docs/legal/license'),
+        ],
+      },
+      alive: alive('2026-11-02', 'invoiceninja/invoiceninja', false, '2026-11-04'),
+      deploy: {
+        verdict: 'caution',
+        label: '中等',
+        labelEn: 'Moderate',
+        detail: '官方维护了 Docker Compose 仓库（含应用、Nginx 和 MySQL / MariaDB），也有命令行安装工具 INmanage。裸机安装要 PHP 8.2、MySQL 5.7+ 或 MariaDB 10.3+、Nginx 或 Apache，并配一条每分钟跑一次的 Laravel 定时任务（schedule:run）来发周期账单和催款邮件。两个容易踩的安装坑：它必须装在域名或子域名的根目录下，不支持 /ninja 这样的子目录；直接 git clone 下来没有编译好的前端界面，正式安装要用官方发布的压缩包或 Docker 镜像。',
+        detailEn: 'Official Dockerfiles and a Docker Compose stack (app, Nginx and MySQL / MariaDB) are maintained alongside the INmanage CLI installer. Bare-metal setup needs PHP 8.2, MySQL 5.7+ or MariaDB 10.3+, Nginx or Apache, and a per-minute Laravel cron job (schedule:run) for recurring invoices and reminders. Watch two install traps: it must sit at the root of a domain or subdomain (subdirectories like /ninja are unsupported), and git clone lacks the prebuilt React admin UI — use the release tarball or Docker image instead.',
+        sources: [
+          src('安装文档', 'Self-host installation', 'https://invoiceninja.github.io/docs/self-host/self-host-installation'),
+          src('官方 Docker 仓库', 'Official Dockerfiles', `${GH}invoiceninja/dockerfiles`),
+        ],
+      },
+      cost: {
+        verdict: 'caution',
+        label: '自建功能全免，去客户侧品牌标每年 40 美元',
+        labelEn: 'All features free when self-hosted; $40 a year to remove client branding',
+        short: '去标年付',
+        shortEn: '$40/yr logo',
+        detail: '自己部署不锁功能，官方托管版里的 Pro 和企业版功能在自建包里全部免费开放，也不限客户数、账单数和员工账号数。唯一的官方收费项是去品牌（White Label）：去掉发给客户的 PDF 账单和付款门户上的“Created by Invoice Ninja”标识，每套自建实例每年 40 美元（2026 年 1 月 1 日起从 30 美元上调至 40 美元）。不想自己管服务器，官方托管版最多 5 个客户免费；Ninja Pro 每月 14 美元（年付 140 美元，1 个用户、不限客户数），Enterprise 按人数从每月 18 美元（1–2 人，年付 180 美元）到每月 300 美元（51–100 人）。',
+        detailEn: 'Self-hosting unlocks all Pro and Enterprise features for $0, with unlimited clients, invoices and team users. The one paid add-on is a $40-a-year White-Label license per self-hosted install (raised from $30 on January 1, 2026) to remove “Created by Invoice Ninja” from client-facing PDFs and payment portals. Official hosted plans are free up to 5 clients, $14 a month ($140 a year) for 1-user Ninja Pro with unlimited clients, and $18 to $300 a month ($180 to $3,000 a year) for multi-user Enterprise tiers.',
+        sources: [
+          readme('invoiceninja/invoiceninja'),
+          src('去品牌说明', 'White-labeling docs', 'https://invoiceninja.github.io/docs/self-host/self-host-white-labeling'),
+          src('托管版价格', 'Hosted pricing', 'https://invoiceninja.com/pricing-plans/'),
+          src('2026 价格调整公告', 'Jan 2026 pricing update', 'https://invoiceninja.com/pricing-update-january-1-2026/'),
+        ],
+      },
+      caveats: {
+        verdict: 'caution',
+        label: '买了去品牌授权，员工后台和内部通知邮件仍带官方名字',
+        labelEn: 'Even with a white-label key, the admin app keeps Invoice Ninja branding',
+        detail: '官方的去品牌文档专门提醒：每年 40 美元的 White Label 只去掉面向客户看的 PDF 账单、邮件和付款门户上的标识，员工自己登录的管理后台和发给管理员的通知邮件里仍然保留 Invoice Ninja 标志（为防未授权贴牌转售）。另外，如果你以前用过老的 v4 版本，v5 是重写的架构，不能原地升级，必须装新实例再迁数据。',
+        detailEn: 'The official white-label docs note that the $40/year license only removes branding on client-facing PDFs, client emails and the payment portal — the staff admin interface and admin notification emails still carry Invoice Ninja branding by design. Also note that v5 is a ground-up rewrite and cannot be upgraded in place from v4.x.',
+        sources: [
+          src('去品牌说明', 'White-labeling docs', 'https://invoiceninja.github.io/docs/self-host/self-host-white-labeling'),
+          src('安装文档', 'Self-host installation', 'https://invoiceninja.github.io/docs/self-host/self-host-installation'),
+        ],
+      },
+    },
+    checkedAt: '2026-11-04',
+    confirmed: true,             // 作者 2026-11-04 确认
   },
 ];
 

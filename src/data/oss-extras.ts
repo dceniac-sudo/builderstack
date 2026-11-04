@@ -280,6 +280,34 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
       confirmed: true,
     },
   },
+  // 下面三条 2026-11-04 按各自的五件事起草，作者当天和条目一起确认。
+  n8n: {
+    fit: {
+      considerIf: '公司内部想把不同软件的接口、定时任务和 AI 节点串成自动流程，而且能给出一台至少 2 核、4 GB 内存的服务器。',
+      considerIfEn: 'You want to automate internal workflows across APIs, webhooks, schedules and AI steps, and you can run a server with at least 2 vCPUs and 4 GB of RAM.',
+      lookElsewhereIf: '打算把它做成付费服务或让外部客户登录使用（协议不允许），或者几个人要在自建版里共享流程和凭据、要 SSO 或 Git 版本控制，却不想付每月 800 美元的 Business 版（20 人以下初创半价）。',
+      lookElsewhereIfEn: 'You want to offer it to external paying users (the license does not allow it), or several people need shared workflows and credentials, SSO or Git version control on a self-hosted install without paying $800 a month for Business (half price for startups under 20 staff).',
+      confirmed: true,
+    },
+  },
+  twenty: {
+    fit: {
+      considerIf: '想要一套能自定义字段和数据对象的开源 CRM，字段级权限就够用，有人能在 2 GB 内存以上的 Linux 服务器上跑 Docker Compose。',
+      considerIfEn: 'You want an open-source CRM with custom fields and objects, field-level permissions are enough, and someone can run Docker Compose on a Linux server with 2 GB of RAM or more.',
+      lookElsewhereIf: '销售之间必须互相看不到对方的客户和商机（行级权限），或者要接 SAML / OIDC 单点登录，又不想付每用户每月 19 美元（按年付）。',
+      lookElsewhereIfEn: 'Sales reps must not see each other’s deals and contacts (row-level permissions), or you need SAML / OIDC SSO, and you do not want to pay $19 per user a month billed yearly.',
+      confirmed: true,
+    },
+  },
+  invoiceninja: {
+    fit: {
+      considerIf: '小团队或自由职业者想在自己的服务器上管报价单、账单、周期扣款和客户付款页，自建版功能全开、不按人数收费。',
+      considerIfEn: 'You are a small team or freelancer who wants quotes, invoices, recurring billing and a client payment portal on your own server, with every feature unlocked and no per-user fee.',
+      lookElsewhereIf: '想把它做成托管开票服务卖给别人（ELv2 不允许），或者一点 Invoice Ninja 标识都不能有：每年 40 美元的去品牌授权只管客户看到的部分，员工后台仍带官方标识。',
+      lookElsewhereIfEn: 'You plan to sell it as a hosted invoicing service (ELv2 does not allow it), or you cannot have any Invoice Ninja branding at all: the $40-a-year white-label license covers only what clients see, and the staff admin keeps the branding.',
+      confirmed: true,
+    },
+  },
   odoo: {
     fit: {
       considerIf: '想把销售、采购、库存和生产放进一套系统，社区版里的开票、库存、采购、生产（MRP）够用，团队里有人能维护 Linux 服务器和 PostgreSQL。',
@@ -314,6 +342,9 @@ const SEARCH_SUMMARY_EN: Record<string, string> = {
   chatwoot: 'The core is free under MIT. Roles, SLAs, SSO and custom branding are paid: $19 or $99 per agent a month when self-hosted. Runs on 2 cores and 4 GB of RAM.',
   zammad: 'Free under AGPL-3.0. Needs 2 cores and 6 GB of RAM, plus 4 GB for Elasticsearch, which search and reports depend on. Hosted plans from €7 per agent a month.',
   odoo: 'The Community edition is free under LGPL-3.0, but leaves out full accounting, barcode, shop floor, PLM and Quality. Enterprise is $31.10 per user a month.',
+  n8n: 'Free to self-host for internal use (fair-code, not OSI). No reselling it as a service. Community lacks sharing, SSO and Git. n8n Cloud from $20 a month.',
+  twenty: 'Free to self-host under AGPL-3.0 on 2 GB of RAM. Row-level permissions and SSO are $19 per user a month. Twenty Cloud from $9 per user a month.',
+  invoiceninja: 'Free to self-host under ELv2 with every feature unlocked; no reselling as SaaS. Removing branding clients see is $40 a year. Hosted plans from $14 a month.',
 };
 
 // 英文详情页的标题默认是“Is 项目名 free? Pricing, license and caveats”。名字里已经带 open source 的不适合这么问，在这里单独写。
@@ -324,6 +355,7 @@ const SEARCH_TITLE_EN: Record<string, string> = {
   opensourcepos: 'Open Source Point of Sale: pricing, license and caveats',
   jupyterhub: 'What is JupyterHub? Is it free? Pricing, license and caveats',
   medusa: 'Is the Medusa commerce platform free? Pricing and caveats',
+  twenty: 'Is Twenty CRM free? Pricing, license and caveats',
 };
 
 // 英文详情页第一屏的一句价格结论，放在项目简介下面。给有搜索展示和价格查询的前排项目直接作答。
@@ -336,6 +368,9 @@ const PRICE_ANSWER_EN: Record<string, string> = {
   jupyterhub: 'Free under BSD-3-Clause; you pay only for the Linux server. It needs at least 1 GB of RAM to install, and memory scales as concurrent users × per-user memory limit + 128 MB (estimating 40% to 60% of class size online at once).',
   chatwoot: 'The Community edition is free to self-host (from 2 cores and 4 GB of RAM). Paid self-hosted tiers for roles, SLAs, SSO and custom branding are $19 or $99 per agent a month; Chatwoot Cloud has a free plan up to 2 agents, then $19, $39 or $99 per agent a month.',
   medusa: 'The core is free under MIT (self-hosting needs a 2 GB+ RAM host, PostgreSQL and Redis). Managed Medusa Cloud plans start at $29, $99 and $299 a month with no fee on sales volume; staff roles (RBAC) and SSO require an Enterprise plan priced on request.',
+  n8n: 'The self-hosted Community edition is free for internal business use, with no cap on executions; you pay for a server with 2+ vCPUs and 4 GB+ RAM. Paid self-hosted Business is $800 a month billed annually ($400 for startups under 20 staff). n8n Cloud is $20 or $50 a month billed annually, counted per completed workflow run.',
+  twenty: 'Self-hosting is free under AGPL-3.0 for unlimited users and records (needs 2 GB+ RAM, PostgreSQL and Redis). Row-level permissions and SSO on your own server are $19 per user a month billed yearly ($25 monthly). Twenty Cloud is $9 or $39 per user a month billed yearly.',
+  invoiceninja: 'Self-hosting is free with every feature unlocked and unlimited clients and users. Removing “Created by Invoice Ninja” from client PDFs and the portal is $40 a year per install. Hosted plans are free up to 5 clients, then $14 a month for Ninja Pro or from $18 a month for Enterprise.',
 };
 
 export function ossSearchSummaryEn(id: string): string | undefined {
