@@ -9,6 +9,7 @@ export type { Language };
 
 // 你的 X (Twitter) 用户名，点击将直接唤起一键关注
 export const X_HANDLE = 'dceniac';
+export const SPONSOR_EMAIL = 'sponsor@dceniac.com';
 
 export const DICTIONARY = {
   en: {
