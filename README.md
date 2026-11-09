@@ -27,7 +27,7 @@ Link to a single tool with `https://dceniac.com/#<tool-id>`.
 ### Local Development
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
@@ -41,9 +41,14 @@ npm run build
 
 The output will be placed in the `out/` directory, ready for deployment to Cloudflare Pages.
 
+In the Pages build settings, set `SKIP_DEPENDENCY_INSTALL=1` and use
+`npm ci && npm run build` as the build command. This installs the versions in
+`package-lock.json` for both preview and production builds.
+[Cloudflare Pages build configuration](https://developers.cloudflare.com/pages/configuration/build-image/#skip-dependency-install)
+
 ## 🛠️ Stack
 
-- **Framework**: [Next.js 14](https://nextjs.org/)
+- **Framework**: [Next.js 15](https://nextjs.org/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **Animation**: [Framer Motion](https://www.framer.com/motion/)
 - **Icons**: [Lucide React](https://lucide.dev/)
