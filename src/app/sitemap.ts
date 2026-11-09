@@ -4,6 +4,7 @@ import { OSS_INDUSTRIES, OSS_PROJECTS, OSS_USES, ossProjectsOfIndustry, ossProje
 export const dynamic = 'force-static';
 
 const SITE = 'https://dceniac.com';
+const PROJECT_UPDATES: Record<string, string> = { chatwoot: '2026-11-09', n8n: '2026-11-09' };
 
 // 站点地图，构建时生成 /sitemap.xml，给搜索引擎看全站有哪些页面。
 // 只列线上真有内容的页面：还没有项目的用途和行业不列，草稿不列。
@@ -16,6 +17,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page('/oss/'),
     ...OSS_USES.filter((u) => ossProjectsOfUse(u.id).length > 0).map((u) => page(`/oss/${u.id}/`)),
     ...OSS_INDUSTRIES.filter((i) => ossProjectsOfIndustry(i.id).length > 0).map((i) => page(`/for/${i.id}/`)),
-    ...OSS_PROJECTS.map((p) => page(`/oss/${p.id}/`, p.checkedAt)),
+    ...OSS_PROJECTS.map((p) => page(`/oss/${p.id}/`, PROJECT_UPDATES[p.id] ?? p.checkedAt)),
   ];
 }

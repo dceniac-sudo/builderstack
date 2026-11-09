@@ -2,10 +2,10 @@ import { ossIndustryMetadata, ossIndustryParams, renderOssIndustry } from '@/lib
 
 export const generateStaticParams = ossIndustryParams;
 
-export function generateMetadata({ params }: { params: { industry: string } }) {
-  return ossIndustryMetadata('zh', params.industry);
+export async function generateMetadata({ params }: { params: Promise<{ industry: string }> }) {
+  return ossIndustryMetadata('zh', (await params).industry);
 }
 
-export default function OssIndustryPageZh({ params }: { params: { industry: string } }) {
-  return renderOssIndustry('zh', params.industry);
+export default async function OssIndustryPageZh({ params }: { params: Promise<{ industry: string }> }) {
+  return renderOssIndustry('zh', (await params).industry);
 }

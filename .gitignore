@@ -23,6 +23,3 @@ Thumbs.db
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# ignore lockfile for frictionless cloud container builds
-package-lock.json
