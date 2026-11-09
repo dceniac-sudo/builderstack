@@ -6,6 +6,8 @@ import { ChevronRight } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { SiteFooter } from '@/components/SiteFooter';
 import { ALL_FACTS, Dot, OssCta, OssLogo, OssProjectView, RowFactKey } from '@/components/OssParts';
+import { ChatwootCalculator } from '@/components/ChatwootCalculator';
+import { JupyterHubCalculator } from '@/components/JupyterHubCalculator';
 import { LiveKitCalculator } from '@/components/LiveKitCalculator';
 import { useI18n, localePath } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
@@ -256,8 +258,10 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({ project: p, pric
           {lang === 'zh' ? '。' : '.'}
         </p>
 
-        {/* LiveKit 英文页的带宽和账单估算器（2026-11-04 起），见 LiveKitCalculator.tsx */}
+        {/* 英文详情页的交互算账估算器（LiveKit 2026-11-04 起，Chatwoot / JupyterHub 2026-11-09 起） */}
         {lang === 'en' && p.id === 'livekit' && <LiveKitCalculator />}
+        {lang === 'en' && p.id === 'chatwoot' && <ChatwootCalculator />}
+        {lang === 'en' && p.id === 'jupyterhub' && <JupyterHubCalculator />}
 
         {comparisons &&
           comparisons.map((c) => (

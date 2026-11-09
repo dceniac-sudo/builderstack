@@ -270,6 +270,18 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
       lookElsewhereIfEn: 'You need roles and permissions, SLAs, single sign-on or your own branding for free. Self-hosted paid tiers cost US$19 or US$99 per agent per month, billed annually.',
       confirmed: true,
     },
+    comparisons: [
+      {
+        otherId: 'zammad',
+        heading: 'Chatwoot 对比 Zammad',
+        headingEn: 'Chatwoot vs Zammad',
+        pickThis: '想要把网站在线聊天、邮件和社交消息收进同一个收件箱，而且服务器配置更轻（最低 2 核、4 GB 内存、20 GB SSD，不装 Elasticsearch），或者看重 MIT 许可、自带帮助中心和官方云免费档（最多 2 个坐席）。要留神的是角色权限、自定义品牌、坐席接待上限、Captain AI、SSO 和 SLA 都不在免费社区版里，自建开启也要每坐席每月 19 或 99 美元。',
+        pickThisEn: 'You want website live chat, email and social messages in one shared inbox on a lighter server (minimum 2 cores, 4 GB of RAM and 20 GB SSD, no Elasticsearch), or want an MIT-licensed core, a built-in help center and a free Cloud tier for up to 2 agents. Watch the open-core limits: roles and permissions, custom branding, agent capacity, Captain AI, SSO and SLAs are locked to paid plans ($19 or $99 per agent a month, even self-hosted).',
+        pickOther: '客户主要靠邮件、电话等渠道提工单，而且希望免费自建版不按坐席收费就能用完整工单、角色权限和报表——前提是服务器能给到 6 到 10 GB 内存（最低 2 核 6 GB，同机跑搜索和报表依赖的 Elasticsearch 再加 4 GB），并且接受 AGPL-3.0 协议（改了代码让客户或员工通过网络使用须公开修改后的源码）。',
+        pickOtherEn: 'Your support is ticket- and email-driven and you want roles, permissions and reporting included in the free self-hosted version with no per-agent fees — provided you can give the server 6 to 10 GB of RAM (2 cores and 6 GB minimum, plus 4 GB for the Elasticsearch instance that search and reports rely on) and accept AGPL-3.0 source sharing if you modify the code.',
+        confirmed: true,
+      },
+    ],
   },
   zammad: {
     fit: {
@@ -279,6 +291,18 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
       lookElsewhereIfEn: 'You only have a small server and do not want to pay for hosting: self-hosting needs at least 6 GB of RAM, and without Elasticsearch search is very limited; the hosted plans start at €7 per agent a month. Also skip it if you plan to modify the code and serve it to others without publishing your changes; it is AGPL-3.0.',
       confirmed: true,
     },
+    comparisons: [
+      {
+        otherId: 'chatwoot',
+        heading: 'Zammad 对比 Chatwoot',
+        headingEn: 'Zammad vs Chatwoot',
+        pickThis: '客户来信都需要变成标准工单流转，而且希望自建版功能完整、不按坐席交许可费（官方托管版按年付每坐席每月 7、16、25 欧元，不含增值税）。代价是机器更重：最低 2 核 6 GB 内存，同机装搜索、报表和搜附件必需的 Elasticsearch 还要再加 4 GB；协议为 AGPL-3.0。',
+        pickThisEn: 'You want every request tracked as a ticket and want a self-hosted edition with no per-agent license wall (or hosted plans from €7, €16 and €25 per agent a month billed annually, before VAT). The trade-off is heavier hardware — at least 2 cores and 6 GB of RAM plus 4 GB for Elasticsearch, which search, reports and attachment indexing depend on — and AGPL-3.0 licensing.',
+        pickOther: '重点是网站在线聊天、邮件和社交消息合一的客服收件箱（自带帮助中心），且只有一台 2 核 4 GB 内存的小服务器。核心为 MIT 许可，官方云提供最多 2 个坐席的免费档；但如果要角色与权限、自定义品牌、坐席接待上限、SSO 或 SLA，自建和云端都要按每坐席每月 19 或 99 美元付费。',
+        pickOtherEn: 'You want website live chat, email and social messaging in one inbox with a built-in help center on a smaller server (from 2 cores and 4 GB of RAM). The core is MIT and Chatwoot Cloud is free for up to 2 agents, though roles and permissions, custom branding, agent capacity, SSO and SLAs require a paid plan at $19 or $99 per agent a month.',
+        confirmed: true,
+      },
+    ],
   },
   // 下面三条 2026-11-04 按各自的五件事起草，作者当天和条目一起确认。
   n8n: {
@@ -327,7 +351,7 @@ const SEARCH_SUMMARY_EN: Record<string, string> = {
   'canvas-lms': 'Free under AGPL-3.0, but hard to self-host: a 19-section install guide and 8 GB of RAM. Change the code and you must offer users your source.',
   kolibri: 'Free under MIT, commercial use allowed. Installers for Windows, Linux, macOS, Raspberry Pi and Android. Built for offline classrooms, not for selling courses.',
   bigbluebutton: 'Free under LGPL-3.0, paid classes allowed. The server is the cost: the stated production minimum is 8 cores, 16 GB of RAM and 250 Mbps symmetrical bandwidth.',
-  jupyterhub: 'JupyterHub is a multi-user Jupyter notebook server: each student gets their own environment. Free under BSD-3-Clause; memory grows with concurrent users.',
+  jupyterhub: 'JupyterHub is an open-source multi-user Jupyter notebook server: each student gets an isolated environment on one Linux host. Free under BSD-3-Clause.',
   woocommerce: 'The plugin is free (GPL), with no platform fee or revenue share. Woo’s own estimate: hosting $25 to $350 a month, extensions $29 to $299 a year each.',
   prestashop: 'Free under OSL-3.0. Modify the core and run a public store on it, and your version must be OSL-3.0 too. Official hosted plan from €24 a month before VAT.',
   bagisto: 'Free under MIT, commercial use allowed. One Docker command starts a full store. Official cloud hosting from $25 a month. Multi-vendor is a $449 extension.',

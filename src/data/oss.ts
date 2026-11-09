@@ -437,8 +437,8 @@ const ALL_PROJECTS: OssProject[] = [
     name: 'JupyterHub',
     use: 'coding',
     industries: [{ id: 'education' }],
-    what: '多人共用的 Jupyter 笔记本服务器，一个班的学生各有自己的环境。',
-    whatEn: 'A multi-user Jupyter notebook server: every student in a class gets their own environment.',
+    what: '开源的多人共用 Jupyter 笔记本服务器：不用每个学生在本机装环境，一台 Linux 服务器就能让全班各自在浏览器里用上独立的 Notebook 环境（负责登录认证、转发和按人启动环境）。',
+    whatEn: 'An open-source multi-user server for Jupyter notebooks: instead of having each student install Python locally, one Linux server gives every user an isolated notebook environment in the browser (handling login, routing and spawning per-user environments).',
     repoUrl: `${GH}jupyterhub/jupyterhub`,
     homepage: 'https://jupyterhub.readthedocs.io',
     facts: {
