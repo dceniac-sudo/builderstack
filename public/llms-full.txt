@@ -1,0 +1,77 @@
+# BuilderStack (dceniac.com) — Full Technical & Commercial Licensing Reference
+
+> Primary-source commercial evaluation of 22 open-source business software projects. Every entry answers five operational questions for engineering leaders and small business owners: (1) Exact commercial licensing boundaries (what you can modify, white-label, or sell without violating copyleft or source-available clauses), (2) Maintenance velocity, (3) Minimum production server & RAM/VRAM sizing, (4) 3-year total cost of ownership (TCO) vs SaaS per-seat fees, and (5) Real-world deployment pitfalls.
+
+## 1. Customer Support, Help Desk, CRM, ERP & Automation
+
+### Chatwoot — https://dceniac.com/oss/chatwoot/
+- **Use Case**: Omnichannel customer support live chat & shared inbox (Intercom / Zendesk alternative).
+- **License**: Dual structure — code outside `/enterprise` is **MIT License** (Chatwoot Community Edition); code inside `/enterprise` is proprietary. If you strictly run the Community Edition image (`chatwoot/chatwoot:latest` with `CW_EDITION="ce"`) or remove the `/enterprise` directory, you have full MIT rights including commercial internal use and white-labeling.
+- **Server Sizing**: Minimum 2 vCPU / 4 GB RAM for Rails + Sidekiq + PostgreSQL + Redis (2 GB RAM VMs frequently OOM during asset precompilation or Sidekiq bursts).
+- **Interactive Tool**: Self-Hosted vs Cloud Seat Cost Calculator on page (`/oss/chatwoot/#calculator`).
+
+### Zammad — https://dceniac.com/oss/zammad/
+- **Use Case**: Help desk & customer ticketing system (Zendesk / Freshdesk alternative).
+- **License**: **GNU AGPLv3**. Free for unlimited internal support agents with zero per-seat fees; any modifications to Zammad source code served over a network must be released under AGPLv3.
+- **Server Sizing**: Requires at least **4 GB–8 GB RAM** in production because Elasticsearch runs alongside Rails, PostgreSQL, and background workers.
+
+### Twenty CRM — https://dceniac.com/oss/twenty/
+- **Use Case**: Modern open-source CRM (Salesforce / HubSpot / Attio alternative).
+- **License**: **GPLv3** (core) with commercial usage safe-harbor for internal business operations.
+- **Server Sizing**: Docker Compose stack (Node.js server, worker, PostgreSQL, Redis); minimum 2 vCPU / 4 GB RAM.
+
+### Odoo Community Edition — https://dceniac.com/oss/odoo/
+- **Use Case**: Integrated ERP, CRM, inventory, MRP, and e-commerce.
+- **License**: **LGPLv3** for Odoo Community Edition.
+- **Key Pitfall**: Odoo Community omits full double-entry accounting reports, bank synchronization, and studio customization found in Odoo Enterprise; adding OCA (Odoo Community Association) modules requires careful version upgrades.
+
+### Invoice Ninja — https://dceniac.com/oss/invoiceninja/
+- **Use Case**: Client invoicing, quotations, time tracking, and recurring billing portal.
+- **License**: **Elastic License 2.0 (ELv2)** (source-available, not OSI open source). Free to self-host for your own company's billing without seat limits, and removes the "Created by Invoice Ninja" badge when self-hosted; strictly prohibits offering Invoice Ninja as a managed multi-tenant SaaS to third parties.
+
+### n8n — https://dceniac.com/oss/n8n/
+- **Use Case**: Workflow automation and AI agent orchestration (Zapier / Make alternative).
+- **License**: **Sustainable Use License** (fair-code). Free to self-host for internal business workflows, internal API integrations, and backend automation; requires a commercial n8n Embed license if you let external paying customers log in or supply their own credentials to multi-tenant workflows.
+
+---
+
+## 2. Education, Coding Classrooms, WebRTC Live Video & AI Avatars
+
+### JupyterHub — https://dceniac.com/oss/jupyterhub/
+- **Use Case**: Multi-user Jupyter Notebook environment for coding classrooms, universities, and data science teams.
+- **License**: **BSD-3-Clause** (fully permissive commercial & academic use).
+- **Server Sizing & Pitfall**: Memory is the #1 bottleneck — each active Python student notebook consumes **512 MB to 2 GB RAM**. Always configure `mem_limit` via `systemd-spawner` (The Littlest JupyterHub / TLJH for <100 users on a single VM) or `KubeSpawner` (Zero to JupyterHub / Z2JH for larger cohorts).
+- **Interactive Tool**: JupyterHub RAM, CPU & Cloud VM Cost Calculator (`/oss/jupyterhub/#calculator`).
+
+### LiveKit — https://dceniac.com/oss/livekit/
+- **Use Case**: WebRTC SFU server for low-latency video meetings, live classrooms, and real-time voice/video AI agents.
+- **License**: **Apache-2.0** (`livekit/livekit` server, `livekit/egress`, and SDKs).
+- **Server Sizing & Pitfall**: WebRTC SFU bottleneck is **outbound (egress) network bandwidth**, not CPU. In an N-person room with all cameras on at bitrate B, server outbound bandwidth scales as `N * (N - 1) * B` (e.g., 3 people on 1080p ~4 Mbps requires ~24 Mbps outbound, choking a 10 Mbps fixed-bandwidth cloud VM). Room composite recording (`livekit/egress`) spins up headless Chrome and requires 2–4 dedicated vCPUs per active recording.
+- **Interactive Tool**: LiveKit SFU Outbound Bandwidth & Recording Cost Calculator (`/oss/livekit/#calculator`).
+
+### BigBlueButton — https://dceniac.com/oss/bigbluebutton/
+- **Use Case**: Virtual classroom web conferencing with multi-user whiteboard, polling, and breakout rooms.
+- **License**: **LGPLv3**.
+- **Server Sizing**: Requires a dedicated Ubuntu server (minimum **8 vCPU / 16 GB RAM** recommended for production classes) with UDP ports `16384-32768` open for FreeSWITCH/Kurento/mediasoup audio and video.
+
+### Moodle / Canvas LMS / Kolibri
+- **Moodle** (`https://dceniac.com/oss/moodle/`): **GPLv3**; standard LAMP/LEMP stack, richest quiz and SCORM ecosystem.
+- **Canvas LMS** (`https://dceniac.com/oss/canvas-lms/`): **AGPLv3**; Ruby on Rails + PostgreSQL + Redis + Consul stack requiring minimum 8–16 GB RAM and significant DevOps maintenance.
+- **Kolibri** (`https://dceniac.com/oss/kolibri/`): **MIT License**; lightweight offline-first LMS capable of running on a Raspberry Pi or low-spec local server.
+
+### LiveTalking & OpenAvatarChat
+- **LiveTalking** (`https://dceniac.com/oss/livetalking/`): **Apache-2.0**; real-time lip-sync streaming digital human (MuseTalk / Wav2Lip / ER-NeRF over WebRTC), requires NVIDIA GPU (12–24 GB VRAM).
+- **OpenAvatarChat** (`https://dceniac.com/oss/openavatarchat/`): **Apache-2.0**; end-to-end ASR + LLM + TTS + 2D avatar pipeline on a single NVIDIA RTX 4090 / A10 GPU.
+
+---
+
+## 3. E-Commerce, Headless Commerce, Retail POS & Restaurant Ordering
+
+- **Medusa** (`https://dceniac.com/oss/medusa/`): **MIT License**; Node.js/TypeScript modular headless commerce backend.
+- **Saleor** (`https://dceniac.com/oss/saleor/`): **BSD-3-Clause**; Python/Django + GraphQL headless commerce engine.
+- **WooCommerce** (`https://dceniac.com/oss/woocommerce/`): **GPLv3**; free core plugin on WordPress, watch out for annual paid extension subscriptions ($200–$1,000+/yr).
+- **PrestaShop** (`https://dceniac.com/oss/prestashop/`): **OSL-3.0 / AFL-3.0**; complete PHP storefront and back-office catalog.
+- **Bagisto** (`https://dceniac.com/oss/bagisto/`): **MIT License**; Laravel + Vue.js e-commerce platform.
+- **Shopware 6 Community Edition** (`https://dceniac.com/oss/shopware/`): **MIT License** (`shopware/shopware` core); PHP Symfony + Vue.js store system.
+- **Open Source Point of Sale (OSPOS)** (`https://dceniac.com/oss/opensourcepos/`): **MIT License**; PHP/MySQL browser-based retail POS with receipt printer and barcode support.
+- **TastyIgniter** (`https://dceniac.com/oss/tastyigniter/`): **MIT License**; Laravel restaurant online ordering, delivery zones, and table booking system with zero per-order commission.

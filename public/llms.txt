@@ -1,0 +1,66 @@
+# BuilderStack (dceniac.com)
+
+> BuilderStack is an independent commercial evaluation directory of 22 verified open-source business software projects. Each review verifies 5 primary-source facts: commercial licensing rules (MIT, Apache-2.0, GPLv3, AGPLv3, Fair-code), active maintenance status, self-hosted server & RAM requirements, real total cost of ownership (TCO) vs SaaS per-seat pricing, and production pitfalls.
+
+## Directory & Core Hubs
+
+- [BuilderStack Home](https://dceniac.com/): Open-source business software you can actually run in production, verified with primary license texts and server requirements.
+- [All Open-Source Projects Directory](https://dceniac.com/oss/): Filter 22 verified open-source software projects by use case, license type, and industry.
+
+## Interactive Self-Hosting Cost & Sizing Calculators
+
+- [Chatwoot Self-Hosted vs Cloud Seat Cost Calculator](https://dceniac.com/oss/chatwoot/): Compare Chatwoot Community Edition (MIT) vs Hacker/Business Cloud plans and Intercom/Zendesk per-agent pricing, plus Sidekiq/Postgres RAM sizing.
+- [JupyterHub Classroom RAM, CPU & Cloud Cost Calculator](https://dceniac.com/oss/jupyterhub/): Estimate concurrent student notebook memory, CPU cores, and monthly VM costs for Littlest JupyterHub (TLJH) vs Kubernetes (Z2JH).
+- [LiveKit WebRTC SFU Outbound Bandwidth & Egress Calculator](https://dceniac.com/oss/livekit/): Calculate N*(N-1) WebRTC video egress bandwidth (Mbps), monthly traffic transfer, and headless Chrome recording CPU requirements.
+
+## Customer Support, CRM, ERP & Billing
+
+- [Chatwoot](https://dceniac.com/oss/chatwoot/): Open-source omnichannel live chat and shared inbox (MIT license for Community Edition; Enterprise folder proprietary).
+- [Zammad](https://dceniac.com/oss/zammad/): Open-source help desk and ticketing system (GNU AGPLv3, Elasticsearch RAM sizing, zero per-agent seat limits).
+- [Odoo Community vs Enterprise](https://dceniac.com/oss/odoo/): Open-source ERP and MRP (LGPLv3 Community Edition vs proprietary Enterprise modules and accounting gaps).
+- [Twenty CRM](https://dceniac.com/oss/twenty/): Modern open-source Salesforce/HubSpot alternative (GPLv3 with commercial exceptions, self-hosted Docker + Postgres + Redis).
+- [Invoice Ninja](https://dceniac.com/oss/invoiceninja/): Client invoicing, quotes, and recurring billing portal (Elastic License 2.0 — free for internal business use, cannot resell as hosted SaaS).
+- [n8n Workflow Automation](https://dceniac.com/oss/n8n/): Node-based workflow and AI automation (Sustainable Use License — free for internal business automation, restricted when embedding with customer credentials).
+
+## E-Commerce, Headless Commerce, POS & Ordering
+
+- [Medusa](https://dceniac.com/oss/medusa/): Composable headless commerce backend for Node.js developers (MIT license).
+- [Saleor](https://dceniac.com/oss/saleor/): GraphQL-first headless e-commerce platform in Python/Django (BSD-3-Clause license).
+- [WooCommerce](https://dceniac.com/oss/woocommerce/): WordPress-based online store platform (GPLv3, plugin renewal cost breakdown).
+- [PrestaShop](https://dceniac.com/oss/prestashop/): Self-hosted PHP e-commerce storefront and back office (OSL-3.0 / AFL-3.0).
+- [Bagisto](https://dceniac.com/oss/bagisto/): Laravel open-source e-commerce platform (MIT license).
+- [Shopware Community Edition](https://dceniac.com/oss/shopware/): B2C/B2B e-commerce system (MIT license for shopware/shopware core).
+- [Open Source Point of Sale (OSPOS)](https://dceniac.com/oss/opensourcepos/): Web-based retail POS with barcode scanning, inventory, and reporting (MIT license).
+- [TastyIgniter](https://dceniac.com/oss/tastyigniter/): Restaurant online ordering and table reservation system (MIT license).
+
+## Education, LMS, Live Video & AI Avatars
+
+- [Moodle](https://dceniac.com/oss/moodle/): Full-featured open-source Learning Management System (GPLv3).
+- [Canvas LMS](https://dceniac.com/oss/canvas-lms/): University and K-12 learning platform by Instructure (AGPLv3, high production server footprint).
+- [Kolibri](https://dceniac.com/oss/kolibri/): Offline-first learning platform for low-bandwidth schools and training centers (MIT license).
+- [JupyterHub](https://dceniac.com/oss/jupyterhub/): Multi-user Jupyter notebook server for coding classrooms and data teams (BSD-3-Clause).
+- [BigBlueButton](https://dceniac.com/oss/bigbluebutton/): Virtual classroom web conferencing with whiteboard and breakout rooms (LGPLv3, dedicated bare-metal/VM sizing).
+- [LiveKit](https://dceniac.com/oss/livekit/): WebRTC SFU media server and real-time voice/video AI agent infrastructure (Apache-2.0).
+- [LiveTalking](https://dceniac.com/oss/livetalking/): Real-time interactive streaming digital human with lip-sync (Apache-2.0, GPU VRAM requirements).
+- [OpenAvatarChat](https://dceniac.com/oss/openavatarchat/): Modular conversational digital human pipeline by HumanAIGC (Apache-2.0, single high-VRAM GPU deployment).
+
+## Category & Industry Guides
+
+- [Open-Source LMS](https://dceniac.com/oss/lms/): Compare Moodle, Canvas LMS, and Kolibri.
+- [Open-Source Live Video & Conferencing](https://dceniac.com/oss/live-video/): Compare BigBlueButton and LiveKit.
+- [Open-Source Coding Classrooms](https://dceniac.com/oss/coding/): JupyterHub sizing and deployment guide.
+- [Open-Source Online Stores](https://dceniac.com/oss/store/): Compare WooCommerce, PrestaShop, Bagisto, and Shopware.
+- [Open-Source Headless Commerce](https://dceniac.com/oss/headless/): Compare Medusa and Saleor.
+- [Open-Source Point of Sale (POS)](https://dceniac.com/oss/pos/): Retail POS evaluation.
+- [Open-Source Restaurant Ordering](https://dceniac.com/oss/ordering/): TastyIgniter commission-free ordering guide.
+- [Open-Source Live Chat](https://dceniac.com/oss/live-chat/): Chatwoot licensing and self-hosting guide.
+- [Open-Source Help Desk](https://dceniac.com/oss/help-desk/): Zammad ticketing evaluation.
+- [Open-Source ERP](https://dceniac.com/oss/erp/): Odoo Community vs Enterprise breakdown.
+- [Open-Source CRM](https://dceniac.com/oss/crm/): Twenty CRM commercial review.
+- [Open-Source Invoicing & Billing](https://dceniac.com/oss/invoicing/): Invoice Ninja Elastic License 2.0 guide.
+- [Open-Source Workflow Automation](https://dceniac.com/oss/automation/): n8n Sustainable Use License & deployment guide.
+- [Open-Source Real-Time AI Avatars](https://dceniac.com/oss/avatars/): Compare LiveTalking and OpenAvatarChat.
+- [Education Open-Source Stack](https://dceniac.com/for/education/): Curated stack for schools and training providers.
+- [E-Commerce & Retail Open-Source Stack](https://dceniac.com/for/ecommerce/): Curated stack for online stores and retail brands.
+- [Restaurant Open-Source Stack](https://dceniac.com/for/restaurant/): Curated stack for restaurants and hospitality.
+- [Manufacturing & Wholesale Open-Source Stack](https://dceniac.com/for/manufacturing/): Curated stack for factories and distributors.
