@@ -18,6 +18,7 @@ import {
   ossUse,
 } from '@/data/oss';
 import { ossExtras, ossPriceAnswerEn, ossSearchSummaryEn, ossSearchTitleEn } from '@/data/oss-extras';
+import { ossVsPairForProject } from '@/data/oss-vs';
 import { localePath, type Language } from '@/lib/i18n-path';
 import { pageMetadata } from '@/lib/site-meta';
 import type { OssFact, OssFactKey, OssProject } from '@/types/oss';
@@ -40,6 +41,7 @@ function factView(fact: OssFact, lang: Language): OssFactView {
 function projectView(p: OssProject, lang: Language): OssProjectView {
   const en = lang === 'en';
   const use = ossUse(p.use);
+  const vsPair = ossVsPairForProject(p.id, lang);
   const facts = {} as Record<OssFactKey, OssFactView>;
   (Object.keys(p.facts) as OssFactKey[]).forEach((key) => {
     facts[key] = factView(p.facts[key], lang);
@@ -66,6 +68,8 @@ function projectView(p: OssProject, lang: Language): OssProjectView {
     handsOn: !!p.handsOn,
     checkedAt: p.checkedAt,
     confirmed: p.confirmed,
+    compareHref: vsPair?.href,
+    compareLabel: vsPair?.title,
   };
 }
 

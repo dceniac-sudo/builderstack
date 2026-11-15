@@ -2,6 +2,9 @@
 
 import React, { useState } from 'react';
 import { Dot } from '@/components/OssParts';
+import { FadeUp } from '@/components/motion/MotionPrimitives';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 // LiveKit 详情页英文版的带宽和账单估算器，放在五件事下面，地址带 #calculator（发 Show HN、Reddit 时直接链到这里）。
@@ -144,11 +147,11 @@ export const LiveKitCalculator: React.FC = () => {
   };
 
   return (
-    <section id="calculator" className="mt-12 scroll-mt-24">
+    <FadeUp as="section" id="calculator" className="mt-12 scroll-mt-24">
       <h2 className="text-[19px] font-semibold tracking-[-0.01em]">Estimate your bill</h2>
       <p className="mt-1 text-[var(--sub)]">Pick a scenario or enter your own numbers. Uses LiveKit’s published Cloud prices and self-hosting docs.</p>
 
-      <div className="mt-3 rounded-[14px] border border-[var(--line)] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] [overflow:clip]">
+      <Card className="mt-3 rounded-[14px] [overflow:clip]">
         <div className="flex flex-wrap items-center gap-2 bg-[var(--wash)] px-[18px] py-3.5 sm:px-5">
           <span className="mr-1 text-[13px] text-[var(--sub)]">Try</span>
           {PRESETS.map((p) => {
@@ -310,11 +313,11 @@ export const LiveKitCalculator: React.FC = () => {
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--line)] px-[18px] py-3 text-[12.5px] text-[var(--sub)] sm:px-5">
           <span>Worst case: simulcast off, everyone receives everyone. Real usage is usually lower.</span>
-          <button type="button" onClick={copy} className="rounded-lg border border-[#D9D9D5] bg-white px-3 py-[5px] text-[13px] text-[var(--ink)] transition-colors hover:border-[var(--ink)]">
+          <Button type="button" variant="outline" size="sm" onClick={copy}>
             {copied ? 'Copied' : 'Copy result'}
-          </button>
+          </Button>
         </div>
-      </div>
+      </Card>
 
       <p className="mt-3 text-[12.5px] leading-[1.7] text-[var(--sub)]">
         How it’s calculated: server outbound = people × (people − 1) × bitrate for an everyone-on-camera room, (people − 1) × bitrate with one host. Bitrates
@@ -324,6 +327,6 @@ export const LiveKitCalculator: React.FC = () => {
         <a href="https://docs.livekit.io/transport/self-hosting/egress/" target="_blank" rel="noopener noreferrer" className={SOURCE_LINK}>Self-hosting Egress</a> ·{' '}
         <a href="https://docs.livekit.io/transport/self-hosting/benchmark/" target="_blank" rel="noopener noreferrer" className={SOURCE_LINK}>Benchmarks</a>.
       </p>
-    </section>
+    </FadeUp>
   );
 };

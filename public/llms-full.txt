@@ -1,6 +1,6 @@
 # BuilderStack (dceniac.com) — Full Technical & Commercial Licensing Reference
 
-> Primary-source commercial evaluation of 22 open-source business software projects. Every entry answers five operational questions for engineering leaders and small business owners: (1) Exact commercial licensing boundaries (what you can modify, white-label, or sell without violating copyleft or source-available clauses), (2) Maintenance velocity, (3) Minimum production server & RAM/VRAM sizing, (4) 3-year total cost of ownership (TCO) vs SaaS per-seat fees, and (5) Real-world deployment pitfalls.
+> Primary-source commercial evaluation of 25 open-source business software projects plus 5 interactive head-to-head TCO & license comparison workbenches (`/oss/vs/`). Every entry answers five operational questions for engineering leaders and small business owners: (1) Exact commercial licensing boundaries (what you can modify, white-label, or sell without violating copyleft or source-available clauses), (2) Maintenance velocity, (3) Minimum production server & RAM/VRAM sizing, (4) 3-year total cost of ownership (TCO) vs SaaS per-seat fees, and (5) Real-world deployment pitfalls.
 
 ## 1. Customer Support, Help Desk, CRM, ERP & Automation
 
@@ -13,12 +13,12 @@
 ### Zammad — https://dceniac.com/oss/zammad/
 - **Use Case**: Help desk & customer ticketing system (Zendesk / Freshdesk alternative).
 - **License**: **GNU AGPLv3**. Free for unlimited internal support agents with zero per-seat fees; any modifications to Zammad source code served over a network must be released under AGPLv3.
-- **Server Sizing**: Requires at least **4 GB–8 GB RAM** in production because Elasticsearch runs alongside Rails, PostgreSQL, and background workers.
+- **Server Sizing**: Requires at least **6 GB–10 GB RAM** in production (minimum 2 cores and 6 GB RAM, plus 4 GB if Elasticsearch runs on the same host).
 
 ### Twenty CRM — https://dceniac.com/oss/twenty/
 - **Use Case**: Modern open-source CRM (Salesforce / HubSpot / Attio alternative).
-- **License**: **GPLv3** (core) with commercial usage safe-harbor for internal business operations.
-- **Server Sizing**: Docker Compose stack (Node.js server, worker, PostgreSQL, Redis); minimum 2 vCPU / 4 GB RAM.
+- **License**: **AGPL-3.0** core with explicit Twenty Application Exception for external API/SDK integrations (`@license Enterprise` modules commercial).
+- **Server Sizing**: Docker Compose stack (server, worker, PostgreSQL, Redis); minimum 2 GB RAM (process crashes below 2 GB).
 
 ### Odoo Community Edition — https://dceniac.com/oss/odoo/
 - **Use Case**: Integrated ERP, CRM, inventory, MRP, and e-commerce.
@@ -75,3 +75,30 @@
 - **Shopware 6 Community Edition** (`https://dceniac.com/oss/shopware/`): **MIT License** (`shopware/shopware` core); PHP Symfony + Vue.js store system.
 - **Open Source Point of Sale (OSPOS)** (`https://dceniac.com/oss/opensourcepos/`): **MIT License**; PHP/MySQL browser-based retail POS with receipt printer and barcode support.
 - **TastyIgniter** (`https://dceniac.com/oss/tastyigniter/`): **MIT License**; Laravel restaurant online ordering, delivery zones, and table booking system with zero per-order commission.
+
+---
+
+## 4. Scheduling, Internal Tools, Virtual Data Rooms & Head-to-Head Comparisons (`/oss/vs/`)
+
+### Cal.com — https://dceniac.com/oss/cal-com/
+- **Use Case**: Open-source appointment scheduling, round-robin team booking, and routing forms (Calendly alternative).
+- **License**: Main commercial Cal.com codebase moved closed-source; public `calcom/cal.diy` repo uses the **MIT License**, and its README explicitly flags it as strictly recommended for personal, non-production use (omitting Teams, Routing Forms, and SAML SSO).
+- **Server Sizing**: Self-hosting `cal.diy` requires Node.js >=18, PostgreSQL >=13, Yarn, and OAuth app setup; production teams use Cal.com Cloud ($0 Solo, $12/user Teams, $28/user Organizations).
+
+### Appsmith — https://dceniac.com/oss/appsmith/
+- **Use Case**: Drag-and-drop internal tools, database GUIs, and support/ops admin panels (Retool alternative).
+- **License**: **Apache-2.0** for `appsmithorg/appsmith` Community Edition (`appsmith/appsmith-ce`); granular RBAC and audit logs start in Business ($15/user/mo), while SAML/OIDC SSO and SCIM sit in Enterprise ($2,500/mo for 100 users).
+- **Server Sizing**: Default all-in-one Docker container bundles Appsmith, MongoDB, Redis, and PostgreSQL and officially requires at least **8 GB RAM** (and outbound access to `cs.appsmith.com`).
+
+### Papermark — https://dceniac.com/oss/papermark/
+- **Use Case**: Investor data rooms, branded pitch deck links, page-by-page read analytics, and dynamic watermarks (DocSend alternative).
+- **License**: **GNU AGPLv3** outside the commercial `ee/` directory (`mfts/papermark`). Commercial Cloud starts free, then €24 / €59 / €99 per month tiers.
+- **Server Sizing & Pitfall**: Beyond Next.js and PostgreSQL, production self-hosting requires object storage (S3 / Vercel Blob), transactional email (Resend), and **Tinybird** clickstream analytics setup.
+
+### Head-to-Head Verdict Workbenches (`/oss/vs/`)
+- **Overview Hub**: `https://dceniac.com/oss/vs/`
+- **Cal.com vs Calendly**: `https://dceniac.com/oss/vs/cal-vs-calendly/` (interactive per-seat calculator, MIT vs Calendly Teams $16/seat/mo).
+- **n8n vs Activepieces**: `https://dceniac.com/oss/vs/n8n-vs-activepieces/` (Sustainable Use License vs MIT Core for SaaS embedding, self-hosted cost vs Activepieces Team $200/mo).
+- **Papermark vs DocSend**: `https://dceniac.com/oss/vs/papermark-vs-docsend/` (AGPLv3 + ee/ audit, Tinybird requirement vs DocSend $10–$180/mo).
+- **Appsmith vs Retool**: `https://dceniac.com/oss/vs/appsmith-vs-retool/` (Apache-2.0 CE vs Retool $10/std + $5/end user or $50/std + $15/end user, 8 GB RAM baseline).
+- **Medusa vs Saleor**: `https://dceniac.com/oss/vs/medusa-vs-saleor/` (MIT TypeScript vs BSD-3-Clause Python/Django/GraphQL headless commerce engine & team stack audit).

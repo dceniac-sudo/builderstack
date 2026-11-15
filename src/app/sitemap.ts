@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { OSS_INDUSTRIES, OSS_PROJECTS, OSS_USES, ossProjectsOfIndustry, ossProjectsOfUse } from '@/data/oss';
+import { ossVsSummaries } from '@/data/oss-vs';
 
 export const dynamic = 'force-static';
 
@@ -15,6 +16,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     page('/'),
     page('/oss/'),
+    page('/oss/vs/', '2026-11-15'),
+    ...ossVsSummaries('en').map((v) => page(`/oss/vs/${v.slug}/`, v.checkedAt)),
     ...OSS_USES.filter((u) => ossProjectsOfUse(u.id).length > 0).map((u) => page(`/oss/${u.id}/`)),
     ...OSS_INDUSTRIES.filter((i) => ossProjectsOfIndustry(i.id).length > 0).map((i) => page(`/for/${i.id}/`)),
     ...OSS_PROJECTS.map((p) => page(`/oss/${p.id}/`, PROJECT_UPDATES[p.id] ?? p.checkedAt)),

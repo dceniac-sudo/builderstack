@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { OssFactKey, OssVerdict } from '@/types/oss';
+import { Button } from '@/components/ui/button';
 import { useI18n, X_HANDLE } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
@@ -34,6 +35,8 @@ export interface OssProjectView {
   handsOn: boolean;            // 作者自己实践过
   checkedAt: string;
   confirmed: boolean;
+  compareHref?: string;
+  compareLabel?: string;
 }
 
 // 用途和行业共用的形状
@@ -96,14 +99,11 @@ export const OssCta: React.FC = () => {
         <h2 className="text-[clamp(19px,2.2vw,24px)] font-semibold tracking-[-0.01em]">{o.ctaTitle}</h2>
         <p className="mt-1 text-[15px] text-[var(--sub)]">{o.ctaBody}</p>
       </div>
-      <a
-        href={`https://x.com/${X_HANDLE}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex min-h-11 items-center rounded-[10px] bg-[var(--ink)] px-[18px] text-[14.5px] font-medium text-white transition-colors hover:bg-[#2E2E2B]"
-      >
-        {o.ctaButton}
-      </a>
+      <Button asChild size="lg">
+        <a href={`https://x.com/${X_HANDLE}`} target="_blank" rel="noopener noreferrer">
+          {o.ctaButton}
+        </a>
+      </Button>
     </section>
   );
 };

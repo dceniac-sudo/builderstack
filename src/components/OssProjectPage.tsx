@@ -2,17 +2,20 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ChevronRight } from 'lucide-react';
+import { ArrowRight, ChevronRight, ExternalLink, SlidersHorizontal } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { SiteFooter } from '@/components/SiteFooter';
 import { ALL_FACTS, Dot, OssCta, OssLogo, OssProjectView, RowFactKey } from '@/components/OssParts';
 import { ChatwootCalculator } from '@/components/ChatwootCalculator';
 import { JupyterHubCalculator } from '@/components/JupyterHubCalculator';
 import { LiveKitCalculator } from '@/components/LiveKitCalculator';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { FadeUp, ReadingProgressBar } from '@/components/motion/MotionPrimitives';
 import { useI18n, localePath } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
-// 适不适合、截图和直接对比的内容在 src/data/oss-extras.ts，这里拿到的是已经按当前语言取好的文字
 export interface OssFitView {
   considerIf: string;
   lookElsewhereIf: string;
@@ -42,22 +45,27 @@ export interface OssComparisonView {
 
 interface OssProjectPageProps {
   project: OssProjectView;
-  priceAnswer?: string;  // 第一屏的一句价格结论，只有搜索里真有人搜价格的项目才有
+  priceAnswer?: string;
   fit?: OssFitView;
   shot?: OssShotView;
   comparisons?: OssComparisonView[];
-  alternatives: OssProjectView[];  // 同一用途下的其他项目
+  alternatives: OssProjectView[];
 }
 
 const SITE = 'https://dceniac.com';
 const H2 = 'text-[19px] font-semibold tracking-[-0.01em]';
-const SOURCE_LINK = 'text-[var(--sub)] underline decoration-[#CFCFCA] underline-offset-[3px] transition-colors hover:text-[var(--ink)] hover:decoration-[var(--ink)]';
-// “别的选择”里每个项目带出来的两个结论：读者换项目，多半是因为许可证或者部署难度
+const SOURCE_LINK =
+  'text-[var(--sub)] underline decoration-[#CFCFCA] underline-offset-[3px] transition-colors hover:text-[var(--ink)] hover:decoration-[var(--ink)]';
 const ALT_FACTS: RowFactKey[] = ['commercial', 'deploy'];
 
-// 一个项目的详情页，从上往下：适不适合、各行业怎么用（只有跨行业的项目有）、界面截图、五件事（每行有结论、依据和出处）、直接对比、同一用途的其他项目。
-// 适不适合放在最前面：从搜索进来的人先要知道适不适合自己，再看依据。
-export const OssProjectPage: React.FC<OssProjectPageProps> = ({ project: p, priceAnswer, fit, shot, comparisons, alternatives }) => {
+export const OssProjectPage: React.FC<OssProjectPageProps> = ({
+  project: p,
+  priceAnswer,
+  fit,
+  shot,
+  comparisons,
+  alternatives,
+}) => {
   const { lang, t } = useI18n();
   const o = t.oss;
   const rows = ALL_FACTS.flatMap((key) => {
@@ -65,8 +73,6 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({ project: p, pric
     return key === 'caveats' && p.needs ? [{ key: 'needs', question: o.needs, fact: p.needs }, row] : [row];
   });
   const draftTag = <span className="ml-3 align-middle text-sm font-normal tracking-normal text-[var(--sub)]">{o.draft}</span>;
-  // 上面多出来的每一块，把下面各行的入场往后推一拍
-  const rowsDelay = 210 + (fit ? 70 : 0) + (shot ? 70 : 0);
 
   const licenseUrl = p.facts.commercial.sources[0]?.url;
   const image = shot ? `${SITE}${shot.src}` : p.logo ? `${SITE}${p.logo}` : undefined;
@@ -102,11 +108,12 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({ project: p, pric
   };
 
   return (
-    <div className="flex-1 flex flex-col text-[15px] leading-[1.6]">
+    <div className="flex flex-1 flex-col text-[15px] leading-[1.6]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
+      <ReadingProgressBar />
       <Navbar active="industries" />
 
       <main className="mx-auto w-full max-w-[860px] flex-1 px-5 pt-10 sm:px-10 sm:pt-16">
@@ -120,48 +127,59 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({ project: p, pric
           </Link>
         </p>
 
-        <div className="rise flex items-center gap-4">
+        <FadeUp className="flex items-center gap-4">
           <OssLogo project={p} size={52} />
           <h1 className="min-w-0 text-[clamp(26px,4vw,40px)] font-semibold leading-[1.16] tracking-[-0.02em]">
             {p.name}
             {p.handsOn && (
-              <span className="ml-3 rounded-md bg-[#E8F3EC] px-2 py-0.5 align-middle text-[13px] font-medium tracking-normal text-[var(--good)]">{o.handsOn}</span>
+              <Badge variant="good" className="ml-3 align-middle text-[13px]">
+                {o.handsOn}
+              </Badge>
             )}
             {!p.confirmed && draftTag}
           </h1>
-        </div>
-        <p className="rise mt-4 text-[17px] text-[var(--sub)]" style={{ animationDelay: '70ms' }}>
-          {p.what}
-        </p>
+        </FadeUp>
+
+        <FadeUp delay={0.04}>
+          <p className="mt-4 text-[17px] text-[var(--sub)]">{p.what}</p>
+        </FadeUp>
+
         {priceAnswer && (
-          <p className="rise mt-3 text-base" style={{ animationDelay: '105ms' }}>
-            <span className="font-semibold">{o.priceAnswer}:</span> {priceAnswer}
-          </p>
+          <FadeUp delay={0.06}>
+            <p className="mt-3 text-base">
+              <span className="font-semibold">{o.priceAnswer}:</span> {priceAnswer}
+            </p>
+          </FadeUp>
         )}
 
-        <div className="rise mt-5 flex flex-wrap gap-2" style={{ animationDelay: '140ms' }}>
-          <a
-            href={p.repoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex min-h-10 items-center rounded-[9px] bg-[var(--ink)] px-4 text-sm font-medium text-white transition-colors hover:bg-[#2E2E2B]"
-          >
-            {o.repo}
-          </a>
-          {p.homepage && (
-            <a
-              href={p.homepage}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex min-h-10 items-center rounded-[9px] border border-[#D9D9D5] bg-white px-4 text-sm font-medium transition-colors hover:border-[var(--ink)]"
-            >
-              {o.site}
+        <FadeUp delay={0.08} className="mt-5 flex flex-wrap gap-2">
+          <Button asChild>
+            <a href={p.repoUrl} target="_blank" rel="noopener noreferrer">
+              <span>{o.repo}</span>
+              <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" />
             </a>
+          </Button>
+          {p.homepage && (
+            <Button asChild variant="outline">
+              <a href={p.homepage} target="_blank" rel="noopener noreferrer">
+                <span>{o.site}</span>
+                <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" />
+              </a>
+            </Button>
           )}
-        </div>
+          {p.compareHref && p.compareLabel && (
+            <Button asChild variant="secondary">
+              <Link href={p.compareHref}>
+                <SlidersHorizontal aria-hidden="true" className="h-3.5 w-3.5" />
+                <span>{p.compareLabel}</span>
+                <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
+              </Link>
+            </Button>
+          )}
+        </FadeUp>
 
         {fit && (
-          <section className="rise mt-9" style={{ animationDelay: '210ms' }}>
+          <FadeUp as="section" delay={0.1} className="mt-9">
             <h2 className={H2}>
               {o.fitTitle}
               {!fit.confirmed && draftTag}
@@ -177,12 +195,11 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({ project: p, pric
                 </div>
               ))}
             </dl>
-          </section>
+          </FadeUp>
         )}
 
-        {/* 跨行业的项目：在各行业里拿它做什么（2026-10-16 起） */}
         {p.scenarios.length > 0 && (
-          <section className="rise mt-9" style={{ animationDelay: `${fit ? 245 : 210}ms` }}>
+          <FadeUp as="section" delay={0.12} className="mt-9">
             <h2 className={H2}>{o.inIndustries}</h2>
             <dl className="mt-3 border-y border-[var(--line)]">
               {p.scenarios.map((s, i) => (
@@ -196,59 +213,72 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({ project: p, pric
                 </div>
               ))}
             </dl>
-          </section>
+          </FadeUp>
         )}
 
         {shot && (
-          <figure className="rise mt-8" style={{ animationDelay: `${fit ? 280 : 210}ms` }}>
-            <img
-              src={shot.src}
-              alt={shot.alt}
-              width={shot.width}
-              height={shot.height}
-              className="block h-auto w-full rounded-[14px] border border-[var(--line)]"
-            />
-            <figcaption className="mt-2.5 flex flex-wrap justify-between gap-x-4 gap-y-1 text-[13px] text-[var(--sub)]">
-              <span>
-                {shot.caption}
-                {!shot.confirmed && draftTag}
-              </span>
-              <a href={shot.sourceUrl} target="_blank" rel="noopener noreferrer" className={SOURCE_LINK}>
-                {shot.sourceLabel}
-              </a>
-            </figcaption>
-          </figure>
+          <FadeUp delay={0.14}>
+            <figure className="mt-8">
+              <img
+                src={shot.src}
+                alt={shot.alt}
+                width={shot.width}
+                height={shot.height}
+                className="block h-auto w-full rounded-[14px] border border-[var(--line)]"
+              />
+              <figcaption className="mt-2.5 flex flex-wrap justify-between gap-x-4 gap-y-1 text-[13px] text-[var(--sub)]">
+                <span>
+                  {shot.caption}
+                  {!shot.confirmed && draftTag}
+                </span>
+                <a href={shot.sourceUrl} target="_blank" rel="noopener noreferrer" className={SOURCE_LINK}>
+                  {shot.sourceLabel}
+                </a>
+              </figcaption>
+            </figure>
+          </FadeUp>
         )}
 
-        <dl className="mt-9 rounded-[14px] border border-[var(--line)] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] [overflow:clip]">
-          {rows.map(({ key, question, fact }, i) => {
-            return (
-              <div
-                key={key}
-                className={cn('rise grid grid-cols-1 gap-x-8 gap-y-1.5 p-[18px] sm:grid-cols-[9rem_1fr] sm:p-5', i > 0 && 'border-t border-[var(--line)]')}
-                style={{ animationDelay: `${rowsDelay + i * 45}ms` }}
-              >
-                <dt className="text-[13px] text-[var(--sub)] sm:pt-0.5">{question}</dt>
-                <dd className="min-w-0">
-                  <span className="flex items-center gap-2 text-base font-semibold">
-                    <Dot verdict={fact.verdict} />
-                    {fact.label}
-                  </span>
-                  {fact.detail && <p className="mt-1.5 leading-[1.75] text-[#2E2E2B]">{fact.detail}</p>}
-                  {fact.sources.length > 0 && (
-                    <p className="mt-2 flex flex-wrap gap-x-3.5 gap-y-1 text-[13px]">
-                      {fact.sources.map((s) => (
-                        <a key={s.url} href={s.url} target="_blank" rel="noopener noreferrer" className={SOURCE_LINK}>
-                          {s.label}
-                        </a>
-                      ))}
-                    </p>
+        <FadeUp delay={0.16}>
+          <Card className="mt-9 [overflow:clip]">
+            <dl>
+              {rows.map(({ key, question, fact }, i) => (
+                <div
+                  key={key}
+                  className={cn(
+                    'grid grid-cols-1 gap-x-8 gap-y-1.5 p-[18px] sm:grid-cols-[9rem_1fr] sm:p-5',
+                    i > 0 && 'border-t border-[var(--line)]'
                   )}
-                </dd>
-              </div>
-            );
-          })}
-        </dl>
+                >
+                  <dt className="text-[13px] text-[var(--sub)] sm:pt-0.5">{question}</dt>
+                  <dd className="min-w-0">
+                    <span className="flex items-center gap-2 text-base font-semibold">
+                      <Dot verdict={fact.verdict} />
+                      {fact.label}
+                    </span>
+                    {fact.detail && <p className="mt-1.5 leading-[1.75] text-[#2E2E2B]">{fact.detail}</p>}
+                    {fact.sources.length > 0 && (
+                      <p className="mt-2.5 flex flex-wrap gap-1.5 text-[12px]">
+                        {fact.sources.map((s) => (
+                          <a
+                            key={s.url}
+                            href={s.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 rounded-md border border-[var(--line)] bg-[var(--wash)] px-2 py-0.5 font-mono text-[11px] font-medium text-[var(--sub)] transition-colors hover:border-[var(--ink)]/35 hover:text-[var(--ink)]"
+                          >
+                            <span>{s.label}</span>
+                            <ExternalLink aria-hidden="true" className="h-2.5 w-2.5 opacity-70" />
+                          </a>
+                        ))}
+                      </p>
+                    )}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </Card>
+        </FadeUp>
 
         <p className="mt-4 text-[13px] text-[var(--sub)]">
           {p.handsOn && `${o.basisHandsOn}${lang === 'zh' ? '' : ' '}`}
@@ -258,7 +288,25 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({ project: p, pric
           {lang === 'zh' ? '。' : '.'}
         </p>
 
-        {/* 英文详情页的交互算账估算器（LiveKit 2026-11-04 起，Chatwoot / JupyterHub 2026-11-09 起） */}
+        {p.compareHref && p.compareLabel && (
+          <Card className="mt-8 bg-[var(--wash)] p-5">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="min-w-0">
+                <div className="font-mono text-[11px] font-medium uppercase tracking-wider text-[var(--sub)]">
+                  {o.compareHeadToHead}
+                </div>
+                <div className="mt-1 text-[17px] font-semibold text-[var(--ink)]">{p.compareLabel}</div>
+              </div>
+              <Button asChild>
+                <Link href={p.compareHref}>
+                  <span>{o.compareOpenPage}</span>
+                  <ArrowRight aria-hidden="true" className="h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </Card>
+        )}
+
         {lang === 'en' && p.id === 'livekit' && <LiveKitCalculator />}
         {lang === 'en' && p.id === 'chatwoot' && <ChatwootCalculator />}
         {lang === 'en' && p.id === 'jupyterhub' && <JupyterHubCalculator />}

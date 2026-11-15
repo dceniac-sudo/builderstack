@@ -2,12 +2,15 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { Logo } from '@/components/Logo';
+import { Badge } from '@/components/ui/badge';
 import { useI18n, localePath, X_HANDLE } from '@/lib/i18n';
+import { cn } from '@/lib/utils';
 
 interface NavbarProps {
-  active?: 'industries';    // 当前在哪个栏目；首页不传
+  active?: 'industries' | 'comparisons'; // 当前在哪个栏目；首页不传
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ active }) => {
@@ -28,55 +31,75 @@ export const Navbar: React.FC<NavbarProps> = ({ active }) => {
     );
   };
 
+  const navItems: { id: 'industries' | 'comparisons'; href: string; label: string; count?: number }[] = [
+    { id: 'industries', href: '/oss/', label: t.nav.industries },
+    { id: 'comparisons', href: '/oss/vs/', label: t.nav.comparisons, count: 5 },
+  ];
+
   return (
     <header className="sticky top-0 z-40 w-full border-b border-[#E6E6E2] bg-white/90 backdrop-blur-xl">
-      <div className="max-w-[1120px] mx-auto px-5 sm:px-10 h-16 flex items-center justify-between gap-2 sm:gap-4">
+      <div className="mx-auto flex h-16 max-w-[1120px] items-center justify-between gap-2 px-5 sm:gap-4 sm:px-10">
         {/* Logo 区域 */}
-        <Link href={localePath(lang, '/')} className="flex items-center gap-3 min-w-0">
+        <Link href={localePath(lang, '/')} className="flex min-w-0 items-center gap-3">
           <Logo size={28} className="shrink-0" />
-          <span className="hidden sm:inline font-semibold text-[#141414] text-[15.5px] tracking-[-0.01em]">
+          <span className="hidden text-[15.5px] font-semibold tracking-[-0.01em] text-[#141414] sm:inline">
             BuilderStack
           </span>
         </Link>
 
-        {/* 栏目。文章一栏作者 2026-10-16 去掉了，文章页也删了 */}
-        <nav className="flex items-center gap-1 text-sm font-medium mr-auto">
-          {([
-            { id: 'industries', href: '/oss/', label: t.nav.industries },
-          ] as const).map((item) => (
-            <Link
-              key={item.id}
-              href={localePath(lang, item.href)}
-              aria-current={active === item.id ? 'page' : undefined}
-              className={
-                active === item.id
-                  ? 'inline-flex items-center min-h-9 px-3 rounded-lg text-[#141414] bg-[#F0F0EC] whitespace-nowrap'
-                  : 'inline-flex items-center min-h-9 px-3 rounded-lg font-normal text-[#5E5E5A] hover:text-[#141414] transition-colors whitespace-nowrap'
-              }
-            >
-              {item.label}
-            </Link>
-          ))}
+        {/* 栏目导航 */}
+        <nav className="mr-auto flex items-center gap-1 text-sm font-medium">
+          {navItems.map((item) => {
+            const isActive = active === item.id;
+            return (
+              <Link
+                key={item.id}
+                href={localePath(lang, item.href)}
+                aria-current={isActive ? 'page' : undefined}
+                className={cn(
+                  'relative inline-flex min-h-9 items-center gap-1.5 whitespace-nowrap rounded-lg px-3 transition-colors',
+                  isActive
+                    ? 'font-medium text-[#141414]'
+                    : 'font-normal text-[#5E5E5A] hover:text-[#141414]'
+                )}
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId="nav-active-pill"
+                    transition={{ type: 'spring', stiffness: 460, damping: 34 }}
+                    aria-hidden="true"
+                    className="absolute inset-0 -z-10 rounded-lg bg-[#F0F0EC]"
+                  />
+                )}
+                <span>{item.label}</span>
+                {item.count !== undefined && (
+                  <Badge variant="mono" className="px-1.5 py-0 text-[10px]">
+                    {item.count}
+                  </Badge>
+                )}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* 右侧：X 关注 + 语言切换 */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2.5">
           <a
             href={`https://twitter.com/intent/follow?screen_name=${X_HANDLE}`}
             onClick={handleFollowClick}
             target="_blank"
             rel="noopener noreferrer"
             title={`Follow @${X_HANDLE} on X`}
-            className="flex items-center justify-center gap-1.5 rounded-xl bg-[#F5F5F2] hover:bg-[#EFEFEB] text-[#141414] hover:text-[#141414] p-2 sm:px-3 sm:py-1.5 text-xs font-medium border border-[#E6E6E2] hover:border-[#141414] shadow-sm transition-all duration-200 group active:scale-95"
+            className="group flex items-center justify-center gap-1.5 rounded-xl border border-[#E6E6E2] bg-[#F5F5F2] p-2 text-xs font-medium text-[#141414] shadow-sm transition-all duration-200 hover:border-[#141414] hover:bg-[#EFEFEB] active:scale-95 sm:px-3 sm:py-1.5"
           >
             <svg
               viewBox="0 0 24 24"
               aria-hidden="true"
-              className="w-3.5 h-3.5 fill-current text-[#2E2E2B] group-hover:text-[#141414] transition-colors"
+              className="h-3.5 w-3.5 fill-current text-[#2E2E2B] transition-colors group-hover:text-[#141414]"
             >
               <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
             </svg>
-            <span className="font-mono text-[11px] font-semibold hidden sm:inline">{t.nav.followX}</span>
+            <span className="hidden font-mono text-[11px] font-semibold sm:inline">{t.nav.followX}</span>
           </a>
 
           <LanguageToggle />

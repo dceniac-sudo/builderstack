@@ -1,15 +1,17 @@
 # BuilderStack (dceniac.com)
 
-> BuilderStack is an independent commercial evaluation directory of 22 verified open-source business software projects. Each review verifies 5 primary-source facts: commercial licensing rules (MIT, Apache-2.0, GPLv3, AGPLv3, Fair-code), active maintenance status, self-hosted server & RAM requirements, real total cost of ownership (TCO) vs SaaS per-seat pricing, and production pitfalls.
+> BuilderStack is an independent commercial evaluation directory of 25 verified open-source business software projects and 5 head-to-head self-hosted vs SaaS TCO comparisons. Each review verifies 5 primary-source facts: commercial licensing rules (MIT, Apache-2.0, GPLv3, AGPLv3, Fair-code), active maintenance status, self-hosted server & RAM requirements, real total cost of ownership (TCO) vs SaaS per-seat pricing, and production pitfalls.
 
 ## Directory & Core Hubs
 
 - [BuilderStack Home](https://dceniac.com/): Open-source business software you can actually run in production, verified with primary license texts and server requirements.
-- [All Open-Source Projects Directory](https://dceniac.com/oss/): Filter 22 verified open-source software projects by use case, license type, and industry.
+- [All Open-Source Projects Directory](https://dceniac.com/oss/): Filter 25 verified open-source software projects by use case, license type, and industry.
+- [Head-to-Head Comparisons Hub](https://dceniac.com/oss/vs/): Interactive TCO calculators, 6-dimension audits, and license comparisons for Cal.com vs Calendly, n8n vs Activepieces, Papermark vs DocSend, Appsmith vs Retool, and Medusa vs Saleor.
 
 ## Interactive Self-Hosting Cost & Sizing Calculators
 
 - [Chatwoot Self-Hosted vs Cloud Seat Cost Calculator](https://dceniac.com/oss/chatwoot/): Compare Chatwoot Community Edition (MIT) vs Hacker/Business Cloud plans and Intercom/Zendesk per-agent pricing, plus Sidekiq/Postgres RAM sizing.
+- [Head-to-Head TCO Calculators](https://dceniac.com/oss/vs/): Live per-seat and multi-year cost breakdowns for Cal.com vs Calendly, n8n vs Activepieces, Papermark vs DocSend, Appsmith vs Retool, and Medusa vs Saleor.
 - [JupyterHub Classroom RAM, CPU & Cloud Cost Calculator](https://dceniac.com/oss/jupyterhub/): Estimate concurrent student notebook memory, CPU cores, and monthly VM costs for Littlest JupyterHub (TLJH) vs Kubernetes (Z2JH).
 - [LiveKit WebRTC SFU Outbound Bandwidth & Egress Calculator](https://dceniac.com/oss/livekit/): Calculate N*(N-1) WebRTC video egress bandwidth (Mbps), monthly traffic transfer, and headless Chrome recording CPU requirements.
 
@@ -43,6 +45,17 @@
 - [LiveKit](https://dceniac.com/oss/livekit/): WebRTC SFU media server and real-time voice/video AI agent infrastructure (Apache-2.0).
 - [LiveTalking](https://dceniac.com/oss/livetalking/): Real-time interactive streaming digital human with lip-sync (Apache-2.0, GPU VRAM requirements).
 - [OpenAvatarChat](https://dceniac.com/oss/openavatarchat/): Modular conversational digital human pipeline by HumanAIGC (Apache-2.0, single high-VRAM GPU deployment).
+- [Cal.com](https://dceniac.com/oss/cal-com/): Open-source scheduling infrastructure for teams and booking workflows (MIT in calcom/cal.diy for personal use; Cal.com Cloud $0 solo / $12 Teams).
+- [Appsmith](https://dceniac.com/oss/appsmith/): Open-source internal tools and admin panel builder (Apache-2.0 Community Edition, 8 GB RAM min).
+- [Papermark](https://dceniac.com/oss/papermark/): Open-source document sharing and virtual data room with analytics (AGPLv3 outside ee/, Postgres + S3 + Resend + Tinybird).
+
+## Head-to-Head Open-Source vs SaaS Comparisons
+
+- [Cal.com vs Calendly](https://dceniac.com/oss/vs/cal-vs-calendly/): Scheduling TCO calculator, cal.diy MIT non-prod warning, and team routing fee audit.
+- [n8n vs Activepieces](https://dceniac.com/oss/vs/n8n-vs-activepieces/): Sustainable Use License vs MIT Core for workflow automation and multi-tenant SaaS embedding.
+- [Papermark vs DocSend](https://dceniac.com/oss/vs/papermark-vs-docsend/): Data room per-seat TCO, AGPLv3 + ee/ audit, and self-hosted Tinybird dependency check.
+- [Appsmith vs Retool](https://dceniac.com/oss/vs/appsmith-vs-retool/): Internal tool end-user tax breakdown, Apache-2.0 CE vs Retool Business seat math, and 8 GB RAM sizing.
+- [Medusa vs Saleor](https://dceniac.com/oss/vs/medusa-vs-saleor/): MIT TypeScript vs BSD-3-Clause Python/GraphQL headless commerce runtime and infrastructure comparison.
 
 ## Category & Industry Guides
 
@@ -60,6 +73,9 @@
 - [Open-Source Invoicing & Billing](https://dceniac.com/oss/invoicing/): Invoice Ninja Elastic License 2.0 guide.
 - [Open-Source Workflow Automation](https://dceniac.com/oss/automation/): n8n Sustainable Use License & deployment guide.
 - [Open-Source Real-Time AI Avatars](https://dceniac.com/oss/avatars/): Compare LiveTalking and OpenAvatarChat.
+- [Open-Source Scheduling](https://dceniac.com/oss/scheduling/): Cal.com licensing, Docker sizing, and Calendly comparison.
+- [Open-Source Internal Tools](https://dceniac.com/oss/internal-tools/): Appsmith Community Edition sizing and Retool comparison.
+- [Open-Source Data Rooms](https://dceniac.com/oss/data-room/): Papermark self-hosting stack and DocSend comparison.
 - [Education Open-Source Stack](https://dceniac.com/for/education/): Curated stack for schools and training providers.
 - [E-Commerce & Retail Open-Source Stack](https://dceniac.com/for/ecommerce/): Curated stack for online stores and retail brands.
 - [Restaurant Open-Source Stack](https://dceniac.com/for/restaurant/): Curated stack for restaurants and hospitality.

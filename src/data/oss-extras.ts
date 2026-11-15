@@ -341,6 +341,33 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
       confirmed: true,
     },
   },
+  'cal-com': {
+    fit: {
+      considerIf: '想要个人 0 美元不限预约类型、或 2–45 人团队需要按人头比 Calendly 更便宜的轮询排班和路由表单，且接受使用官方 Cal.com Cloud。',
+      considerIfEn: 'You want unlimited solo event types for $0/month, or a 2 to 45 person team needing round-robin and routing forms at $12/user/month on Cal.com Cloud instead of Calendly’s $16.',
+      lookElsewhereIf: '希望免费自建 MIT 版就跑起团队排班、工作流或 SAML SSO：公开仓库 cal.diy 已明确标为仅限个人非生产使用，团队功能均在闭源商业版中。',
+      lookElsewhereIfEn: 'You expect free MIT self-hosting to give your team production round-robin routing or SAML SSO: cal.diy is explicitly for personal, non-production use, and team features live in closed-source Cal.com plans.',
+      confirmed: true,
+    },
+  },
+  appsmith: {
+    fit: {
+      considerIf: '工程团队需要连接内部数据库和 REST/GraphQL 接口快速出运营后台，有一台 8 GB 以上内存的服务器跑 Docker，且 Google 登录或常规角色够用。',
+      considerIfEn: 'You need low-code internal dashboards over SQL and REST/GraphQL APIs, can run Docker Compose on an 8 GB+ RAM Linux server, and standard auth meets your security policy.',
+      lookElsewhereIf: '只有 2–4 GB 内存小机器（不拆分外置数据库会吃满），或团队强依赖 SAML / OIDC 单点登录和 SCIM：这两项只包含在每月 2,500 美元（100 用户）的企业版中。',
+      lookElsewhereIfEn: 'You want a minimal 2 GB RAM host without externalizing MongoDB/Redis/Postgres, or compliance mandates SAML / OIDC SSO and SCIM, which start at Appsmith’s $2,500/month (100-user) Enterprise tier.',
+      confirmed: true,
+    },
+  },
+  papermark: {
+    fit: {
+      considerIf: '融资或 B2B 销售团队需要带逐页统计、NDA 拦截、动态水印和自定义域名的 DocSend 替代品，愿意用 59–99 欧元官方托管或具备运维 S3 + Tinybird 能力。',
+      considerIfEn: 'You want page-by-page pitch deck tracking, NDA gating, dynamic watermarks and custom domains as a DocSend alternative — either on Papermark Cloud (€59–€99/mo) or with engineering ops for S3 and Tinybird.',
+      lookElsewhereIf: '希望单机一条轻量 Docker 命令离线跑通全部统计：官方自建架构强依赖 Postgres、S3/Vercel Blob、Resend 和 Tinybird 数据管线，且高级白标目录位于商业许可 ee/ 下。',
+      lookElsewhereIfEn: 'You expect a zero-dependency single container: self-hosting relies on PostgreSQL, AWS S3 or Vercel Blob, Resend and Tinybird analytics pipelines, while white-label/enterprise modules live under commercial ee/.',
+      confirmed: true,
+    },
+  },
 };
 
 // 英文详情页在搜索结果里显示的摘要：先说结论（免不免费、什么许可证、要花多少、最要紧的一条注意事项），160 个字符以内。
@@ -369,6 +396,9 @@ const SEARCH_SUMMARY_EN: Record<string, string> = {
   n8n: 'Free to self-host for internal use. Hosting for others or letting clients configure workflows requires a commercial license. Cloud starts at €20 a month, billed annually.',
   twenty: 'Free to self-host under AGPL-3.0 on 2 GB of RAM. Row-level permissions and SSO are $19 per user a month. Twenty Cloud from $9 per user a month.',
   invoiceninja: 'Free to self-host under ELv2 with every feature unlocked; no reselling as SaaS. Removing branding clients see is $40 a year. Hosted plans from $14 a month.',
+  'cal-com': 'Cal.com Cloud is $0 solo and $12/user/month for Teams ($28 for Org SSO). Public MIT repo cal.diy omits Teams/SSO and is recommended for personal use only.',
+  appsmith: 'Appsmith Community Edition is free under Apache-2.0 with unlimited self-hosted users (needs 8 GB RAM Docker host). Business is $15/user/mo; SAML SSO is $2,500/mo.',
+  papermark: 'Papermark Cloud starts at €24/mo Pro and €59–€99/mo for Business/Data Rooms. Self-hosting AGPL core requires Postgres, S3/Blob, Resend and Tinybird.',
 };
 
 // 英文详情页的标题默认是“Is 项目名 free? Pricing, license and caveats”。名字里已经带 open source 的不适合这么问，在这里单独写。
@@ -395,6 +425,10 @@ const PRICE_ANSWER_EN: Record<string, string> = {
   n8n: 'Self-hosted Community is free for internal use. Business costs €667 a month with 40,000 monthly workflow executions. Cloud Starter and Pro cost €20 and €50 a month. All listed paid rates are billed annually. Prices checked November 9, 2026.',
   twenty: 'Self-hosting is free under AGPL-3.0 for unlimited users and records (needs 2 GB+ RAM, PostgreSQL and Redis). Row-level permissions and SSO on your own server are $19 per user a month billed yearly ($25 monthly). Twenty Cloud is $9 or $39 per user a month billed yearly.',
   invoiceninja: 'Self-hosting is free with every feature unlocked and unlimited clients and users. Removing “Created by Invoice Ninja” from client PDFs and the portal is $40 a year per install. Hosted plans are free up to 5 clients, then $14 a month for Ninja Pro or from $18 a month for Enterprise.',
+  zammad: 'Free to self-host under AGPL-3.0; you pay for the server (minimum 2 cores and 6 GB of RAM, plus 4 GB if Elasticsearch runs on the same host). Official hosted plans start at €7 per agent a month (up to 5 agents), €16 (up to 35) and €25 (unlimited), billed annually before VAT.',
+  'cal-com': 'Cal.com Cloud lists Individuals at $0/month (unlimited event types), Teams at $12/user/month billed yearly ($15 monthly), and Organizations at $28/user/month ($37 monthly, adding SAML SSO and SCIM). The public MIT repo cal.diy is free to self-host for personal, non-production use but omits Teams and SSO. Prices checked November 15, 2026.',
+  appsmith: 'Self-hosting the Apache-2.0 Community edition (appsmith-ce) is free for unlimited users on an 8 GB+ RAM host. Appsmith Cloud Free covers up to 5 users; Business costs $15 per user a month (up to 99 users) and Enterprise starts at $2,500 a month for 100 users (required for SAML / OIDC SSO and SCIM). Prices checked November 15, 2026.',
+  papermark: 'Self-hosting the AGPLv3 core has no license fee, though you pay for PostgreSQL, S3/Vercel Blob storage, Resend emails and Tinybird analytics pipelines. Official Papermark Cloud lists Free at €0/mo (1 user, 50 docs), Pro at €24/mo (1 user), Business at €59/mo (3 seats, +€20/extra seat) and Data Rooms Base Plus at €99/mo (3 seats, +€33/extra seat) billed annually. Prices checked November 15, 2026.',
 };
 
 export function ossSearchSummaryEn(id: string): string | undefined {

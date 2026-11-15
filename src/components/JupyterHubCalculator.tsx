@@ -2,6 +2,9 @@
 
 import React, { useState } from 'react';
 import { Dot } from '@/components/OssParts';
+import { FadeUp } from '@/components/motion/MotionPrimitives';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 // JupyterHub 详情页英文版的班级服务器内存估算器，放在五件事下面，地址带 #calculator。
@@ -63,11 +66,11 @@ export const JupyterHubCalculator: React.FC = () => {
   };
 
   return (
-    <section id="calculator" className="mt-12 scroll-mt-24">
+    <FadeUp as="section" id="calculator" className="mt-12 scroll-mt-24">
       <h2 className="text-[19px] font-semibold tracking-[-0.01em]">Estimate server memory</h2>
       <p className="mt-1 text-[var(--sub)]">Pick a class scenario or enter your student count. Uses the official The Little JupyterHub (TLJH) sizing formula.</p>
 
-      <div className="mt-3 rounded-[14px] border border-[var(--line)] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] [overflow:clip]">
+      <Card className="mt-3 rounded-[14px] [overflow:clip]">
         <div className="flex flex-wrap items-center gap-2 bg-[var(--wash)] px-[18px] py-3.5 sm:px-5">
           <span className="mr-1 text-[13px] text-[var(--sub)]">Try</span>
           {PRESETS.map((p) => {
@@ -171,16 +174,16 @@ export const JupyterHubCalculator: React.FC = () => {
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--line)] px-[18px] py-3 text-[12.5px] text-[var(--sub)] sm:px-5">
           <span>Add headroom if students load large datasets without a hard per-user memory cap configured.</span>
-          <button type="button" onClick={copy} className="rounded-lg border border-[#D9D9D5] bg-white px-3 py-[5px] text-[13px] text-[var(--ink)] transition-colors hover:border-[var(--ink)]">
+          <Button type="button" variant="outline" size="sm" onClick={copy}>
             {copied ? 'Copied' : 'Copy result'}
-          </button>
+          </Button>
         </div>
-      </div>
+      </Card>
 
       <p className="mt-3 text-[12.5px] leading-[1.7] text-[var(--sub)]">
         How it’s calculated: memory = concurrent users × memory limit per user + 128 MB overhead, with at least 1 GB of RAM required to install. Source:{' '}
         <a href="https://tljh.jupyter.org/en/latest/howto/admin/resource-estimation.html" target="_blank" rel="noopener noreferrer" className={SOURCE_LINK}>The Little JupyterHub — Resource estimation</a> (checked 2026-10-09).
       </p>
-    </section>
+    </FadeUp>
   );
 };

@@ -2,6 +2,9 @@
 
 import React, { useState } from 'react';
 import { Dot } from '@/components/OssParts';
+import { FadeUp } from '@/components/motion/MotionPrimitives';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 // Chatwoot 详情页英文版的坐席与自托管/云服务账单估算器，放在五件事下面，地址带 #calculator。
@@ -79,11 +82,11 @@ export const ChatwootCalculator: React.FC = () => {
   };
 
   return (
-    <section id="calculator" className="mt-12 scroll-mt-24">
+    <FadeUp as="section" id="calculator" className="mt-12 scroll-mt-24">
       <h2 className="text-[19px] font-semibold tracking-[-0.01em]">Estimate your bill</h2>
       <p className="mt-1 text-[var(--sub)]">Pick a scenario or enter your team size. Uses Chatwoot’s published self-hosted and Cloud prices.</p>
 
-      <div className="mt-3 rounded-[14px] border border-[var(--line)] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] [overflow:clip]">
+      <Card className="mt-3 rounded-[14px] [overflow:clip]">
         <div className="flex flex-wrap items-center gap-2 bg-[var(--wash)] px-[18px] py-3.5 sm:px-5">
           <span className="mr-1 text-[13px] text-[var(--sub)]">Try</span>
           {PRESETS.map((p) => {
@@ -233,11 +236,11 @@ export const ChatwootCalculator: React.FC = () => {
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--line)] px-[18px] py-3 text-[12.5px] text-[var(--sub)] sm:px-5">
           <span>Self-hosted server cost is not fixed: compare Cloud against what you pay your own VM and SMTP provider.</span>
-          <button type="button" onClick={copy} className="rounded-lg border border-[#D9D9D5] bg-white px-3 py-[5px] text-[13px] text-[var(--ink)] transition-colors hover:border-[var(--ink)]">
+          <Button type="button" variant="outline" size="sm" onClick={copy}>
             {copied ? 'Copied' : 'Copy result'}
-          </button>
+          </Button>
         </div>
-      </div>
+      </Card>
 
       <p className="mt-3 text-[12.5px] leading-[1.7] text-[var(--sub)]">
         How it’s calculated: the self-hosted Community edition (<code>-ce</code> Docker tag) is free under MIT for any number of agents, but excludes the <code>enterprise/</code> directory (Captain AI, voice calls, custom branding, agent capacity, roles &amp; permissions, SSO / SAML and SLA policies). Adding roles, custom branding, capacity or Captain AI on your own server requires Premium Support ($19 per agent a month); SSO / SAML and SLAs require Enterprise ($99 per agent a month). On Chatwoot Cloud, Hacker is free up to 2 agents and 500 conversations a month (live chat only); Startups is $19 per agent a month; Business is $39 per agent a month; Enterprise is $99 per agent a month. Sources:{' '}
@@ -245,6 +248,6 @@ export const ChatwootCalculator: React.FC = () => {
         <a href="https://www.chatwoot.com/pricing" target="_blank" rel="noopener noreferrer" className={SOURCE_LINK}>Cloud pricing</a> ·{' '}
         <a href="https://developers.chatwoot.com/self-hosted" target="_blank" rel="noopener noreferrer" className={SOURCE_LINK}>Self-hosted overview</a> (checked 2026-11-09).
       </p>
-    </section>
+    </FadeUp>
   );
 };
