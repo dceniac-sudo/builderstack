@@ -5,6 +5,7 @@
 ## Directory & Core Hubs
 
 - [BuilderStack Home](https://dceniac.com/): Open-source business software you can actually run in production, verified with primary license texts and server requirements.
+- [Verification Methodology, AI Boundary & Commercial Disclosure](https://dceniac.com/about/): Primary-source 5-check audit rules, human confirmation & AI boundary policy, affiliate firewall, and official entity channels.
 - [All Open-Source Projects Directory](https://dceniac.com/oss/): Filter 25 verified open-source software projects by use case, license type, and industry.
 - [Head-to-Head Comparisons Hub](https://dceniac.com/oss/vs/): Interactive TCO calculators, 6-dimension audits, and license comparisons for Cal.com vs Calendly, n8n vs Activepieces, Papermark vs DocSend, Appsmith vs Retool, and Medusa vs Saleor.
 

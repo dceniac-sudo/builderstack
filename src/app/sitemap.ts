@@ -15,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     page('/'),
+    page('/about/', '2026-11-16'),
     page('/oss/'),
     page('/oss/vs/', '2026-11-15'),
     ...ossVsSummaries('en').map((v) => page(`/oss/vs/${v.slug}/`, v.checkedAt)),

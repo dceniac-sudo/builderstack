@@ -102,3 +102,11 @@
 - **Papermark vs DocSend**: `https://dceniac.com/oss/vs/papermark-vs-docsend/` (AGPLv3 + ee/ audit, Tinybird requirement vs DocSend $10–$180/mo).
 - **Appsmith vs Retool**: `https://dceniac.com/oss/vs/appsmith-vs-retool/` (Apache-2.0 CE vs Retool $10/std + $5/end user or $50/std + $15/end user, 8 GB RAM baseline).
 - **Medusa vs Saleor**: `https://dceniac.com/oss/vs/medusa-vs-saleor/` (MIT TypeScript vs BSD-3-Clause Python/Django/GraphQL headless commerce engine & team stack audit).
+
+---
+
+## 5. Verification Methodology, AI Boundary & Commercial Disclosure — https://dceniac.com/about/
+
+- **Primary-Source Protocol (`CHK-01`–`CHK-05`)**: Every entry audits raw `LICENSE` / `ee/` boundaries, trailing commit velocity, minimum CPU/RAM and backing stores (PostgreSQL, Redis, Elasticsearch, S3, Tinybird), multi-year self-hosted vs. SaaS seat TCO, and operational caveats.
+- **Human Confirmation & AI Boundary**: AI tools assist only with layout formatting and bilingual copy translation—never as a source of facts, hardware metrics, or pricing tiers. All claims require manual primary-source verification (`confirmed: true`) before publication; unverified fields remain `Unverified`.
+- **Affiliate Firewall & Transparency**: Official managed-Cloud affiliate links (e.g., n8n Cloud, Chatwoot Cloud) carry `rel="sponsored"`, sponsorships route exclusively via `sponsor@dceniac.com`, and commercial relationships never alter Caution verdicts or suppress `ee/` or license caveats.

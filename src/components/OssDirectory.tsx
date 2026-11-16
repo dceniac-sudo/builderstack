@@ -10,7 +10,8 @@ import { Dot, OssCategoryView, OssCta, OssLogo, OssProjectView, ROW_FACTS } from
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { FadeUp } from '@/components/motion/MotionPrimitives';
-import { useI18n } from '@/lib/i18n';
+import { useI18n, type Language } from '@/lib/i18n';
+import { ORGANIZATION_NODE, SITE_URL, webPageNode, WEBSITE_NODE } from '@/lib/schema';
 import { cn } from '@/lib/utils';
 
 interface OssDirectoryProps {
@@ -109,6 +110,40 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({
   }, [projects, inIndustry, use, onlyCommercial, query]);
 
   const checkedAt = projects.map((p) => p.checkedAt).sort().pop() ?? '';
+  const initialPage = pageFor(initialIndustry, initialUse);
+  const isHome = initialIndustry === 'all' && initialUse === 'all';
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': isHome
+      ? [
+          ORGANIZATION_NODE,
+          WEBSITE_NODE,
+          webPageNode({
+            path: homeHref,
+            name: title,
+            description: sub,
+            lang: lang as Language,
+            dateModified: checkedAt || undefined,
+          }),
+        ]
+      : [
+          {
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: o.crumb, item: `${SITE_URL}${homeHref}` },
+              { '@type': 'ListItem', position: 2, name: initialPage.title, item: `${SITE_URL}${initialPage.href}` },
+            ],
+          },
+          webPageNode({
+            path: initialPage.href,
+            name: initialPage.title,
+            description: initialPage.sub,
+            lang: lang as Language,
+            dateModified: checkedAt || undefined,
+          }),
+        ],
+  };
+
   const tabs = [{ id: 'all', label: o.all, count: projects.length }, ...industries.filter((i) => i.count > 0)];
   const chipUses = industry !== 'all' ? uses : uses.filter((u) => u.id === use);
   const showUseChips = industry !== 'all' ? uses.length > 1 : use !== 'all';
@@ -127,6 +162,10 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({
 
   return (
     <div className="flex flex-1 flex-col text-[15px] leading-[1.6]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+      />
       <Navbar active={active} />
 
       <section className="border-b border-[var(--line)]">

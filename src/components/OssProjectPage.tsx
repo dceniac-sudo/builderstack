@@ -13,7 +13,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { FadeUp, ReadingProgressBar } from '@/components/motion/MotionPrimitives';
-import { useI18n, localePath } from '@/lib/i18n';
+import { useI18n, localePath, type Language } from '@/lib/i18n';
+import { ORG_ID, SITE_URL, webPageNode } from '@/lib/schema';
 import { cn } from '@/lib/utils';
 
 export interface OssFitView {
@@ -52,7 +53,6 @@ interface OssProjectPageProps {
   alternatives: OssProjectView[];
 }
 
-const SITE = 'https://dceniac.com';
 const H2 = 'text-[19px] font-semibold tracking-[-0.01em]';
 const SOURCE_LINK =
   'text-[var(--sub)] underline decoration-[#CFCFCA] underline-offset-[3px] transition-colors hover:text-[var(--ink)] hover:decoration-[var(--ink)]';
@@ -75,23 +75,33 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({
   const draftTag = <span className="ml-3 align-middle text-sm font-normal tracking-normal text-[var(--sub)]">{o.draft}</span>;
 
   const licenseUrl = p.facts.commercial.sources[0]?.url;
-  const image = shot ? `${SITE}${shot.src}` : p.logo ? `${SITE}${p.logo}` : undefined;
+  const image = shot ? `${SITE_URL}${shot.src}` : p.logo ? `${SITE_URL}${p.logo}` : undefined;
+  const pageUrl = `${SITE_URL}${p.href}`;
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
       {
         '@type': 'BreadcrumbList',
         itemListElement: [
-          { '@type': 'ListItem', position: 1, name: o.crumb, item: `${SITE}${localePath(lang, '/')}` },
-          { '@type': 'ListItem', position: 2, name: p.useLabel, item: `${SITE}${p.useHref}` },
-          { '@type': 'ListItem', position: 3, name: p.name, item: `${SITE}${p.href}` },
+          { '@type': 'ListItem', position: 1, name: o.crumb, item: `${SITE_URL}${localePath(lang, '/')}` },
+          { '@type': 'ListItem', position: 2, name: p.useLabel, item: `${SITE_URL}${p.useHref}` },
+          { '@type': 'ListItem', position: 3, name: p.name, item: pageUrl },
         ],
       },
+      webPageNode({
+        path: p.href,
+        name: p.name,
+        description: p.what,
+        lang: lang as Language,
+        dateModified: p.checkedAt,
+      }),
       {
         '@type': 'SoftwareApplication',
         name: p.name,
         description: p.what,
-        url: `${SITE}${p.href}`,
+        url: pageUrl,
+        mainEntityOfPage: { '@id': `${pageUrl}#webpage` },
+        publisher: { '@id': ORG_ID },
         applicationCategory: 'BusinessApplication',
         applicationSubCategory: p.useLabel,
         ...(image ? { image } : {}),
@@ -286,6 +296,10 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({
           {lang === 'zh' ? '：' : ': '}
           <time dateTime={p.checkedAt}>{p.checkedAt}</time>
           {lang === 'zh' ? '。' : '.'}
+          {' · '}
+          <Link href={localePath(lang, '/about/')} className={SOURCE_LINK}>
+            {o.howWeVerifyLink}
+          </Link>
         </p>
 
         {p.compareHref && p.compareLabel && (

@@ -8,7 +8,8 @@ import { SiteFooter } from '@/components/SiteFooter';
 import { OssCategoryView, OssCta } from '@/components/OssParts';
 import { Badge } from '@/components/ui/badge';
 import { FadeUp } from '@/components/motion/MotionPrimitives';
-import { useI18n, localePath } from '@/lib/i18n';
+import { useI18n, localePath, type Language } from '@/lib/i18n';
+import { SITE_URL, webPageNode } from '@/lib/schema';
 
 export interface OssCategoryGroup {
   id: string;
@@ -20,9 +21,32 @@ export interface OssCategoryGroup {
 export const OssIndustriesPage: React.FC<{ groups: OssCategoryGroup[] }> = ({ groups }) => {
   const { lang, t } = useI18n();
   const o = t.oss;
+  const pagePath = localePath(lang, '/oss/');
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: o.crumb, item: `${SITE_URL}${localePath(lang, '/')}` },
+          { '@type': 'ListItem', position: 2, name: t.nav.industries, item: `${SITE_URL}${pagePath}` },
+        ],
+      },
+      webPageNode({
+        path: pagePath,
+        name: o.industriesTitle,
+        description: o.industriesSub,
+        lang: lang as Language,
+      }),
+    ],
+  };
 
   return (
     <div className="flex flex-1 flex-col text-[15px] leading-[1.6]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+      />
       <Navbar active="industries" />
 
       <main className="mx-auto w-full max-w-[1120px] flex-1 px-5 pt-10 sm:px-10 sm:pt-16">

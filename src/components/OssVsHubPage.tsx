@@ -11,9 +11,8 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FadeUp } from '@/components/motion/MotionPrimitives';
 import type { VsComparisonSummary } from '@/data/oss-vs';
-import { localePath, useI18n } from '@/lib/i18n';
-
-const SITE = 'https://dceniac.com';
+import { localePath, useI18n, type Language } from '@/lib/i18n';
+import { SITE_URL, webPageNode } from '@/lib/schema';
 
 interface OssVsHubPageProps {
   pairs: VsComparisonSummary[];
@@ -22,13 +21,25 @@ interface OssVsHubPageProps {
 export const OssVsHubPage: React.FC<OssVsHubPageProps> = ({ pairs }) => {
   const { lang, t } = useI18n();
   const o = t.oss;
+  const pagePath = localePath(lang, '/oss/vs/');
 
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: o.crumb, item: `${SITE}${localePath(lang, '/')}` },
-      { '@type': 'ListItem', position: 2, name: t.nav.comparisons, item: `${SITE}${localePath(lang, '/oss/vs/')}` },
+    '@graph': [
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: o.crumb, item: `${SITE_URL}${localePath(lang, '/')}` },
+          { '@type': 'ListItem', position: 2, name: t.nav.comparisons, item: `${SITE_URL}${pagePath}` },
+        ],
+      },
+      webPageNode({
+        path: pagePath,
+        name: o.vsHubTitle,
+        description: o.vsHubSub,
+        lang: lang as Language,
+        dateModified: '2026-11-15',
+      }),
     ],
   };
 

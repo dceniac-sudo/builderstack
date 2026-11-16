@@ -34,10 +34,9 @@ import {
   type VsComparisonView,
   type VsSideView,
 } from '@/data/oss-vs';
-import { localePath, useI18n } from '@/lib/i18n';
+import { localePath, useI18n, type Language } from '@/lib/i18n';
+import { SITE_URL, webPageNode } from '@/lib/schema';
 import { cn } from '@/lib/utils';
-
-const SITE = 'https://dceniac.com';
 
 interface OssVsPageProps {
   data: VsComparisonView;
@@ -84,29 +83,36 @@ export const OssVsPage: React.FC<OssVsPageProps> = ({ data, peers }) => {
 
   const filteredRows = data.matrix.filter((r) => matrixTab === 'all' || r.group === matrixTab);
 
-  const pageUrl = `${SITE}${data.href}`;
+  const pageUrl = `${SITE_URL}${data.href}`;
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
       {
         '@type': 'BreadcrumbList',
         itemListElement: [
-          { '@type': 'ListItem', position: 1, name: o.crumb, item: `${SITE}${localePath(lang, '/')}` },
+          { '@type': 'ListItem', position: 1, name: o.crumb, item: `${SITE_URL}${localePath(lang, '/')}` },
           {
             '@type': 'ListItem',
             position: 2,
             name: data.categoryLabel,
-            item: `${SITE}${localePath(lang, `/oss/${data.categoryId}/`)}`,
+            item: `${SITE_URL}${localePath(lang, `/oss/${data.categoryId}/`)}`,
           },
           {
             '@type': 'ListItem',
             position: 3,
             name: t.nav.comparisons,
-            item: `${SITE}${localePath(lang, '/oss/vs/')}`,
+            item: `${SITE_URL}${localePath(lang, '/oss/vs/')}`,
           },
           { '@type': 'ListItem', position: 4, name: data.title, item: pageUrl },
         ],
       },
+      webPageNode({
+        path: data.href,
+        name: data.title,
+        description: data.subtitle,
+        lang: lang as Language,
+        dateModified: data.checkedAt,
+      }),
       {
         '@type': 'FAQPage',
         mainEntity: data.faqs.map((item) => ({
@@ -335,6 +341,12 @@ export const OssVsPage: React.FC<OssVsPageProps> = ({ data, peers }) => {
               <Badge variant="mono" className="text-[var(--sub)]">
                 {data.starsBadge}
               </Badge>
+              <Link
+                href={localePath(lang, '/about/')}
+                className="text-[12px] text-[var(--sub)] underline decoration-[#CFCFCA] underline-offset-[3px] transition-colors hover:text-[var(--ink)] hover:decoration-[var(--ink)]"
+              >
+                {o.howWeVerifyLink}
+              </Link>
             </div>
             <h1 className="mt-3 text-[clamp(28px,4vw,42px)] font-semibold leading-[1.12] tracking-[-0.025em] text-[var(--ink)]">
               {data.title}

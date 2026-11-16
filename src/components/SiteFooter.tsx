@@ -1,17 +1,21 @@
 'use client';
 
 import React from 'react';
-import { useI18n, SPONSOR_EMAIL, X_HANDLE } from '@/lib/i18n';
+import Link from 'next/link';
+import { useI18n, localePath, SPONSOR_EMAIL, X_HANDLE } from '@/lib/i18n';
 
-// 全站共用的页脚。联系入口为 sponsor@dceniac.com 与 X（不放其他渠道入口）。
+// 全站共用的页脚。联系入口为 sponsor@dceniac.com 与 X（不放其他渠道入口），另挂 /about/ 方法论与商业披露页。
 export const SiteFooter: React.FC = () => {
-  const { t } = useI18n();
+  const { lang, t } = useI18n();
 
   return (
     <footer className="border-t border-[#E6E6E2] mt-16 sm:mt-20">
       <div className="max-w-[1120px] mx-auto px-5 sm:px-10 py-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 text-[13px] text-[#6F6F6A]">
         <span>{t.footer.copyright}</span>
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+          <Link href={localePath(lang, '/about/')} className="hover:text-[#141414]">
+            {t.footer.about}
+          </Link>
           <a href={`mailto:${SPONSOR_EMAIL}`} className="hover:text-[#141414]">
             {SPONSOR_EMAIL}
           </a>

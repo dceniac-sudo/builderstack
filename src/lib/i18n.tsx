@@ -91,9 +91,11 @@ export const DICTIONARY = {
       vsHubTitle: 'Open-source vs SaaS comparisons',
       vsHubSub: 'Side-by-side audits of commercial license traps, self-hosted RAM footprints, and real seat-cost math before you commit.',
       vsMethodTitle: 'How we audit head-to-head comparisons',
+      howWeVerifyLink: 'How we verify & commercial disclosure',
     },
     footer: {
       copyright: 'BuilderStack © 2026',
+      about: 'Methodology & Disclosure',
     },
   },
   zh: {
@@ -175,9 +177,11 @@ export const DICTIONARY = {
       vsHubTitle: '开源方案对比商业 SaaS',
       vsHubSub: '并排拆解许可证坑点、自建服务器门槛与按人数/用量计费的真实拐点。',
       vsMethodTitle: '选型对比核对口径说明',
+      howWeVerifyLink: '核验口径与商业披露',
     },
     footer: {
       copyright: 'BuilderStack © 2026',
+      about: '核验口径与披露',
     },
   },
 };
