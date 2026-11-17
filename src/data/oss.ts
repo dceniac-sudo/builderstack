@@ -1,4 +1,4 @@
-import { OssFact, OssIndustry, OssProject, OssSource } from '@/types/oss';
+import type { OssFact, OssIndustry, OssProject, OssSource } from '@/types/oss';
 import { SHOW_DRAFTS } from '@/data/drafts';
 
 // 2026-10-16 起的结构（作者让 Claude 定）：用途是主分类，行业是视图。
@@ -329,7 +329,19 @@ const ALL_PROJECTS: OssProject[] = [
     homepage: `${GH}instructure/canvas-lms/wiki`,
     facts: {
       commercial: agpl(`${GH}instructure/canvas-lms/blob/master/LICENSE`),
-      alive: alive('2026-04-30', 'instructure/canvas-lms'),
+      alive: {
+        verdict: 'caution',
+        label: '主分支放缓，但仓库仍有推送',
+        labelEn: 'Master slowed; repo still receives pushes',
+        short: '主分支放缓',
+        shortEn: 'Master slowed',
+        detail: '默认主分支（master）自 2026-04-30 后未见常规公开提交，仓库近期推送活动截至 2026-11-10（GitHub pushed_at，可能包含非默认分支或自动化/发布标签活动）。部署前请核对稳定发布分支状态。',
+        detailEn: 'The default master branch has had no new public commits since 2026-04-30, while GitHub repo metadata still shows push activity through 2026-11-10 (pushed_at across non-default branches, releases or maintenance refs). Verify the active release branch before deploying.',
+        sources: [
+          src('master 提交记录', 'master commits', `${GH}instructure/canvas-lms/commits/master/`),
+          src('仓库推送元数据', 'GitHub Repo API', 'https://api.github.com/repos/instructure/canvas-lms'),
+        ],
+      },
       deploy: {
         verdict: 'bad',
         label: '门槛高',
@@ -350,12 +362,12 @@ const ALL_PROJECTS: OssProject[] = [
         verdict: 'caution',
         label: '还要另起一个编辑器服务',
         labelEn: 'A separate editor service is required',
-        detail: '富文本编辑器是一个要单独部署的服务，安装指南里写明生产分支需要它。GitHub 仓库 2026 年 4 月底之后没有新的推送，原因这里没有核对。',
-        detailEn: 'The rich content editor is a separate service you deploy yourself, and the guide says the production branch requires it. The GitHub repository has had no pushes since late April 2026; the reason has not been checked here.',
+        detail: '富文本编辑器是一个要单独部署的服务，安装指南里写明生产分支需要它。公开默认 master 主分支自 2026-04-30 后未见新常规提交，而仓库整体推送元数据截至 2026-11-10 仍有更新，使用前请确认稳定的目标发布分支。',
+        detailEn: 'The rich content editor is a separate service you deploy yourself, and the guide says the production branch requires it. The public default master branch has seen no new regular commits since 2026-04-30, while repo-wide push metadata shows activity through 2026-11-10; verify the release branch before deploying.',
         sources: [src('生产环境安装指南', 'Production Start guide', `${GH}instructure/canvas-lms/wiki/Production-Start`)],
       },
     },
-    checkedAt: CHECKED_AT,
+    checkedAt: '2026-11-17',
     confirmed: true,
   },
   {
@@ -1412,15 +1424,15 @@ const ALL_PROJECTS: OssProject[] = [
         verdict: 'caution',
         label: '社区版不能在成员间共享流程和凭据，也没有 SSO 和 Git',
         labelEn: 'Community omits workflow sharing, SSO and Git version control',
-        detail: '官方的社区版功能说明写明：社区版没有项目（Projects）和跨人共享——一条工作流或一套账号凭据只有实例所有者和创建者本人能看能改，多人协作很不方便。单点登录（SAML / LDAP）、多环境隔离、Git 版本控制、全局变量、外部密钥库、日志流推送和多主节点高可用也都在付费版里（多 Worker 队列模式社区版可以用）。另外，文件夹整理、编辑器里固定调试数据等三项免费功能，要先在后台填邮箱领一个免费的社区版激活码才打开。',
-        detailEn: 'According to the official Community edition feature list, Community leaves out Projects and workflow or credential sharing: only the instance owner and the person who created a workflow or credential can access it. SSO (SAML / LDAP), environments, Git version control, custom variables, external secrets, log streaming and multi-main high availability are also paid-only (queue mode with workers is included). Folders, debug data pinning and custom execution data are free, but require registering an email address for a free Community license key.',
+        detail: '官方的社区版功能说明写明：社区版没有项目（Projects）和跨人共享——一条工作流或一套账号凭据只有实例所有者和创建者本人能看能改，多人协作很不方便。单点登录（SAML / LDAP）、多环境隔离、Git 版本控制与全局变量需升级 Business（€667/月按年计费）；外部密钥库（External secrets）、日志流推送和多主节点高可用则仅限联系销售报价的 Enterprise 企业版（多 Worker 队列模式社区版可用）。另外，文件夹整理、编辑器里固定调试数据等三项免费功能，要先在后台填邮箱领一个免费的社区版激活码才打开。',
+        detailEn: 'According to the official Community edition feature list, Community leaves out Projects and workflow or credential sharing: only the instance owner and the person who created a workflow or credential can access it. SSO (SAML / LDAP), environments, Git version control and custom variables require paid Business (€667/mo annual); external secrets, log streaming and multi-main high availability are Enterprise-only (contact sales; queue mode with workers is included in Community). Folders, debug data pinning and custom execution data are free, but require registering an email address for a free Community license key.',
         sources: [
           src('社区版功能范围', 'Community edition features', 'https://docs.n8n.io/deploy/host-n8n/community-edition-features'),
           src('价格', 'Pricing', 'https://n8n.io/pricing/'),
         ],
       },
     },
-    checkedAt: '2026-11-04',
+    checkedAt: '2026-11-17',
     confirmed: true,             // 作者 2026-11-04 确认
   },
   {

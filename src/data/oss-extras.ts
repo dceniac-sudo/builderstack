@@ -77,8 +77,8 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
         headingEn: 'Moodle vs Canvas LMS',
         pickThis: '机器和运维都轻得多（官方建议双核、1GB 以上内存，配 Web 服务器、PHP 和数据库，安装文档八步），不想管服务器还有官方托管 MoodleCloud（50 到 750 人每年约 170 到 2,110 美元，不能装插件）。仓库持续更新；GPL-3.0 只在分发改过的版本时要求开源。',
         pickThisEn: 'Much lighter to run (dual core and 1 GB+ RAM recommended; web server, PHP and a database in an 8-step guide), with official MoodleCloud hosting if you want no server at all (~$170 to $2,110/year for 50 to 750 users, no plugins). Actively pushed in October 2026; GPL-3.0 only triggers if you distribute modified code.',
-        pickOther: '明确想要高校常用的那套系统，而且团队有工程师能扛更重的运维：单机建议至少 8GB 内存，Ubuntu 生产部署指南十九节（Ruby、Node、PostgreSQL、Redis、Apache），还要单独部署富文本编辑器服务。它是 AGPL-3.0（改了代码让学员通过网络使用就要提供源码），公开仓库自 2026 年 4 月底起没有新推送。',
-        pickOtherEn: 'You specifically want the platform widely used by universities and have engineers for a heavier stack: 8 GB+ RAM on one server, a 19-section Ubuntu install (Ruby, Node, PostgreSQL, Redis, Apache) plus a separate rich-editor service. AGPL-3.0 requires offering source to network users if you modify the code, and the public repository has had no pushes since late April 2026.',
+        pickOther: '明确想要高校常用的那套系统，而且团队有工程师能扛更重的运维：单机建议至少 8GB 内存，Ubuntu 生产部署指南十九节（Ruby、Node、PostgreSQL、Redis、Apache），还要单独部署富文本编辑器服务。它是 AGPL-3.0（改了代码让学员通过网络使用就要提供源码），公开 master 分支自 2026-04-30 起未见新常规提交（仓库整体推送信标截至 2026-11-10 仍有更新），选型前请核对稳定发行分支。',
+        pickOtherEn: 'You specifically want the platform widely used by universities and have engineers for a heavier stack: 8 GB+ RAM on one server, a 19-section Ubuntu install (Ruby, Node, PostgreSQL, Redis, Apache) plus a separate rich-editor service. AGPL-3.0 requires offering source to network users if you modify the code, and public commits on the default master branch stopped after 2026-04-30 (even though repo-wide push metadata shows activity through 2026-11-10), so confirm your target release branch.',
         confirmed: true,
       },
     ],
@@ -87,8 +87,8 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
     fit: {
       considerIf: '想用很多高校在用的那套系统，而且有工程师能安装和维护 Ruby、PostgreSQL、Redis 和 Apache。',
       considerIfEn: 'You want the system many universities use, and you have engineers who can install and maintain Ruby, PostgreSQL, Redis and Apache.',
-      lookElsewhereIf: '小团队、没有专人运维：官方的生产部署文档有十九节，单机建议至少 8GB 内存。仓库从 2026 年 4 月底起没有新的推送，介意这一点的也先别选。',
-      lookElsewhereIfEn: 'You are a small team with nobody dedicated to operations: the production guide has nineteen sections and recommends at least 8 GB of RAM on one server. Also think twice if a repository with no pushes since late April 2026 worries you.',
+      lookElsewhereIf: '小团队、没有专人运维：官方的生产部署文档有十九节，单机建议至少 8GB 内存。若介意其默认 master 主分支自 2026-04-30 后未见新常规提交（虽仓库整体推送元数据截至 2026-11-10 仍有更新），部署前请先核实目标发布分支节奏。',
+      lookElsewhereIfEn: 'You are a small team with nobody dedicated to operations: the production guide has nineteen sections and recommends at least 8 GB of RAM on one server. Also double-check the release branch cadence if a default master branch with no public commits since 2026-04-30 (despite repo push metadata updating through 2026-11-10) concerns you.',
       confirmed: true,
     },
     comparisons: [
