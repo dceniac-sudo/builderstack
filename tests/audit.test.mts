@@ -76,6 +76,29 @@ test('BS-01: Appsmith vs Retool separates Audit Logs (Business) from Granular Cu
   }
 });
 
+test('BS-01: Appsmith paid seat limits apply to cloud and self-hosted custom roles', () => {
+  for (const lang of ['en', 'zh'] as const) {
+    const comparison = ossVsComparison('appsmith-vs-retool', lang)!;
+    assert.equal(comparison.calc.step, 1, 'The slider must let users select the 99-seat Business limit');
+    for (const selfhost of [false, true]) {
+      const at99 = evaluateVsCalculator('appsmith-vs-retool', 99, { customRoles: true, selfhost }, lang);
+      const at100 = evaluateVsCalculator('appsmith-vs-retool', 100, { customRoles: true, selfhost }, lang);
+      const price99 = selfhost ? '$1,525' : '$1,485';
+      assert.ok(at99.bars[0].costLabel.includes(price99));
+      assert.ok(at100.bars[0].costLabel.includes(selfhost ? '$2,540' : '$2,500'));
+      for (const output of [at100.bars[0].planBadge, at100.deltaText, at100.copyText]) {
+        assert.match(output, /Enterprise.*\$2,500/);
+        assert.doesNotMatch(output, /\$1,5(?:00|40)/);
+      }
+    }
+    const cloud = evaluateVsCalculator('appsmith-vs-retool', 100, { selfhost: false }, lang);
+    assert.match(cloud.bars[0].planBadge, /Enterprise/);
+    const community = evaluateVsCalculator('appsmith-vs-retool', 100, { selfhost: true }, lang);
+    assert.match(community.bars[0].planBadge, /CE/);
+    assert.match(community.bars[0].costLabel, /\$40/);
+  }
+});
+
 test('BS-02: n8n places External Secrets, log streaming and multi-main HA on Enterprise (not Business)', () => {
   const enView = ossVsComparison('n8n-vs-activepieces', 'en')!;
   const zhView = ossVsComparison('n8n-vs-activepieces', 'zh')!;
@@ -134,6 +157,34 @@ test('BS-03: n8n vs Activepieces calculator keeps chart, verdict and copyText 10
       assertNoCjk(cloud5High, 'n8n-vs-ap cloud5High EN');
       assertNoCjk(over25, 'n8n-vs-ap over25 EN');
     }
+  }
+});
+
+test('BS-03: cloud SSO uses an Enterprise quote and preserves Starter and Pro project allowances', () => {
+  for (const lang of ['en', 'zh'] as const) {
+    const preset = ossVsComparison('n8n-vs-activepieces', lang)!.calc.presets.find((entry) => entry.id === 'scale25')!;
+    const cloudSso = evaluateVsCalculator('n8n-vs-activepieces', preset.sliderValue, preset.toggles, lang);
+    const [n8n, activepieces] = cloudSso.bars;
+    const quote = lang === 'zh' ? 'Cloud Enterprise（询价）' : 'Cloud Enterprise (custom quote)';
+    assert.equal(n8n.planBadge, quote);
+    assert.equal(n8n.costLabel, quote);
+    assert.equal(n8n.percent, 0);
+    assert.match(activepieces.planBadge, /^Team/);
+    for (const output of [cloudSso.deltaText, cloudSso.copyText]) {
+      assert.ok(output.includes(quote));
+      assert.doesNotMatch(output, /€667|\$720|\$744|saves|节省/);
+    }
+
+    const business = evaluateVsCalculator('n8n-vs-activepieces', 25, { sharing: true, selfhost: true }, lang);
+    assert.match(business.bars[0].planBadge, /Business/);
+    assert.match(business.bars[0].costLabel, /\$744/);
+    assert.match(business.bars[1].costLabel, /\$224/);
+    assert.match(business.deltaText, /\$520/);
+    assert.match(business.copyText, /\$224/);
+    const starter = evaluateVsCalculator('n8n-vs-activepieces', 5, { selfhost: false }, lang);
+    const pro = evaluateVsCalculator('n8n-vs-activepieces', 5, { selfhost: false, highExec: true }, lang);
+    assert.match(starter.bars[0].note, /1 shared project|1 个共享项目/);
+    assert.match(pro.bars[0].note, /3 shared projects|3 个共享项目/);
   }
 });
 

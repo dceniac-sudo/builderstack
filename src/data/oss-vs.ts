@@ -721,8 +721,8 @@ const ALL_VS_RAW: VsPairRaw[] = [
           key: 'sharing',
           labelEn: 'Require team workflow sharing & SSO',
           labelZh: '需要跨成员工作流共享与 SSO',
-          hintEn: 'n8n requires Business (€667/mo annual ≈ $720); Activepieces Team ($200/mo monthly, $166/mo annual, up to 25 users)',
-          hintZh: '开启后 n8n 须上 Business（€667/月年付 ≈ $720）；Activepieces Team 月付 $200 / 年付 $166（限 25 人）',
+          hintEn: 'n8n SSO uses self-hosted Business or Cloud Enterprise (quote). Activepieces Team covers up to 25 users.',
+          hintZh: 'n8n SSO 使用自建 Business 或云端 Enterprise（询价）。Activepieces Team 支持最多 25 人。',
           defaultValue: false,
         },
         {
@@ -737,8 +737,8 @@ const ALL_VS_RAW: VsPairRaw[] = [
           key: 'highExec',
           labelEn: 'High cloud volume (>2,500 workflow runs/mo)',
           labelZh: '高频云端执行（月超 2,500 次运行）',
-          hintEn: 'Moves n8n Cloud from Starter (€20/mo, 2.5k runs) to Pro (€50/mo, 10k runs) when not self-hosting',
-          hintZh: '非自建且月执行超过 2,500 次时，n8n 云从 Starter（€20）升至 Pro（€50）',
+          hintEn: 'For cloud without SSO, moves from Starter (€20/mo, 2.5k runs) to Pro (€50/mo, 10k runs).',
+          hintZh: '无需 SSO 的云端用户，月执行超过 2,500 次时由 Starter（€20）升至 Pro（€50）。',
           defaultValue: false,
         },
       ],
@@ -1362,15 +1362,15 @@ const ALL_VS_RAW: VsPairRaw[] = [
         zh: [
           '15 人以内小团队不想自维服务器，看重 Retool 开箱即用的桌面/移动端与表格组件细腻度。',
           '需要零运维云端运行并按 Business 价使用 Retool Workflows、移动端、外部门户与审计日志。',
-          '预算充裕直接采购 Retool Enterprise（支持私有化/气隙隔离、Git、细粒度自定义角色与 SSO）。',
+          '需要私有化、气隙隔离、Git、完整管理员角色权限或 SSO 时评估 Retool Enterprise。',
         ],
       },
       watchOut: {
         en: [
-          'Audit logs require $50/$15 Business; Granular Custom Roles, Git control & SSO require Retool Enterprise, and internal viewer seats scale bills fast.',
+          'Business includes audit logs and app/data permissions. Full admin role scopes, Git and SSO require Enterprise.',
         ],
         zh: [
-          'Team 档（$10+$5）无审计日志；Business 含审计日志但细粒度自定义角色、Git 同步与 SSO 均须升至定制报价的企业版（Enterprise），员工一多按人月费会快速膨胀。',
+          'Business 包含审计日志与应用和数据权限。完整管理员角色权限、Git 同步与 SSO 需 Enterprise。',
         ],
       },
       ctaLabel: { en: 'View Retool Official Pricing', zh: '查看 Retool 官方定价' },
@@ -1408,7 +1408,7 @@ const ALL_VS_RAW: VsPairRaw[] = [
       sliderLabel: { en: 'Total internal staff (builders + daily viewers)', zh: '总内部用户数（搭建者 + 业务使用人员）' },
       min: 5,
       max: 100,
-      step: 5,
+      step: 1,
       defaultSlider: 25,
       scaleTicks: {
         en: ['5 Free cap', '25', '50', '75', '100 Ent'],
@@ -1431,10 +1431,10 @@ const ALL_VS_RAW: VsPairRaw[] = [
         },
         {
           key: 'customRoles',
-          labelEn: 'Require Granular Custom Roles / RBAC',
-          labelZh: '需要细粒度自定义角色（Custom Roles）',
-          hintEn: 'Included in Appsmith Business ($15/u); requires Retool Enterprise (custom quote)',
-          hintZh: 'Appsmith $15/人 Business 即含；Retool 须升至定制报价 Enterprise',
+          labelEn: 'Require full organization role scopes',
+          labelZh: '需要完整的组织管理员权限范围',
+          hintEn: 'Appsmith Business offers custom roles up to 99 users. Retool quotes Enterprise for full organization role scopes.',
+          hintZh: 'Appsmith Business 为 99 人以内提供自定义角色。Retool 的完整管理员权限需 Enterprise 询价。',
           defaultValue: false,
         },
         {
@@ -1447,10 +1447,10 @@ const ALL_VS_RAW: VsPairRaw[] = [
         },
         {
           key: 'selfhost',
-          labelEn: 'Self-host Appsmith CE ($40/mo 8 GB VM)',
-          labelZh: '自建 Appsmith CE（计入 $40/月 8GB 服务器）',
-          hintEn: 'Applies 8 GB RAM single-VM baseline when CE features suffice',
-          hintZh: '基础鉴权自用场景下按一台 8 GB 内存 Linux 云主机计算',
+          labelEn: 'Self-host Appsmith ($40/mo 8 GB VM)',
+          labelZh: '自建 Appsmith（计入 $40/月 8GB 服务器）',
+          hintEn: 'Adds the estimated single-VM cost to the applicable Appsmith license.',
+          hintZh: '在匹配的 Appsmith 授权价上计入单台云主机的估算费用。',
           defaultValue: true,
         },
       ],
@@ -1539,6 +1539,12 @@ const ALL_VS_RAW: VsPairRaw[] = [
             quote: 'Appsmith Free includes 3 Git repos; Business ($15/u) unlocks unlimited Git, audit logs, custom roles & white-label.',
             sponsored: true,
           },
+          {
+            label: 'Retool Permissions Quickstart',
+            url: 'https://docs.retool.com/permissions/quickstart',
+            date: '2026-11-18',
+            quote: 'Business supports custom groups and access scopes. Enterprise adds sensitive organization-wide scopes.',
+          },
         ],
         leftVerdict: 'good',
         leftHeadline: { en: '3 Git repos Free · Custom roles & Audit $15/u Biz', zh: '免费版带 3 Git · 自定义角色与审计在 $15/人' },
@@ -1547,10 +1553,10 @@ const ALL_VS_RAW: VsPairRaw[] = [
           zh: '免费版即体验 3 个 Git 同步；商业合规所需审计日志与细粒度自定义角色（Granular Custom Roles）仅需 $15/人 Business。',
         },
         rightVerdict: 'caution',
-        rightHeadline: { en: 'Audit logs at $50/$15 Biz · Custom Roles & Git: Enterprise', zh: '审计在 $50+$15 Biz · 自定义角色与 Git 须企业版' },
+        rightHeadline: { en: 'Business audit logs and access controls · Full admin scopes on Enterprise', zh: 'Business 提供审计和访问控制 · 完整管理员权限在 Enterprise' },
         rightDetail: {
-          en: 'Team has neither audit logs nor Git; Business ($50+$15/mo annual) adds Audit Logs, while Granular Custom Roles, Git control & SSO require Retool Enterprise.',
-          zh: 'Team 不含审计日志、自定义角色与 Git；Business（$50+$15 年付）解锁审计日志，而细粒度自定义角色（Granular Custom Roles）、Git 版本控制与 SSO 均须升至 Enterprise 企业版。',
+          en: 'Business ($50/$15 per month billed annually) adds audit logs, custom groups and app/data access controls. Full administrative scopes, Git and SSO require Enterprise.',
+          zh: 'Business（按年计费的月价 $50/$15）包含审计日志、自定义组和应用及数据访问权限。完整管理员角色权限、Git 和 SSO 需 Enterprise。',
         },
       },
       {
@@ -2114,20 +2120,28 @@ export function evaluateVsCalculator(
     const highExec = toggles.highExec ?? false;
 
     const vpsCost = 24;
-    let n8nCost = vpsCost;
+    let n8nCost: number | null = vpsCost;
     let n8nPlan = '';
     let n8nCostLabel = '';
     let n8nCopyLabel = '';
     let n8nNote = '';
 
-    if (sharing) {
-      n8nCost = 720; // €667 annual Business ≈ $720 USD equiv at €1 ≈ $1.08
-      n8nPlan = zh ? 'Business 自建 (€667/月年付 ≈ $720)' : 'Business (€667/mo ann ≈ $720)';
-      n8nCostLabel = zh ? '~$720/月 (€667 年付)' : '~$720/mo (€667 ann)';
-      n8nCopyLabel = zh ? '~$720/月 (€667/月年付)' : '~$720/mo (€667/mo annual)';
+    if (sharing && !selfhost) {
+      n8nCost = null;
+      n8nPlan = zh ? 'Cloud Enterprise（询价）' : 'Cloud Enterprise (custom quote)';
+      n8nCostLabel = n8nPlan;
+      n8nCopyLabel = n8nPlan;
       n8nNote = zh
-        ? '社区版不含共享项目、共享凭据、Git 与 SSO，需 Business €667/月（按年计费）；外部密钥库等仍须另购 Enterprise。'
-        : 'Community omits shared Projects/credentials, Git & SSO; requires €667/mo Business (annual); External secrets remain Enterprise.';
+        ? '云端 SSO 使用 Enterprise，需联系销售。Business 是自建套餐。'
+        : 'Managed n8n with SSO requires an Enterprise quote. Business is available for self-hosting.';
+    } else if (sharing) {
+      n8nCost = 720 + vpsCost; // €667/mo annual license at an assumed 1.08 USD/EUR plus the VPS.
+      n8nPlan = zh ? 'Business 自建 (€667/月年付 + VPS)' : 'Business Self-Hosted (€667/mo annual + VPS)';
+      n8nCostLabel = zh ? `~$${n8nCost}/月（含 $24 VPS）` : `~$${n8nCost}/mo (incl. $24 VPS)`;
+      n8nCopyLabel = `${n8nPlan} ${n8nCostLabel}`;
+      n8nNote = zh
+        ? '自建 Business €667/月（按年付）提供 6 个共享项目及 SSO。外部密钥库使用 Enterprise。'
+        : 'Self-hosted Business at €667/mo billed annually includes six shared projects and SSO. External secrets require Enterprise.';
     } else if (selfhost) {
       n8nCost = vpsCost;
       n8nPlan = zh ? 'Community 社区自建 ($24 VPS)' : 'Community ($24 VPS)';
@@ -2142,16 +2156,16 @@ export function evaluateVsCalculator(
       n8nCostLabel = zh ? '~$54/月 (€50 年付)' : '~$54/mo (€50 ann)';
       n8nCopyLabel = zh ? 'Cloud Pro ~$54/月 (€50/月年付)' : 'Cloud Pro ~$54/mo (€50/mo annual)';
       n8nNote = zh
-        ? 'n8n 官方云 Pro（€50/月年付，含 10,000 次工作流执行/月），不含跨成员共享与 SSO。'
-        : 'n8n Cloud Pro (€50/mo annual, 10k workflow runs/mo) without shared Projects or SAML SSO.';
+        ? 'n8n 云 Pro（€50/月年付）含 10,000 次月执行和 3 个共享项目。云端 SAML SSO 需 Enterprise。'
+        : 'n8n Cloud Pro (€50/mo annual) includes 10k runs/mo and 3 shared projects. Cloud SAML SSO requires Enterprise.';
     } else {
       n8nCost = 22; // Cloud Starter €20 annual
       n8nPlan = zh ? 'Cloud Starter (€20/月年付 ≈ $22)' : 'Cloud Starter (€20/mo ann ≈ $22)';
       n8nCostLabel = zh ? '~$22/月 (€20 年付)' : '~$22/mo (€20 ann)';
       n8nCopyLabel = zh ? 'Cloud Starter ~$22/月 (€20/月年付)' : 'Cloud Starter ~$22/mo (€20/mo annual)';
       n8nNote = zh
-        ? 'n8n 官方云 Starter（€20/月年付，含 2,500 次工作流执行/月），不含跨成员共享与 SSO。'
-        : 'n8n Cloud Starter (€20/mo annual, 2.5k workflow runs/mo) without shared Projects or SAML SSO.';
+        ? 'n8n 云 Starter（€20/月年付）含 2,500 次月执行和 1 个共享项目。云端 SAML SSO 需 Enterprise。'
+        : 'n8n Cloud Starter (€20/mo annual) includes 2.5k runs/mo and 1 shared project. Cloud SAML SSO requires Enterprise.';
     }
 
     const apOver25 = (sharing || !selfhost) && users > 25;
@@ -2178,10 +2192,16 @@ export function evaluateVsCalculator(
         ? 'Team 每月 $200（年付 $166）最多包干 25 人；第 26 人起须联系销售签企业定制 Custom 合同。'
         : 'Team ($200/mo monthly · $166 annual) caps at 25 users; 26+ users require Custom Enterprise pricing.';
     } else if (sharing || users > 5) {
-      apCost = 200;
-      apPlan = zh ? 'Team ($200/月 · 年付 $166)' : 'Team ($200/mo · $166 ann)';
-      apCostLabel = zh ? '$200/月 (年付 $166)' : '$200/mo ($166 ann)';
-      apCopyLabel = zh ? 'Team $200/月 (年付 $166/月)' : 'Team $200/mo ($166/mo annual)';
+      apCost = 200 + (selfhost ? vpsCost : 0);
+      apPlan = selfhost
+        ? zh ? 'Team 自建 ($200/月 + VPS)' : 'Team Self-Hosted ($200/mo + VPS)'
+        : zh ? 'Team ($200/月 · 年付 $166)' : 'Team ($200/mo · $166 ann)';
+      apCostLabel = selfhost
+        ? zh ? `$${apCost}/月（含 $${vpsCost} VPS）` : `$${apCost}/mo (incl. $${vpsCost} VPS)`
+        : zh ? '$200/月 (年付 $166)' : '$200/mo ($166 ann)';
+      apCopyLabel = selfhost
+        ? `${apPlan} ${apCostLabel}`
+        : zh ? 'Team $200/月 (年付 $166/月)' : 'Team $200/mo ($166/mo annual)';
       apNote = zh
         ? 'Team 每月 $200（年付 $166）包干 25 用户、无限共享项目、标准角色与 SSO；超出 25 人须谈企业定制。'
         : 'Team $200/mo monthly ($166/mo annual) covers up to 25 users, shared projects & SSO before Custom pricing.';
@@ -2195,17 +2215,23 @@ export function evaluateVsCalculator(
         : 'Cloud Plus is $20/mo monthly ($16/mo annual) flat for 5 users with BYO AI key.';
     }
 
-    const maxVal = Math.max(n8nCost, apCost, 220);
-    const diff = n8nCost - apCost;
-    const deltaText = sharing
-      ? apOver25
+    const maxVal = Math.max(n8nCost ?? 0, apCost, 220);
+    let deltaText: string;
+    if (n8nCost === null) {
+      const apEstimate = apOver25 ? apCostLabel : apCopyLabel;
+      deltaText = zh
+        ? `云端 SSO 使用 n8n ${n8nCostLabel}。Activepieces ${apEstimate}。`
+        : `Cloud SSO requires n8n ${n8nCostLabel}. Activepieces: ${apEstimate}.`;
+    } else if (sharing) {
+      deltaText = apOver25
         ? zh
-          ? '开启共享/SSO 后 n8n 为 ~$720/月（€667 年付）；Activepieces 超 25 人须签企业定制 Custom ($200+/月)'
-          : 'n8n jumps to ~$720/mo (€667 annual); Activepieces exceeds 25 users and requires Custom ($200+/mo)'
+          ? `n8n 自建 Business ${n8nCostLabel}。Activepieces 超过 25 人使用 ${apCostLabel}。`
+          : `n8n self-hosted Business: ${n8nCostLabel}. Activepieces requires ${apCostLabel} above 25 users.`
         : zh
-          ? `开启多人共享/SSO 后 Activepieces 省 ~$${diff}/月（n8n ~$720/月年付 对比 AP Team $200/月月付 · 年付 $166）`
-          : `Activepieces saves ~$${diff}/mo ($200/mo monthly or $166/mo annual vs n8n ~$720/mo €667 annual)`
-      : selfhost
+          ? `两家均计入自建 VPS。n8n ${n8nCostLabel} 对 Activepieces ${apCostLabel}，每月估计相差 $${n8nCost - apCost}。`
+          : `With a VPS for each tool, n8n ${n8nCostLabel} costs about $${n8nCost - apCost} more per month than Activepieces ${apCostLabel}.`;
+    } else {
+      deltaText = selfhost
         ? zh
           ? '无 SSO 与跨人协作要求时，两者 4 GB VPS 自建均约 $24/月服务器成本'
           : 'On a self-hosted 4 GB VPS without team SSO, both cost only ~$24/mo infra'
@@ -2219,7 +2245,8 @@ export function evaluateVsCalculator(
               : `Under 5 users on Cloud without SSO: n8n ${n8nCopyLabel} vs Activepieces ${apCopyLabel}`
             : zh
               ? `无需共享与 SSO 时，n8n ${n8nCopyLabel} 低于 Activepieces ${apCopyLabel}`
-              : `Without shared Projects or SSO, n8n ${n8nCopyLabel} costs less than Activepieces ${apCopyLabel}`;
+              : `Without an SSO requirement, n8n ${n8nCopyLabel} costs less than Activepieces ${apCopyLabel}`;
+    }
 
     return {
       sliderFormatted: zh ? `${users} 名成员` : `${users} ${users === 1 ? 'user' : 'users'}`,
@@ -2230,7 +2257,7 @@ export function evaluateVsCalculator(
           planBadge: n8nPlan,
           costLabel: n8nCostLabel,
           note: n8nNote,
-          percent: Math.max(6, (n8nCost / maxVal) * 100),
+          percent: n8nCost === null ? 0 : Math.max(6, (n8nCost / maxVal) * 100),
           dot: sharing ? 'caution' : 'good',
           tone: sharing ? 'warn' : 'ink',
         },
@@ -2398,13 +2425,16 @@ export function evaluateVsCalculator(
     const selfhost = toggles.selfhost ?? true;
 
     const asNeedsBiz = auditLogs || customRoles;
+    const asNeedsEnt = sso || (staff > 99 && (asNeedsBiz || !selfhost));
     const rtNeedsEnt = sso || customRoles;
 
     let asCost = 0;
     let asPlan = '';
-    if (sso) {
-      asCost = 2500;
-      asPlan = zh ? 'Enterprise ($2,500/月 100人)' : 'Enterprise ($2,500/mo · 100u)';
+    if (asNeedsEnt) {
+      asCost = 2500 + (selfhost ? 40 : 0);
+      asPlan = selfhost
+        ? zh ? 'Enterprise 自建 ($2,500/月 + $40 主机)' : 'Enterprise Self-Hosted ($2,500/mo + $40 VM)'
+        : zh ? 'Enterprise ($2,500/月 100人)' : 'Enterprise ($2,500/mo · 100u)';
     } else if (asNeedsBiz) {
       asCost = staff * 15 + (selfhost ? 40 : 0);
       asPlan = selfhost
@@ -2448,12 +2478,16 @@ export function evaluateVsCalculator(
     const diff = rtCost - asCost;
     const deltaText = sso
       ? zh
-        ? '开启 SAML SSO 后 Appsmith 起步 $2,500/月（含 100 人），Retool 须升至 Enterprise 另行报价'
-        : 'SAML SSO triggers Enterprise on both: Appsmith $2,500/mo (100u) vs Retool Enterprise (Custom quote)'
+        ? `SAML SSO 使用 Appsmith ${asPlan}，试算 ${asCostLabel}。Retool ${rtCostLabel}。`
+        : `SAML SSO uses Appsmith ${asPlan} at an estimated ${asCostLabel}. Retool ${rtCostLabel}.`
+      : asNeedsEnt
+        ? zh
+          ? `Business 最多 99 人。Appsmith ${asPlan}，试算 ${asCostLabel}。Retool ${rtCostLabel}。`
+          : `Business caps at 99 users. Appsmith ${asPlan} at an estimated ${asCostLabel}. Retool ${rtCostLabel}.`
       : customRoles
         ? zh
-          ? `需要细粒度自定义角色时 Appsmith 保留 Business（${asCostLabel}），而 Retool 须签 Enterprise 另行报价`
-          : `Granular Custom Roles keeps Appsmith on Business (${asCostLabel}), whereas Retool requires Enterprise (Custom quote)`
+          ? `Appsmith Business（${asCostLabel}）提供自定义角色。Retool 的完整管理员权限使用 ${rtCostLabel}。`
+          : `Appsmith Business (${asCostLabel}) includes custom roles. Retool quotes full admin scopes under ${rtCostLabel}.`
         : diff > 0
           ? zh
             ? `Appsmith 方案每月可省 $${diff.toLocaleString()}（Retool 按年计费 ${rtCostLabel}，含全员端内坐席费）`
@@ -2474,6 +2508,10 @@ export function evaluateVsCalculator(
             ? zh
               ? 'SAML/OIDC SSO 与 SCIM 只开放给每月 2,500 美元（含 100 人）的企业版。'
               : 'SAML/OIDC SSO & SCIM sit in the $2,500/mo Enterprise tier (100 users included).'
+            : asNeedsEnt
+              ? zh
+                ? 'Business 最多 99 人，100 人起使用 Enterprise，订阅费从 $2,500/月起。'
+                : 'Business caps at 99 users. Enterprise starts at $2,500/mo for 100 users.'
             : selfhost && !asNeedsBiz
               ? zh
                 ? '使用 appsmith-ce Apache-2.0 镜像不限人头数，仅需 8 GB 内存服务器费用。'
@@ -2486,7 +2524,7 @@ export function evaluateVsCalculator(
                   ? 'Business 每人 $15 统一价含操作审计日志、Git 无限仓库与细粒度自定义角色（Granular Custom Roles）。'
                   : 'Business at $15/user adds Audit Logs, unlimited Git & Granular Custom Roles (RBAC).',
           percent: Math.max(6, (asCost / maxVal) * 100),
-          dot: sso ? 'caution' : 'good',
+          dot: asNeedsEnt ? 'caution' : 'good',
           tone: 'ink',
         },
         {
@@ -2496,12 +2534,12 @@ export function evaluateVsCalculator(
           costLabel: rtCostLabel,
           note: rtNeedsEnt
             ? zh
-              ? '细粒度自定义角色（Granular Custom Roles）、Git 版本管理与 SAML SSO/SCIM 在 Retool 须签 Enterprise 另行报价。'
-              : 'Granular Custom Roles, Git source control & SAML SSO/SCIM require Retool Enterprise (Custom quote).'
+              ? '完整管理员角色权限、Git 版本管理与 SAML SSO/SCIM 使用 Enterprise。Business 已提供应用和数据权限。'
+              : 'Enterprise covers full admin role scopes, Git and SAML SSO/SCIM. App and data permissions are available on Business.'
             : auditLogs
               ? zh
-                ? 'Retool Business（搭建者 $50 + 使用者 $15，按年计费）包含审计日志；细粒度自定义角色与 Git 须升 Enterprise。'
-                : 'Retool Business ($50/builder + $15/end-user, billed annually) includes Audit Logs; Granular Custom Roles & Git stay in Enterprise.'
+                ? 'Retool Business（搭建者 $50 + 使用者 $15，按年计费）包含审计日志与应用和数据权限。'
+                : 'Retool Business ($50/builder + $15/end-user, billed annually) includes audit logs and app/data permissions.'
               : zh
                 ? '按搭建者（$10/$50）+ 日常使用者（$5/$15）按年计费报价叠加扣费（月付单价更高）。'
                 : 'Annual billing rates combine builders ($10/$50) and daily end-users ($5/$15); monthly billing is higher.',
