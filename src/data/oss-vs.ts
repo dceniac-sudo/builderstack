@@ -2453,12 +2453,11 @@ export function evaluateVsCalculator(
     }
     const asCostLabel = zh ? `$${asCost.toLocaleString()}/月` : `$${asCost.toLocaleString()}/mo`;
 
-    let rtCost = 0;
+    let rtCost: number | null = null;
     let rtPlan = '';
     let rtCostLabel = '';
     if (rtNeedsEnt) {
-      rtCost = Math.max(asCost * 1.15, 2500); // visual bar scale only; never rendered as price
-      rtPlan = zh ? 'Enterprise 另行报价' : 'Enterprise (Custom quote)';
+      rtPlan = 'Enterprise';
       rtCostLabel = zh ? 'Enterprise 另行报价' : 'Enterprise (Custom quote)';
     } else if (auditLogs) {
       rtCost = builders * 50 + viewers * 15;
@@ -2474,27 +2473,29 @@ export function evaluateVsCalculator(
       rtCostLabel = zh ? `$${rtCost.toLocaleString()}/月 (按年计费)` : `$${rtCost.toLocaleString()}/mo (annual)`;
     }
 
-    const maxVal = Math.max(asCost, rtCost, 300);
-    const diff = rtCost - asCost;
-    const deltaText = sso
-      ? zh
-        ? `SAML SSO 使用 Appsmith ${asPlan}，试算 ${asCostLabel}。Retool ${rtCostLabel}。`
-        : `SAML SSO uses Appsmith ${asPlan} at an estimated ${asCostLabel}. Retool ${rtCostLabel}.`
+    const maxVal = Math.max(asCost, rtCost ?? 0, 300);
+    const difference = rtCost === null ? null : rtCost - asCost;
+    const appsmithEstimate = asNeedsEnt
+      ? `Appsmith Enterprise ${asCostLabel}${selfhost ? (zh ? '（$2,500 授权 + $40 主机）' : ' ($2,500 license + $40 VM)') : ''}`
+      : `Appsmith ${asCostLabel}`;
+    const estimates = zh ? `${appsmithEstimate}，Retool ${rtCostLabel}。` : `${appsmithEstimate}. Retool ${rtCostLabel}.`;
+    const planContext = sso
+      ? (zh ? '启用 SAML SSO 时，' : 'With SAML SSO, ')
       : asNeedsEnt
-        ? zh
-          ? `Business 最多 99 人。Appsmith ${asPlan}，试算 ${asCostLabel}。Retool ${rtCostLabel}。`
-          : `Business caps at 99 users. Appsmith ${asPlan} at an estimated ${asCostLabel}. Retool ${rtCostLabel}.`
-      : customRoles
-        ? zh
-          ? `Appsmith Business（${asCostLabel}）提供自定义角色。Retool 的完整管理员权限使用 ${rtCostLabel}。`
-          : `Appsmith Business (${asCostLabel}) includes custom roles. Retool quotes full admin scopes under ${rtCostLabel}.`
-        : diff > 0
-          ? zh
-            ? `Appsmith 方案每月可省 $${diff.toLocaleString()}（Retool 按年计费 ${rtCostLabel}，含全员端内坐席费）`
-            : `Save $${diff.toLocaleString()}/mo ($${(diff * 12).toLocaleString()}/yr) vs Retool ${rtCostLabel}`
-          : zh
-            ? '5 人以内两家云端免费档总成本接近'
-            : 'Under 5 users on Free cloud plans, baseline spend stays close';
+        ? (zh ? 'Appsmith Business 最多 99 人。' : 'Appsmith Business caps at 99 staff. ')
+        : '';
+
+    let deltaText = `${planContext}${estimates}`;
+    if (asCost === 0 && rtCost === 0) {
+      deltaText = zh ? '两家云端免费档均为 $0/月，最多 5 人。' : 'Both cloud plans cost $0/mo for up to 5 staff.';
+    } else if (difference === 0) {
+      deltaText += zh ? '两家的月均估算相同。' : ' Both have the same monthly estimate.';
+    } else if (difference !== null) {
+      const cheaper = difference > 0 ? 'Appsmith' : 'Retool';
+      const savings = `$${Math.abs(difference).toLocaleString()}`;
+      deltaText += zh ? `${cheaper} 每月少花 ${savings}。` : ` ${cheaper} costs ${savings} less per month.`;
+    }
+    const retoolCopy = rtCost === null ? rtCostLabel : zh ? `${rtCostLabel}（${rtPlan}）` : `${rtCostLabel} (${rtPlan})`;
 
     return {
       sliderFormatted: zh ? `${staff} 人（${builders}搭建/${viewers}使用）` : `${staff} staff (${builders} builders / ${viewers} users)`,
@@ -2543,15 +2544,15 @@ export function evaluateVsCalculator(
               : zh
                 ? '按搭建者（$10/$50）+ 日常使用者（$5/$15）按年计费报价叠加扣费（月付单价更高）。'
                 : 'Annual billing rates combine builders ($10/$50) and daily end-users ($5/$15); monthly billing is higher.',
-          percent: Math.max(6, (rtCost / maxVal) * 100),
-          dot: rtNeedsEnt || diff > 0 ? 'caution' : 'good',
+          percent: rtCost === null ? 0 : Math.max(6, (rtCost / maxVal) * 100),
+          dot: difference === null || difference > 0 ? 'caution' : 'good',
           tone: 'muted',
         },
       ],
       deltaText,
       copyText: zh
-        ? `Appsmith 对比 Retool（${staff} 人）：Appsmith ${asCostLabel}（${asPlan}）对 Retool ${rtCostLabel}（${rtPlan}）。https://dceniac.com/zh/oss/vs/appsmith-vs-retool/`
-        : `Appsmith vs Retool (${staff} staff): Appsmith ${asCostLabel} (${asPlan}) vs Retool ${rtCostLabel} (${rtPlan}). https://dceniac.com/oss/vs/appsmith-vs-retool/`,
+        ? `Appsmith 对比 Retool（${staff} 人）：Appsmith ${asCostLabel}（${asPlan}）对 Retool ${retoolCopy}。https://dceniac.com/zh/oss/vs/appsmith-vs-retool/`
+        : `Appsmith vs Retool (${staff} staff): Appsmith ${asCostLabel} (${asPlan}) vs Retool ${retoolCopy}. https://dceniac.com/oss/vs/appsmith-vs-retool/`,
     };
   }
 

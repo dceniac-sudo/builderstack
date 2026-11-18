@@ -99,6 +99,44 @@ test('BS-01: Appsmith paid seat limits apply to cloud and self-hosted custom rol
   }
 });
 
+test('BS-01: Appsmith and Retool conclusions match the monthly estimates and quote each Enterprise price once', () => {
+  for (const lang of ['en', 'zh'] as const) {
+    const free = evaluateVsCalculator('appsmith-vs-retool', 5, { selfhost: false }, lang);
+    assert.match(free.deltaText, /up to 5 staff|最多 5 人/);
+    assert.match(free.deltaText, /\$0/);
+
+    for (const [staff, appsmith, retool, savings] of [
+      [6, '$90', '$40', '$50'], [25, '$375', '$150', '$225'],
+      [99, '$1,485', '$595', '$890'], [100, '$2,500', '$600', '$1,900'],
+    ] as const) {
+      const cloud = evaluateVsCalculator('appsmith-vs-retool', staff, { selfhost: false }, lang);
+      assert.ok(cloud.bars[0].costLabel.includes(appsmith));
+      assert.ok(cloud.bars[1].costLabel.includes(retool));
+      assert.ok(cloud.deltaText.includes(appsmith) && cloud.deltaText.includes(retool), cloud.deltaText);
+      assert.ok(cloud.deltaText.includes(lang === 'zh' ? `Retool 每月少花 ${savings}` : `Retool costs ${savings} less per month`));
+      assert.doesNotMatch(cloud.deltaText, /free|免费/i);
+    }
+
+    const tie = evaluateVsCalculator('appsmith-vs-retool', 6, { selfhost: true }, lang);
+    assert.match(tie.deltaText, /same monthly estimate|月均估算相同/);
+    assert.match(tie.deltaText, /\$40/);
+    assert.doesNotMatch(tie.deltaText, /free|免费/i);
+
+    const cheaperAppsmith = evaluateVsCalculator('appsmith-vs-retool', 25, { selfhost: true }, lang);
+    assert.ok(cheaperAppsmith.deltaText.includes(lang === 'zh' ? 'Appsmith 每月少花 $110' : 'Appsmith costs $110 less per month'));
+
+    for (const permission of [{ sso: true }, { customRoles: true }]) {
+      const quoted = evaluateVsCalculator('appsmith-vs-retool', 25, { selfhost: false, ...permission }, lang);
+      const quote = lang === 'zh' ? 'Enterprise 另行报价' : 'Enterprise (Custom quote)';
+      assert.equal(quoted.bars[1].costLabel, quote);
+      assert.equal(quoted.bars[1].percent, 0);
+      assert.equal(quoted.deltaText.split(quote).length - 1, 1);
+      assert.equal(quoted.copyText.split(quote).length - 1, 1);
+      assert.doesNotMatch(quoted.deltaText, /less per month|每月少花/);
+    }
+  }
+});
+
 test('BS-02: n8n places External Secrets, log streaming and multi-main HA on Enterprise (not Business)', () => {
   const enView = ossVsComparison('n8n-vs-activepieces', 'en')!;
   const zhView = ossVsComparison('n8n-vs-activepieces', 'zh')!;
