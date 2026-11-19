@@ -33,7 +33,7 @@ export const OFFICIAL_CHANNELS: OfficialChannel[] = [
     platformZh: 'SaaSHub',
     roleEn: 'Verified directory profile',
     roleZh: '官方认证产品目录档案',
-    url: 'https://www.saashub.com/builderstack-alternatives',
+    url: 'https://www.saashub.com/dceniac-alternatives',
   },
   {
     platform: 'GitBook',
@@ -110,5 +110,67 @@ export function webPageNode({
     isPartOf: { '@id': WEBSITE_ID },
     publisher: { '@id': ORG_ID },
     publishingPrinciples: PRINCIPLES_URL,
+  };
+}
+
+export function articleNode({
+  path,
+  headline,
+  description,
+  datePublished,
+  dateModified,
+  lang,
+  aboutUrls = [],
+}: {
+  path: string;
+  headline: string;
+  description: string;
+  datePublished: string;
+  dateModified: string;
+  lang: Language;
+  aboutUrls?: string[];
+}) {
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  const fullUrl = `${SITE_URL}${cleanPath}`;
+  return {
+    '@type': 'TechArticle',
+    '@id': `${fullUrl}#article`,
+    url: fullUrl,
+    headline,
+    description,
+    inLanguage: lang === 'zh' ? 'zh-CN' : 'en-US',
+    datePublished,
+    dateModified,
+    mainEntityOfPage: { '@id': `${fullUrl}#webpage` },
+    author: { '@id': ORG_ID },
+    publisher: { '@id': ORG_ID },
+    isPartOf: { '@id': WEBSITE_ID },
+    publishingPrinciples: PRINCIPLES_URL,
+    ...(aboutUrls.length > 0 ? { about: aboutUrls.map((u) => ({ '@type': 'Thing', url: u })) } : {}),
+  };
+}
+
+export function itemListNode({
+  path,
+  name,
+  items,
+}: {
+  path: string;
+  name: string;
+  items: { name: string; url: string }[];
+}) {
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  const fullUrl = `${SITE_URL}${cleanPath}`;
+  return {
+    '@type': 'ItemList',
+    '@id': `${fullUrl}#itemlist`,
+    name,
+    numberOfItems: items.length,
+    itemListElement: items.map((item, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: item.name,
+      url: item.url,
+    })),
   };
 }

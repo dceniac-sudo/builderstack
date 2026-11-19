@@ -13,15 +13,10 @@ export const FadeUp: React.FC<{
   as?: 'div' | 'section' | 'article';
   id?: string;
 }> = ({ children, delay = 0, className, as = 'div', id }) => {
-  const Comp = as === 'section' ? motion.section : as === 'article' ? motion.article : motion.div;
+  const Comp = as === 'section' ? 'section' : as === 'article' ? 'article' : 'div';
+  const style = delay > 0 ? { animationDelay: `${Math.round(delay * 1000)}ms` } : undefined;
   return (
-    <Comp
-      id={id}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.36, ease: [0.22, 1, 0.36, 1], delay }}
-      className={className}
-    >
+    <Comp id={id} style={style} className={cn('rise', className)}>
       {children}
     </Comp>
   );

@@ -22,8 +22,10 @@ registerHooks({
 });
 
 const { evaluateVsCalculator, ossVsComparison } = await import('@/data/oss-vs');
-const { ossProject } = await import('@/data/oss');
+const { OSS_PROJECTS, ossProject } = await import('@/data/oss');
 const { ossExtras } = await import('@/data/oss-extras');
+const { buildLlmsFullTxt, buildLlmsTxt } = await import('@/lib/llms');
+const { OFFICIAL_CHANNELS, ORGANIZATION_NODE } = await import('@/lib/schema');
 
 const CJK_RE = /[\u4e00-\u9fff]/;
 
@@ -261,5 +263,49 @@ test('BS-04: Canvas LMS distinguishes default master branch (2026-04-30) from re
       lookElsewhereIfEn: canvasExtras.fit!.lookElsewhereIfEn,
     },
     'Canvas LMS EN fields',
+  );
+});
+
+test('GEO-01: FadeUp does not bake inline opacity:0 into static SSR markup', async () => {
+  const { readFileSync } = await import('node:fs');
+  const source = readFileSync(path.join(SRC_DIR, 'components/motion/MotionPrimitives.tsx'), 'utf8');
+  assert.doesNotMatch(source, /initial=\{\{\s*opacity:\s*0/, 'FadeUp must not set Framer initial opacity:0 on SSR markup');
+});
+
+test('GEO-02: Generated llms.txt and llms-full.txt stay 100% synced with primary-source data', () => {
+  const brief = buildLlmsTxt();
+  const full = buildLlmsFullTxt();
+
+  assertNoCjk(brief, 'llms.txt');
+  assertNoCjk(full, 'llms-full.txt');
+
+  for (const project of OSS_PROJECTS) {
+    const expectedUrl = `https://dceniac.com/oss/${project.id}/`;
+    assert.ok(brief.includes(expectedUrl), `llms.txt missing ${expectedUrl}`);
+    assert.ok(full.includes(expectedUrl), `llms-full.txt missing ${expectedUrl}`);
+  }
+
+  // Twenty CRM must state AGPL-3.0 (never stale GPLv3 wording)
+  const twentyBriefLine = brief.split('\n').find((l) => l.includes('/oss/twenty/')) ?? '';
+  assert.match(twentyBriefLine, /AGPL-3\.0/);
+  assert.doesNotMatch(twentyBriefLine, /GPLv3/);
+
+  const twentyFullSection = full.split('### Twenty')[1]?.split('### ')[0] ?? '';
+  assert.match(twentyFullSection, /AGPL-3\.0/);
+});
+
+test('GEO-06: Organization sameAs points to approved SaaSHub dceniac-alternatives profile', () => {
+  assert.ok(
+    OFFICIAL_CHANNELS.some((c) => c.url === 'https://www.saashub.com/dceniac-alternatives'),
+    'OFFICIAL_CHANNELS must include https://www.saashub.com/dceniac-alternatives',
+  );
+  assert.ok(
+    ORGANIZATION_NODE.sameAs.includes('https://www.saashub.com/dceniac-alternatives'),
+    'ORGANIZATION_NODE.sameAs must include https://www.saashub.com/dceniac-alternatives',
+  );
+  assert.equal(
+    ORGANIZATION_NODE.sameAs.some((u) => u.includes('builderstack-alternatives')),
+    false,
+    'ORGANIZATION_NODE.sameAs must not contain stale builderstack-alternatives URL',
   );
 });
