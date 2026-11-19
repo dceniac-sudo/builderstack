@@ -539,7 +539,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ pageTitle, pageDescription
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
       <ReadingProgressBar />
-      <Navbar />
+      <Navbar active="about" />
 
       <main className="mx-auto w-full max-w-[1060px] flex-1 px-5 pb-12 pt-10 sm:px-10 sm:pt-14">
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-12">

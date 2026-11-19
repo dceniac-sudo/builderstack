@@ -10,6 +10,7 @@ export type { Language };
 // 你的 X (Twitter) 用户名，点击将直接唤起一键关注
 export const X_HANDLE = 'dceniac';
 export const SPONSOR_EMAIL = 'sponsor@dceniac.com';
+export const SUBSTACK_URL = 'https://builderstackoss.substack.com';
 
 export const DICTIONARY = {
   en: {
@@ -17,6 +18,42 @@ export const DICTIONARY = {
       followX: `Follow @${X_HANDLE}`,
       industries: 'Categories',
       comparisons: 'Comparisons',
+      guides: 'Guides',
+      methodology: 'Methodology',
+      watch: 'License Watch',
+    },
+    watch: {
+      kicker: 'Open-Core License & Pricing Watch',
+      title: 'Track license switches, Enterprise paywall jumps & new RAM benchmarks',
+      body: 'One primary-source dispatch per month via Substack or RSS. Direct diffs of changed vendor terms, newly gated ee/ directories, and real infrastructure crossover math. Zero spam, zero paid placements.',
+      subscribeButton: 'Subscribe via Substack',
+      rssButton: 'RSS /rss.xml',
+    },
+    guides: {
+      hubBadge: (n: number, date: string) => `${n} primary-source benchmark reports · Updated ${date}`,
+      hubTitle: 'Open-source & AI engineering benchmarks',
+      hubSub:
+        'Long-form license audits, self-hosted RAM footprints, and SaaS paywall crossover reports verified directly from repository source trees and official pricing tables.',
+      basisHandsOn: 'Hands-on benchmark',
+      basisPrimary: 'Primary-source audit',
+      readReport: 'Read report',
+      indexJump: 'Index jump',
+      sec01Tag: 'Section 01 / Executive Verdicts',
+      inspectRow: 'Inspect',
+      legendGood: 'Permissive / Free Core',
+      legendWarn: 'Open-Core Conditions',
+      legendBad: 'Enterprise Paywall Cliff',
+      faqKicker: 'Verified Factual Inquiries',
+      schemaSynced: 'Schema Verified',
+      moreGuidesTitle: 'More BuilderStack benchmark reports',
+      allGuidesLink: 'All guides',
+      relatedGuideKicker: 'Deep-Dive Benchmark Report',
+      readGuideCta: 'Read full benchmark',
+    },
+    categoryMatrix: {
+      kicker: 'Category Verdict Matrix · Quick-Compare',
+      compareLink: 'Open interactive TCO calculator',
+      guidePrefix: 'Deep-dive guide:',
     },
     oss: {
       crumb: 'Open source',
@@ -95,7 +132,10 @@ export const DICTIONARY = {
     },
     footer: {
       copyright: 'BuilderStack © 2026',
+      disclaimer: 'Primary-source open-source audits · Affiliate links marked rel="sponsored" & firewalled from verdicts.',
       about: 'Methodology & Disclosure',
+      guides: 'Guides',
+      rss: 'RSS Feed',
     },
   },
   zh: {
@@ -103,6 +143,41 @@ export const DICTIONARY = {
       followX: `关注 @${X_HANDLE}`,
       industries: '分类',
       comparisons: '选型对比',
+      guides: '深度指南',
+      methodology: '核验口径',
+      watch: '协议与涨价追踪',
+    },
+    watch: {
+      kicker: 'Open-Core 协议与定价追踪',
+      title: '追踪开源协议变更、企业版付费墙跃升与最新内存实测',
+      body: '每月通过 Substack 或 RSS 发送一期一手核验简报：汇总热门开源商业工具的协议变动、新增闭源 ee/ 模块与自建成本拐点。零垃圾营销，编辑裁决独立。',
+      subscribeButton: '在 Substack 订阅',
+      rssButton: 'RSS /rss.xml',
+    },
+    guides: {
+      hubBadge: (n: number, date: string) => `${n} 篇一手实证深度报告 · 更新于 ${date}`,
+      hubTitle: '开源商业与 AI 工具深度拆解报告',
+      hubSub: '直接对照仓库源码目录、许可证原文与官方价格表撰写的付费墙横向矩阵、自托管内存预算与 SaaS 替代算账报告。',
+      basisHandsOn: '含实机基准采样',
+      basisPrimary: '一手源码与定价核验',
+      readReport: '阅读全文',
+      indexJump: '目录跳转',
+      sec01Tag: '第 01 节 / 核心结论',
+      inspectRow: '查看详情',
+      legendGood: '宽松协议 / 免费核心',
+      legendWarn: 'Open-Core 商用有条件',
+      legendBad: '企业版高危付费墙',
+      faqKicker: '一手核验常见问题',
+      schemaSynced: '结构化数据同源',
+      moreGuidesTitle: '更多 BuilderStack 深度报告',
+      allGuidesLink: '全部深度指南',
+      relatedGuideKicker: '关联深度实证报告',
+      readGuideCta: '阅读深度报告',
+    },
+    categoryMatrix: {
+      kicker: '品类横向裁决矩阵 · 一表选型',
+      compareLink: '打开交互式 TCO 算账器',
+      guidePrefix: '深度实证长文：',
     },
     oss: {
       crumb: '开源项目',
@@ -181,7 +256,10 @@ export const DICTIONARY = {
     },
     footer: {
       copyright: 'BuilderStack © 2026',
+      disclaimer: '一手仓库核验目录 · 商业返佣链接均标 rel="sponsored" 并与编辑裁决严格隔离。',
       about: '核验口径与披露',
+      guides: '深度指南',
+      rss: 'RSS 订阅',
     },
   },
 };

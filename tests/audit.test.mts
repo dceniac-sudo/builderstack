@@ -24,7 +24,10 @@ registerHooks({
 const { evaluateVsCalculator, ossVsComparison } = await import('@/data/oss-vs');
 const { OSS_PROJECTS, ossProject } = await import('@/data/oss');
 const { ossExtras } = await import('@/data/oss-extras');
+const { guideArticle, guideSummaries } = await import('@/data/guides');
 const { buildLlmsFullTxt, buildLlmsTxt } = await import('@/lib/llms');
+const { buildRssXml } = await import('@/lib/rss');
+const { pageMetadata } = await import('@/lib/site-meta');
 const { OFFICIAL_CHANNELS, ORGANIZATION_NODE } = await import('@/lib/schema');
 
 const CJK_RE = /[\u4e00-\u9fff]/;
@@ -155,7 +158,9 @@ test('BS-02: n8n places External Secrets, log streaming and multi-main HA on Ent
   assertNoCjk(enView, 'n8n-vs-activepieces EN view');
 
   const n8n = ossProject('n8n')!;
-  assert.equal(n8n.checkedAt, '2026-11-17');
+  assert.equal(n8n.checkedAt, '2026-11-19');
+  assert.equal(n8n.handsOn, true);
+  assert.equal(ossExtras('n8n').shot?.src, '/oss/shots/n8n.jpg');
   assert.ok(/SSO.*Business/i.test(n8n.facts.caveats.detailEn));
   assert.ok(/external secrets.*Enterprise-only/i.test(n8n.facts.caveats.detailEn));
   assert.ok(/外部密钥库.*Enterprise 企业版/.test(n8n.facts.caveats.detail));
@@ -308,4 +313,66 @@ test('GEO-06: Organization sameAs points to approved SaaSHub dceniac-alternative
     false,
     'ORGANIZATION_NODE.sameAs must not contain stale builderstack-alternatives URL',
   );
+});
+
+test('GEO-03: Static RSS 2.0 feed is valid XML with absolute HTTPS URLs and zero CJK', () => {
+  const xml = buildRssXml();
+  assert.match(xml, /^<\?xml version="1\.0" encoding="UTF-8"\?>/);
+  assert.match(xml, /<rss version="2\.0" xmlns:atom="http:\/\/www\.w3\.org\/2005\/Atom">/);
+  assert.ok(xml.includes('https://dceniac.com/rss.xml'));
+  assert.ok(xml.includes('https://dceniac.com/guides/open-core-paywall-matrix-2026/'));
+  assert.ok(xml.includes('https://dceniac.com/guides/self-hosting-n8n-vps-ram-benchmark/'));
+  assert.ok(xml.includes('https://dceniac.com/oss/vs/n8n-vs-activepieces/'));
+  assertNoCjk(xml, 'rss.xml');
+});
+
+test('GEO-04: ZH pages emit noindex, follow and EN pages omit zh-CN hreflang while advertising RSS', () => {
+  const enMeta = pageMetadata('en', '/guides/open-core-paywall-matrix-2026/', {
+    title: 'Test Guide',
+    description: 'Test description for EN page metadata verification.',
+  });
+  const zhMeta = pageMetadata('zh', '/guides/open-core-paywall-matrix-2026/', {
+    title: '测试指南',
+    description: '中文测试描述。',
+  });
+
+  assert.equal(enMeta.robots, undefined);
+  assert.deepEqual(zhMeta.robots, { index: false, follow: true });
+  assert.equal(enMeta.alternates?.languages?.['zh-CN'], undefined);
+  assert.equal(enMeta.alternates?.types?.['application/rss+xml'], 'https://dceniac.com/rss.xml');
+});
+
+test('GEO-05: Automation cluster (activepieces, windmill) and flagship guides are verified, indexed in llms.txt, and CJK-free in EN', () => {
+  for (const id of ['activepieces', 'windmill']) {
+    const project = ossProject(id);
+    assert.ok(project, `${id} must exist in OSS_PROJECTS`);
+    assert.equal(project.use, 'automation', `${id} must belong to automation use`);
+    assert.ok((project.facts.commercial.sources?.length ?? 0) > 0, `${id} commercial must cite primary source`);
+    assert.ok((project.facts.cost.sources?.length ?? 0) > 0, `${id} cost must cite primary source`);
+    assertNoCjk(
+      {
+        whatEn: project.whatEn,
+        commercialEn: project.facts.commercial.detailEn,
+        deployEn: project.facts.deploy.detailEn,
+        costEn: project.facts.cost.detailEn,
+        caveatsEn: project.facts.caveats.detailEn,
+      },
+      `${id} EN project fields`,
+    );
+  }
+
+  const summaries = guideSummaries('en');
+  assert.ok(summaries.length >= 2, 'At least two flagship guides must be live');
+  const brief = buildLlmsTxt();
+  const full = buildLlmsFullTxt();
+
+  for (const slug of ['open-core-paywall-matrix-2026', 'self-hosting-n8n-vps-ram-benchmark']) {
+    const guide = guideArticle(slug, 'en');
+    assert.ok(guide, `Guide ${slug} must exist`);
+    assertNoCjk(guide, `Guide ${slug} EN`);
+    assert.ok(brief.includes(`https://dceniac.com/guides/${slug}/`), `llms.txt missing guide ${slug}`);
+    assert.ok(full.includes(`https://dceniac.com/guides/${slug}/`), `llms-full.txt missing guide ${slug}`);
+  }
+  assert.equal(guideArticle('open-core-paywall-matrix-2026', 'en')?.matrixSection?.rows.length, 12);
+  assert.equal(guideArticle('self-hosting-n8n-vps-ram-benchmark', 'en')?.auditBasis, 'hands-on');
 });

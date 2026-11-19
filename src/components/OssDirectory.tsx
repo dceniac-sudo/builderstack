@@ -7,11 +7,13 @@ import { ArrowRight, Check, ChevronDown, Search } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { SiteFooter } from '@/components/SiteFooter';
 import { Dot, OssCategoryView, OssCta, OssLogo, OssProjectView, ROW_FACTS } from '@/components/OssParts';
+import { LicenseWatchSubscribe } from '@/components/LicenseWatchSubscribe';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { FadeUp } from '@/components/motion/MotionPrimitives';
-import { useI18n, type Language } from '@/lib/i18n';
-import { ORGANIZATION_NODE, SITE_URL, webPageNode, WEBSITE_NODE } from '@/lib/schema';
+import type { CategoryMatrixView } from '@/data/category-matrices';
+import { localePath, useI18n, type Language } from '@/lib/i18n';
+import { itemListNode, ORGANIZATION_NODE, SITE_URL, webPageNode, WEBSITE_NODE } from '@/lib/schema';
 import { cn } from '@/lib/utils';
 
 interface OssDirectoryProps {
@@ -24,6 +26,7 @@ interface OssDirectoryProps {
   initialIndustry: string; // 打开页面时选中的行业，'all' 是全部
   initialUse: string; // 打开页面时选中的用途，'all' 是全部
   active?: 'industries'; // 行业页和用途页在顶栏里高亮“分类”
+  categoryMatrix?: CategoryMatrixView; // 重点多项目用途页顶部的横向裁决矩阵
 }
 
 // 表头和每一行共用的列。宽屏上四个结论列是固定宽度，左边都留给名字和介绍；窄一些的屏幕上按比例分。
@@ -42,6 +45,7 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({
   initialIndustry,
   initialUse,
   active,
+  categoryMatrix,
 }) => {
   const { lang, t } = useI18n();
   const o = t.oss;
@@ -141,6 +145,15 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({
             lang: lang as Language,
             dateModified: checkedAt || undefined,
           }),
+          ...(shown.length > 0
+            ? [
+                itemListNode({
+                  path: initialPage.href,
+                  name: initialPage.title,
+                  items: shown.map((p) => ({ name: p.name, url: `${SITE_URL}${p.href}` })),
+                }),
+              ]
+            : []),
         ],
   };
 
@@ -228,7 +241,115 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({
       </section>
 
       <main className="mx-auto w-full max-w-[1120px] flex-1 px-5 sm:px-10">
-        <div className="mt-5 rounded-[14px] border border-[var(--line)] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] [overflow:clip] md:mt-8">
+        {categoryMatrix && use === initialUse && industry === 'all' && !query.trim() && (
+          <section className="mt-8 overflow-hidden rounded-[10px] border border-[var(--line)] bg-white">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--line)] bg-[var(--wash)] px-5 py-4">
+              <div>
+                <div className="font-mono text-[11px] font-medium uppercase tracking-[0.06em] text-[#737370]">
+                  {t.categoryMatrix.kicker}
+                </div>
+                <h2 className="mt-1 text-[17px] font-semibold tracking-[-0.015em] text-[var(--ink)]">
+                  {categoryMatrix.heading}
+                </h2>
+              </div>
+              {categoryMatrix.compareHref && (
+                <Link
+                  href={localePath(lang, categoryMatrix.compareHref)}
+                  className="inline-flex items-center gap-1.5 text-[13.5px] font-medium text-[var(--ink)] underline decoration-[#CFCFC9] underline-offset-[3px] hover:decoration-[var(--ink)]"
+                >
+                  <span>{categoryMatrix.compareLabel ?? t.categoryMatrix.compareLink}</span>
+                  <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
+                </Link>
+              )}
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[780px] border-collapse text-left text-[13.5px]">
+                <thead>
+                  <tr className="border-b border-[var(--line)] bg-white">
+                    {categoryMatrix.columns.map((col) => (
+                      <th
+                        key={col}
+                        className="px-5 py-3 font-mono text-[11px] font-medium uppercase tracking-[0.05em] text-[#737370]"
+                      >
+                        {col}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[var(--line)]">
+                  {categoryMatrix.rows.map((row) => (
+                    <tr
+                      key={row.id}
+                      className={cn(
+                        'transition-colors',
+                        row.rowTint === 'bad' && 'bg-[#FEF2F2]/50 hover:bg-[#FEF2F2]/80',
+                        row.rowTint === 'good' && 'bg-[#F0FDF4]/50 hover:bg-[#F0FDF4]/80',
+                        (!row.rowTint || row.rowTint === 'none') && 'bg-white hover:bg-[var(--wash)]'
+                      )}
+                    >
+                      <td className="px-5 py-4 align-top">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Dot verdict={row.verdict} />
+                          <Link
+                            href={row.href}
+                            className="font-semibold text-[var(--ink)] underline-offset-[3px] hover:underline"
+                          >
+                            {row.name}
+                          </Link>
+                          {row.microBadge && (
+                            <span
+                              className={cn(
+                                'rounded-[5px] border px-1.5 py-0.5 font-mono text-[10.5px] font-medium',
+                                row.microBadge.tone === 'bad' && 'border-[#FECACA] bg-[#FEF2F2] text-[#B91C1C]',
+                                row.microBadge.tone === 'good' && 'border-[#BBF7D0] bg-[#F0FDF4] text-[#15803D]',
+                                row.microBadge.tone === 'warn' && 'border-[#FDE68A] bg-[#FFFBEB] text-[#B45309]'
+                              )}
+                            >
+                              {row.microBadge.text}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-5 py-4 align-top">
+                        <div className="font-medium text-[var(--ink)]">{row.license}</div>
+                        <div className="mt-0.5 text-[12.5px] text-[var(--sub)]">{row.licenseNote}</div>
+                      </td>
+                      <td className="px-5 py-4 align-top font-mono text-[12.5px] tabular-nums text-[var(--ink)]">
+                        {row.minStack}
+                      </td>
+                      <td className="max-w-[230px] px-5 py-4 align-top text-[13.5px] leading-[1.55] text-[var(--sub)]">
+                        {row.freeCeiling}
+                      </td>
+                      <td className="px-5 py-4 align-top font-mono text-[12.5px] font-medium tabular-nums text-[var(--ink)]">
+                        {row.paidFloor}
+                      </td>
+                      <td className="max-w-[220px] px-5 py-4 align-top text-[13.5px] leading-[1.55] text-[var(--ink)]">
+                        {row.bestFor}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {categoryMatrix.guideHref && categoryMatrix.guideLabel && (
+              <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[var(--line)] bg-[var(--wash)] px-5 py-3 text-[13px] text-[var(--sub)]">
+                <span>
+                  {t.categoryMatrix.guidePrefix}{' '}
+                  <Link
+                    href={localePath(lang, categoryMatrix.guideHref)}
+                    className="font-medium text-[var(--ink)] underline decoration-[#CFCFC9] underline-offset-[3px] hover:decoration-[var(--ink)]"
+                  >
+                    {categoryMatrix.guideLabel}
+                  </Link>
+                </span>
+              </div>
+            )}
+          </section>
+        )}
+
+        <div className="mt-6 rounded-[14px] border border-[var(--line)] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] [overflow:clip] md:mt-8">
           <div className="flex flex-wrap items-stretch gap-x-6 border-b border-[var(--line)] px-3.5 md:px-[18px]">
             {tabs.map((i) => {
               const isSelected = i.id === industry;
@@ -405,61 +526,53 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({
                       </button>
                     </div>
 
-                    <div
-                      className={cn(
-                        'grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none',
-                        isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
-                      )}
-                    >
-                      <div className="min-h-0 overflow-hidden">
-                        <div className="bg-[var(--wash)] px-3.5 pb-[18px] pt-1 md:pl-16 md:pr-[18px]">
-                          <dl>
-                            {ROW_FACTS.map((key, n) => (
-                              <div key={key} className={cn(FACT_ROW, n > 0 && 'border-t border-[var(--line)]')}>
-                                <dt className="text-[13px] text-[var(--sub)]">{o.cols[key]}</dt>
-                                <dd>{verdict(key)}</dd>
-                                <dd className="col-span-full text-[14.5px] md:col-span-1">{p.facts[key].detail ?? p.facts[key].label}</dd>
-                              </div>
-                            ))}
-                            {p.needs && (
-                              <div className={cn(FACT_ROW, 'border-t border-[var(--line)]')}>
-                                <dt className="col-span-full text-[13px] text-[var(--sub)] md:col-span-1">{o.needs}</dt>
-                                <dd className="col-span-full text-[14.5px] md:col-[2/-1]">{p.needs.detail ?? p.needs.label}</dd>
-                              </div>
-                            )}
-                            {p.facts.caveats.verdict !== 'pending' && (
-                              <div className={cn(FACT_ROW, 'border-t border-[var(--line)]')}>
-                                <dt className="col-span-full text-[13px] font-semibold text-[var(--warn)] md:col-span-1">
-                                  {o.questions.caveats}
-                                </dt>
-                                <dd className="col-span-full text-[14.5px] md:col-[2/-1]">{p.facts.caveats.detail ?? p.facts.caveats.label}</dd>
-                              </div>
-                            )}
-                          </dl>
-                          <div className="flex flex-wrap gap-x-[18px] gap-y-1 border-t border-[var(--line)] pt-2 text-[13.5px]">
-                            <Link href={p.href} tabIndex={isOpen ? undefined : -1} className={TEXT_LINK}>
-                              {o.seeSources}
+                    {isOpen && (
+                      <div className="bg-[var(--wash)] px-3.5 pb-[18px] pt-1 md:pl-16 md:pr-[18px]">
+                        <dl>
+                          {ROW_FACTS.map((key, n) => (
+                            <div key={key} className={cn(FACT_ROW, n > 0 && 'border-t border-[var(--line)]')}>
+                              <dt className="text-[13px] text-[var(--sub)]">{o.cols[key]}</dt>
+                              <dd>{verdict(key)}</dd>
+                              <dd className="col-span-full text-[14.5px] md:col-span-1">{p.facts[key].detail ?? p.facts[key].label}</dd>
+                            </div>
+                          ))}
+                          {p.needs && (
+                            <div className={cn(FACT_ROW, 'border-t border-[var(--line)]')}>
+                              <dt className="col-span-full text-[13px] text-[var(--sub)] md:col-span-1">{o.needs}</dt>
+                              <dd className="col-span-full text-[14.5px] md:col-[2/-1]">{p.needs.detail ?? p.needs.label}</dd>
+                            </div>
+                          )}
+                          {p.facts.caveats.verdict !== 'pending' && (
+                            <div className={cn(FACT_ROW, 'border-t border-[var(--line)]')}>
+                              <dt className="col-span-full text-[13px] font-semibold text-[var(--warn)] md:col-span-1">
+                                {o.questions.caveats}
+                              </dt>
+                              <dd className="col-span-full text-[14.5px] md:col-[2/-1]">{p.facts.caveats.detail ?? p.facts.caveats.label}</dd>
+                            </div>
+                          )}
+                        </dl>
+                        <div className="flex flex-wrap gap-x-[18px] gap-y-1 border-t border-[var(--line)] pt-2 text-[13.5px]">
+                          <Link href={p.href} className={TEXT_LINK}>
+                            {o.seeSources}
+                          </Link>
+                          {p.compareHref && p.compareLabel && (
+                            <Link href={p.compareHref} className={TEXT_LINK}>
+                              {p.compareLabel}
                             </Link>
-                            {p.compareHref && p.compareLabel && (
-                              <Link href={p.compareHref} tabIndex={isOpen ? undefined : -1} className={TEXT_LINK}>
-                                {p.compareLabel}
-                              </Link>
-                            )}
-                            {p.homepage && (
-                              <a
-                                href={p.homepage}
-                                tabIndex={isOpen ? undefined : -1}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={TEXT_LINK}
-                              >
-                                {o.site}
-                              </a>
-                            )}
-                          </div>
+                          )}
+                          {p.homepage && (
+                            <a
+                              href={p.homepage}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={TEXT_LINK}
+                            >
+                              {o.site}
+                            </a>
+                          )}
                         </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 );
               })}
@@ -473,6 +586,7 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({
           )}
         </div>
 
+        <LicenseWatchSubscribe className="mt-12" />
         <OssCta />
       </main>
 

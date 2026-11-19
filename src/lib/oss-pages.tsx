@@ -19,6 +19,8 @@ import {
 } from '@/data/oss';
 import { ossExtras, ossPriceAnswerEn, ossSearchSummaryEn, ossSearchTitleEn } from '@/data/oss-extras';
 import { ossVsPairForProject } from '@/data/oss-vs';
+import { categoryMatrixForUse } from '@/data/category-matrices';
+import { guidesForProject } from '@/data/guides';
 import { localePath, type Language } from '@/lib/i18n-path';
 import { pageMetadata } from '@/lib/site-meta';
 import type { OssFact, OssFactKey, OssProject } from '@/types/oss';
@@ -174,6 +176,7 @@ function directory(lang: Language, industryId: string, useId: string, active?: '
       initialIndustry={industryId}
       initialUse={useId}
       active={active}
+      categoryMatrix={useId !== 'all' ? categoryMatrixForUse(useId, lang) : undefined}
     />
   );
 }
@@ -249,6 +252,7 @@ function renderOssProject(lang: Language, id: string) {
       }
       comparisons={comparisonViews && comparisonViews.length > 0 ? comparisonViews : undefined}
       alternatives={alternatives.map((x) => projectView(x, lang))}
+      relatedGuides={guidesForProject(p.id, lang)}
     />
   );
 }

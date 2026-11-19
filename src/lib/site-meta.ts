@@ -34,14 +34,20 @@ export function pageMetadata(
     metadataBase: new URL(SITE),
     title,
     description,
-    keywords: ['open source', 'self-hosted', 'open source for small business', 'education software', '开源项目', '开源商用'],
     authors: [{ name: 'dceniac', url: SITE }],
     creator: '@dceniac',
     icons: { icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }] },
-    alternates: {
-      canonical: url,
-      languages: { en: path, 'zh-CN': `/zh${path}` },
-    },
+    ...(lang === 'zh'
+      ? {
+          robots: { index: false, follow: true },
+          alternates: { canonical: url },
+        }
+      : {
+          alternates: {
+            canonical: url,
+            types: { 'application/rss+xml': `${SITE}/rss.xml` },
+          },
+        }),
     openGraph: {
       title,
       description,

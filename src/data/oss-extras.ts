@@ -313,6 +313,19 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
       lookElsewhereIfEn: 'Hosting n8n for others, white-labeling it, or letting clients configure their own workflows requires a commercial license. Self-hosted Business adds workflow sharing, SSO and Git at €667 per month billed annually.',
       confirmed: true,
     },
+    shot: {
+      src: '/oss/shots/n8n.jpg',
+      width: 1280,
+      height: 800,
+      alt: 'n8n 2.35.0 社区版工作流执行历史界面：左侧列出 6 次成功的 Webhook 批处理记录，右侧画布展示 4 节点流程成功处理 10,000 条 JSON 记录。',
+      altEn: 'n8n 2.35.0 Community Edition Executions view: six succeeded webhook runs on the left and a four-node workflow canvas processing 10,000 JSON items in 249 ms (2 MB execution payload) on the right.',
+      caption: 'n8n 2.35.0 社区版实跑截图（2026-11-19）：10,000 条 JSON 批处理耗时 249 ms、单次记录 2 MB，左上角可见社区版仅提供 Personal 个人空间。',
+      captionEn: 'Hands-on capture of n8n 2.35.0 Community Edition (2026-11-19): 10,000-item JSON batch succeeded in 249 ms (2 MB saved execution); top-left shows Personal-only workspace scope.',
+      sourceUrl: 'https://github.com/n8n-io/n8n',
+      sourceLabel: '查看上游仓库',
+      sourceLabelEn: 'Upstream repo',
+      confirmed: true,
+    },
   },
   twenty: {
     fit: {
@@ -368,6 +381,24 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
       confirmed: true,
     },
   },
+  activepieces: {
+    fit: {
+      considerIf: '需要 MIT 核心开源且团队共享与 SSO 价格扁平可控（Team $200/月涵盖 25 人）的 Zapier/n8n 替代方案，团队熟悉 TypeScript 且愿意按需配置 Postgres + Redis + S3。',
+      considerIfEn: 'You want a permissive MIT-core workflow builder with flat-rate team pricing ($200/mo for 25 users + SSO) and TypeScript extensibility, and can run Postgres, Redis and S3 in production.',
+      lookElsewhereIf: '希望完全零外部对象存储单机运行大规模生产流，或要求免费自建版就内置多项目权限、白标 Embed SDK 与 SCIM。',
+      lookElsewhereIfEn: 'You want zero S3 object-storage dependencies in production, or expect free Community Edition to include multi-project isolation, white-label Embed SDK and SCIM.',
+      confirmed: true,
+    },
+  },
+  windmill: {
+    fit: {
+      considerIf: '工程团队希望直接用 Python / TypeScript / SQL 写可版本控制的自动化流和内部后台，想要仅靠 PostgreSQL（免装 Redis）的自托管架构，且看重免费版自带最多 10 个 SSO 名额。',
+      considerIfEn: 'Your engineers prefer writing versioned Python, TypeScript and SQL over dragging no-code boxes, want a Postgres-only stack without Redis, and value up to 10 free SSO users on CE.',
+      lookElsewhereIf: '主要由非技术运营人员拖拽搭自动化（n8n / Activepieces 更直观），或合规要求免费就提供审计日志与 SAML 组同步（这两项锁在 $120+/月企业版）。',
+      lookElsewhereIfEn: 'Non-technical ops staff will build most automations via visual drag-and-drop, or compliance requires free audit logs and SAML group sync (both sit in Enterprise from $120/mo).',
+      confirmed: true,
+    },
+  },
 };
 
 // 英文详情页在搜索结果里显示的摘要：先说结论（免不免费、什么许可证、要花多少、最要紧的一条注意事项），160 个字符以内。
@@ -399,6 +430,8 @@ const SEARCH_SUMMARY_EN: Record<string, string> = {
   'cal-com': 'Cal.com Cloud is $0 solo and $12/user/month for Teams ($28 for Org SSO). Public MIT repo cal.diy omits Teams/SSO and is recommended for personal use only.',
   appsmith: 'Appsmith Community Edition is free under Apache-2.0 with unlimited self-hosted users (needs 8 GB RAM Docker host). Business is $15/user/mo; SAML SSO is $2,500/mo.',
   papermark: 'Papermark Cloud starts at €24/mo Pro and €59–€99/mo for Business/Data Rooms. Self-hosting AGPL core requires Postgres, S3/Blob, Resend and Tinybird.',
+  activepieces: 'Activepieces core is free under MIT; production self-hosting requires Postgres, Redis and S3. Cloud Plus is $20/mo flat and Team is $200/mo for 25 users + SSO.',
+  windmill: 'Windmill Community is free under AGPLv3 on Postgres (no Redis) with up to 10 SSO users. Self-Hosted Enterprise starts from $120/mo for audit logs and SAML.',
 };
 
 // 英文详情页的标题默认是“Is 项目名 free? Pricing, license and caveats”。名字里已经带 open source 的不适合这么问，在这里单独写。
@@ -429,6 +462,8 @@ const PRICE_ANSWER_EN: Record<string, string> = {
   'cal-com': 'Cal.com Cloud lists Individuals at $0/month (unlimited event types), Teams at $12/user/month billed yearly ($15 monthly), and Organizations at $28/user/month ($37 monthly, adding SAML SSO and SCIM). The public MIT repo cal.diy is free to self-host for personal, non-production use but omits Teams and SSO. Prices checked November 15, 2026.',
   appsmith: 'Self-hosting the Apache-2.0 Community edition (appsmith-ce) is free for unlimited users on an 8 GB+ RAM host. Appsmith Cloud Free covers up to 5 users; Business costs $15 per user a month (up to 99 users) and Enterprise starts at $2,500 a month for 100 users (required for SAML / OIDC SSO and SCIM). Prices checked November 15, 2026.',
   papermark: 'Self-hosting the AGPLv3 core has no license fee, though you pay for PostgreSQL, S3/Vercel Blob storage, Resend emails and Tinybird analytics pipelines. Official Papermark Cloud lists Free at €0/mo (1 user, 50 docs), Pro at €24/mo (1 user), Business at €59/mo (3 seats, +€20/extra seat) and Data Rooms Base Plus at €99/mo (3 seats, +€33/extra seat) billed annually. Prices checked November 15, 2026.',
+  activepieces: 'Self-hosting the MIT Community edition costs $0 in software fees (production architecture uses PostgreSQL, Redis and S3). Official pricing lists Free at $0/mo (1,000 credits, up to 5 users), Plus at $20/mo flat (10,000 credits, up to 5 users) and Team at $200/mo flat (50,000 credits, 25 users, unlimited projects and SSO). Prices checked November 19, 2026.',
+  windmill: 'Self-hosting the AGPLv3 Community edition is $0/month with unlimited executions and up to 10 SSO users on a Postgres-only stack (2 GB RAM per worker container). Self-Hosted Enterprise starts from $120/month ($20/builder, $10/non-builder plus workers) to unlock audit logs, SAML group sync and uncapped SSO. Prices checked November 19, 2026.',
 };
 
 export function ossSearchSummaryEn(id: string): string | undefined {

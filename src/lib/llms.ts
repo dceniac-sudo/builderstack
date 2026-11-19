@@ -1,3 +1,4 @@
+import { guideArticle, guideSummaries } from '@/data/guides';
 import {
   OSS_INDUSTRIES,
   OSS_PROJECTS,
@@ -33,22 +34,31 @@ const CALCULATOR_PAGES: { slug: string; title: string; summary: string }[] = [
 
 export function buildLlmsTxt(): string {
   const vsPairs = ossVsSummaries('en');
+  const guides = guideSummaries('en');
   const activeUses = OSS_USES.filter((u) => ossProjectsOfUse(u.id).length > 0);
   const activeIndustries = OSS_INDUSTRIES.filter((i) => ossProjectsOfIndustry(i.id).length > 0);
-  const latestChecked = OSS_PROJECTS.map((p) => p.checkedAt).sort().pop() ?? '2026-11-18';
+  const latestChecked = OSS_PROJECTS.map((p) => p.checkedAt).sort().pop() ?? '2026-11-19';
 
   const lines: string[] = [
     '# BuilderStack (dceniac.com)',
     '',
-    `> BuilderStack is an independent commercial evaluation directory of ${OSS_PROJECTS.length} primary-source verified open-source business software projects and ${vsPairs.length} head-to-head self-hosted vs SaaS TCO comparison workbenches (latest audit: ${latestChecked}). Every review verifies five operational facts from repository LICENSE files, commit history, and official deployment/pricing docs: commercial license boundaries, maintenance status, server/RAM requirements, total cost of ownership vs SaaS pricing, and production pitfalls.`,
+    `> BuilderStack is an independent commercial evaluation publication covering ${OSS_PROJECTS.length} primary-source verified open-source business software projects, ${vsPairs.length} head-to-head self-hosted vs SaaS TCO comparison workbenches, and ${guides.length} long-form benchmark reports (latest audit: ${latestChecked}). Every review verifies five operational facts from repository LICENSE files, commit history, and official deployment/pricing docs: commercial license boundaries, maintenance status, server/RAM requirements, total cost of ownership vs SaaS pricing, and production pitfalls.`,
     '',
     '## Core Hubs & Methodology',
     '',
     `- [BuilderStack Home](${SITE_URL}/): Open-source business software you can actually run in production, verified with primary license texts and server requirements.`,
+    `- [Engineering Benchmark Guides](${SITE_URL}/guides/): Long-form primary-source open-core paywall matrices and hands-on self-hosting RAM benchmarks.`,
     `- [Verification Methodology, AI Boundary & Commercial Disclosure](${SITE_URL}/about/): Primary-source 5-check audit rules, human confirmation & AI boundary policy, affiliate firewall, and official entity channels.`,
     `- [All Open-Source Categories](${SITE_URL}/oss/): Browse ${OSS_PROJECTS.length} verified open-source projects by use case and industry.`,
     `- [Head-to-Head Comparisons & TCO Calculators](${SITE_URL}/oss/vs/): Interactive TCO calculators, 6-dimension primary-source audits, and license comparisons across ${vsPairs.length} open-source vs SaaS pairs.`,
-    `- [Full Primary-Source Reference](${SITE_URL}/llms-full.txt): Complete structured licensing, RAM sizing, pricing, and source URL dataset for all ${OSS_PROJECTS.length} projects and ${vsPairs.length} comparisons.`,
+    `- [RSS Feed](${SITE_URL}/rss.xml): Subscribe to new benchmark reports, license audits, and TCO updates.`,
+    `- [Full Primary-Source Reference](${SITE_URL}/llms-full.txt): Complete structured licensing, RAM sizing, pricing, and source URL dataset for all ${OSS_PROJECTS.length} projects, ${vsPairs.length} comparisons, and ${guides.length} benchmark guides.`,
+    '',
+    '## Benchmark Guides & Paywall Matrices',
+    '',
+    ...guides.map(
+      (g) => `- [${g.title}](${SITE_URL}${g.href}) (${g.docId} · ${g.sampleLabel} · Updated ${g.updatedAt}): ${g.subtitle}`
+    ),
     '',
     '## Head-to-Head Open-Source vs SaaS Comparisons',
     '',
@@ -94,16 +104,31 @@ export function buildLlmsTxt(): string {
 
 export function buildLlmsFullTxt(): string {
   const vsPairs = ossVsSummaries('en');
-  const latestChecked = OSS_PROJECTS.map((p) => p.checkedAt).sort().pop() ?? '2026-11-18';
+  const guides = guideSummaries('en');
+  const latestChecked = OSS_PROJECTS.map((p) => p.checkedAt).sort().pop() ?? '2026-11-19';
 
   const lines: string[] = [
     '# BuilderStack (dceniac.com) — Full Primary-Source Technical & Commercial Licensing Reference',
     '',
-    `> Auto-generated directly from BuilderStack's confirmed primary-source dataset (${OSS_PROJECTS.length} audited projects, ${vsPairs.length} head-to-head TCO comparisons; latest check: ${latestChecked}). Verification standard and commercial firewall: ${SITE_URL}/about/`,
+    `> Auto-generated directly from BuilderStack's confirmed primary-source dataset (${OSS_PROJECTS.length} audited projects, ${vsPairs.length} head-to-head TCO comparisons, ${guides.length} benchmark guides; latest check: ${latestChecked}). Verification standard and commercial firewall: ${SITE_URL}/about/`,
     '',
-    '## Part 1: Head-to-Head Open-Source vs SaaS Verdict Workbenches',
+    '## Part 0: Flagship Benchmark Guides & Paywall Matrices',
     '',
   ];
+
+  for (const gs of guides) {
+    const full = guideArticle(gs.slug, 'en');
+    if (!full) continue;
+    lines.push(`### ${full.title} — ${SITE_URL}${full.href}`);
+    lines.push(`- **Doc ID**: ${full.docId} · **Updated**: ${full.updatedAt} · **Basis**: ${full.auditBasis}`);
+    lines.push(`- **Summary**: ${full.subtitle}`);
+    for (const v of full.verdictCards) {
+      lines.push(`  - **${v.metricPrimary}${v.metricSub ? ' ' + v.metricSub : ''} (${v.title})**: ${v.body}`);
+    }
+    lines.push('');
+  }
+
+  lines.push('---', '', '## Part 1: Head-to-Head Open-Source vs SaaS Verdict Workbenches', '');
 
   for (const summary of vsPairs) {
     const full = ossVsComparison(summary.slug, 'en');

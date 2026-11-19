@@ -595,7 +595,7 @@ const ALL_VS_RAW: VsPairRaw[] = [
     stickyCtaLabel: { en: 'Check n8n Review', zh: '查看 n8n 五项核对' },
     stickyCtaUrl: '/oss/n8n/',
     stickyCtaSponsored: false,
-    linkedProjectIds: ['n8n'],
+    linkedProjectIds: ['n8n', 'activepieces'],
     left: {
       id: 'n8n',
       name: 'n8n',

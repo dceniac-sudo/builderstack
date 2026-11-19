@@ -2,10 +2,11 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, ChevronRight, ExternalLink, SlidersHorizontal } from 'lucide-react';
+import { ArrowRight, BookOpen, ChevronRight, ExternalLink, SlidersHorizontal } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { SiteFooter } from '@/components/SiteFooter';
 import { ALL_FACTS, Dot, OssCta, OssLogo, OssProjectView, RowFactKey } from '@/components/OssParts';
+import { LicenseWatchSubscribe } from '@/components/LicenseWatchSubscribe';
 import { ChatwootCalculator } from '@/components/ChatwootCalculator';
 import { JupyterHubCalculator } from '@/components/JupyterHubCalculator';
 import { LiveKitCalculator } from '@/components/LiveKitCalculator';
@@ -13,6 +14,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { FadeUp, ReadingProgressBar } from '@/components/motion/MotionPrimitives';
+import type { GuideSummary } from '@/types/guide';
 import { useI18n, localePath, type Language } from '@/lib/i18n';
 import { ORG_ID, SITE_URL, webPageNode } from '@/lib/schema';
 import { cn } from '@/lib/utils';
@@ -51,6 +53,7 @@ interface OssProjectPageProps {
   shot?: OssShotView;
   comparisons?: OssComparisonView[];
   alternatives: OssProjectView[];
+  relatedGuides?: GuideSummary[];
 }
 
 const H2 = 'text-[19px] font-semibold tracking-[-0.01em]';
@@ -65,9 +68,14 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({
   shot,
   comparisons,
   alternatives,
+  relatedGuides = [],
 }) => {
   const { lang, t } = useI18n();
   const o = t.oss;
+  const g = t.guides;
+  const hasInlineCalc = lang === 'en' && (p.id === 'livekit' || p.id === 'chatwoot' || p.id === 'jupyterhub');
+  const primaryGuide = relatedGuides[0];
+  const hasInSitePrimary = Boolean(p.compareHref || hasInlineCalc || primaryGuide);
   const rows = ALL_FACTS.flatMap((key) => {
     const row = { key: key as string, question: o.questions[key], fact: p.facts[key] };
     return key === 'caveats' && p.needs ? [{ key: 'needs', question: o.needs, fact: p.needs }, row] : [row];
@@ -162,8 +170,35 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({
           </FadeUp>
         )}
 
-        <FadeUp delay={0.08} className="mt-5 flex flex-wrap gap-2">
-          <Button asChild>
+        <FadeUp delay={0.08} className="mt-5 flex flex-wrap gap-2.5">
+          {p.compareHref && p.compareLabel && (
+            <Button asChild variant="default">
+              <Link href={p.compareHref}>
+                <SlidersHorizontal aria-hidden="true" className="h-3.5 w-3.5" />
+                <span>{p.compareLabel}</span>
+                <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
+              </Link>
+            </Button>
+          )}
+          {!p.compareHref && hasInlineCalc && (
+            <Button asChild variant="default">
+              <a href="#calculator">
+                <SlidersHorizontal aria-hidden="true" className="h-3.5 w-3.5" />
+                <span>{o.jumpToCalc}</span>
+                <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
+              </a>
+            </Button>
+          )}
+          {primaryGuide && (
+            <Button asChild variant={!p.compareHref && !hasInlineCalc ? 'default' : 'secondary'}>
+              <Link href={primaryGuide.href}>
+                <BookOpen aria-hidden="true" className="h-3.5 w-3.5" />
+                <span>{g.readGuideCta}</span>
+                <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
+              </Link>
+            </Button>
+          )}
+          <Button asChild variant={hasInSitePrimary ? 'outline' : 'default'}>
             <a href={p.repoUrl} target="_blank" rel="noopener noreferrer">
               <span>{o.repo}</span>
               <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" />
@@ -177,16 +212,34 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({
               </a>
             </Button>
           )}
-          {p.compareHref && p.compareLabel && (
-            <Button asChild variant="secondary">
-              <Link href={p.compareHref}>
-                <SlidersHorizontal aria-hidden="true" className="h-3.5 w-3.5" />
-                <span>{p.compareLabel}</span>
-                <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
-              </Link>
-            </Button>
-          )}
         </FadeUp>
+
+        {relatedGuides.length > 0 && (
+          <div className="mt-6 space-y-3">
+            {relatedGuides.map((guide) => (
+              <Link
+                key={guide.slug}
+                href={guide.href}
+                className="group flex flex-wrap items-center justify-between gap-4 rounded-[10px] border border-[var(--line)] bg-[var(--wash)] px-5 py-4 transition-colors hover:border-[var(--ink)]/35"
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-[0.06em] text-[#737370]">
+                    <span>{g.relatedGuideKicker}</span>
+                    <span>·</span>
+                    <span>{guide.docId}</span>
+                  </div>
+                  <div className="mt-1 text-[15.5px] font-semibold text-[var(--ink)] group-hover:underline group-hover:underline-offset-4">
+                    {guide.title}
+                  </div>
+                </div>
+                <span className="inline-flex shrink-0 items-center gap-1.5 text-[13.5px] font-medium text-[var(--ink)]">
+                  <span>{g.readReport}</span>
+                  <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        )}
 
         {fit && (
           <FadeUp as="section" delay={0.1} className="mt-9">
@@ -390,6 +443,7 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({
           </section>
         )}
 
+        <LicenseWatchSubscribe className="mt-12" />
         <OssCta />
       </main>
 

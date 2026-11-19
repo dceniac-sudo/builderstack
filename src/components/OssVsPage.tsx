@@ -17,6 +17,7 @@ import {
 import { Navbar } from '@/components/Navbar';
 import { SiteFooter } from '@/components/SiteFooter';
 import { Dot, OssCta } from '@/components/OssParts';
+import { LicenseWatchSubscribe } from '@/components/LicenseWatchSubscribe';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -388,7 +389,7 @@ export const OssVsPage: React.FC<OssVsPageProps> = ({ data, peers }) => {
                   <div className="flex items-center gap-2.5">
                     <SlidersHorizontal aria-hidden="true" className="h-4 w-4 text-[var(--ink)]" />
                     <div>
-                      <CardTitle className="text-[15.5px]">{data.calc.title}</CardTitle>
+                      <CardTitle as="h2" className="text-[16px]">{data.calc.title}</CardTitle>
                       <p className="mt-0.5 text-[12.5px] text-[var(--sub)]">{data.calc.subtitle}</p>
                     </div>
                   </div>
@@ -519,7 +520,7 @@ export const OssVsPage: React.FC<OssVsPageProps> = ({ data, peers }) => {
               <CardHeader className="border-b border-[var(--line)] bg-[var(--wash)] py-3.5">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
-                    <CardTitle className="text-[16.5px]">{o.matrixTitle}</CardTitle>
+                    <CardTitle as="h2" className="text-[17px]">{o.matrixTitle}</CardTitle>
                     <p className="mt-0.5 text-[12.5px] text-[var(--sub)]">{o.matrixSub}</p>
                   </div>
                   <Tabs value={matrixTab} onValueChange={(v) => setMatrixTab(v as AuditGroup)}>
@@ -582,7 +583,7 @@ export const OssVsPage: React.FC<OssVsPageProps> = ({ data, peers }) => {
           <FadeUp as="section" id="faq-section" delay={0.18}>
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-[17px]">{o.faqTitle}</CardTitle>
+                <CardTitle as="h2" className="text-[17px]">{o.faqTitle}</CardTitle>
                 <p className="text-[12.5px] text-[var(--sub)]">{o.faqSub}</p>
               </CardHeader>
               <CardContent>
@@ -643,6 +644,7 @@ export const OssVsPage: React.FC<OssVsPageProps> = ({ data, peers }) => {
             </section>
           )}
 
+          <LicenseWatchSubscribe className="mt-10" />
           <OssCta />
         </div>
       </main>
