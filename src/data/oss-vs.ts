@@ -230,7 +230,7 @@ const ALL_VS_RAW: VsPairRaw[] = [
     stickyWinnerBadge: { en: 'Cheaper on Teams & 1–44 SSO seats', zh: '常规 Teams 与 44 席内 SSO 更省' },
     stickyCtaLabel: { en: 'Check Cal.com Cloud', zh: '查看 Cal.com 方案' },
     stickyCtaUrl: 'https://cal.com/pricing',
-    stickyCtaSponsored: true,
+    stickyCtaSponsored: false,
     linkedProjectIds: ['cal-com'],
     left: {
       id: 'cal-com',
@@ -266,12 +266,12 @@ const ALL_VS_RAW: VsPairRaw[] = [
       },
       ctaLabel: { en: 'Try Cal.com Cloud Pricing', zh: '查看 Cal.com Cloud 定价' },
       ctaUrl: 'https://cal.com/pricing',
-      ctaSponsored: true,
+      ctaSponsored: false,
       secondaryLabel: { en: 'cal.diy repo', zh: 'cal.diy 仓库' },
       secondaryUrl: 'https://github.com/calcom/cal.diy',
       disclosure: {
-        en: 'Partner link (rel="sponsored") · Checked against cal.com/pricing (2026-11-15).',
-        zh: '合作链接（rel="sponsored"）· 价格核对自 cal.com/pricing（2026-11-15）。',
+        en: 'Standard reference link (no affiliate tracking) · Checked against cal.com/pricing (2026-11-15).',
+        zh: '普通参考链接（无返佣追踪）· 价格核对自 cal.com/pricing（2026-11-15）。',
       },
     },
     right: {
@@ -438,7 +438,6 @@ const ALL_VS_RAW: VsPairRaw[] = [
             url: 'https://cal.com/pricing',
             date: '2026-11-15',
             quote: 'Individuals: $0 forever — unlimited event types, multiple calendar connections, workflows and Stripe payments.',
-            sponsored: true,
           },
           {
             label: 'Calendly Pricing',
@@ -469,7 +468,6 @@ const ALL_VS_RAW: VsPairRaw[] = [
             url: 'https://cal.com/pricing',
             date: '2026-11-15',
             quote: 'Cal.com Teams $12/user/mo annual ($15 monthly) vs Calendly Teams $16/seat/mo annual ($20 monthly).',
-            sponsored: true,
           },
         ],
         leftVerdict: 'good',
@@ -494,7 +492,6 @@ const ALL_VS_RAW: VsPairRaw[] = [
             url: 'https://cal.com/pricing',
             date: '2026-11-15',
             quote: 'Cal.com Organizations $28/user/mo annual (self-serve SSO/SCIM). Calendly Enterprise SSO starts around $15,000/year.',
-            sponsored: true,
           },
         ],
         leftVerdict: 'good',
@@ -576,7 +573,7 @@ const ALL_VS_RAW: VsPairRaw[] = [
     categoryLabel: { en: 'Workflow automation', zh: '工作流自动化' },
     checkedAt: '2026-11-17',
     metaTitle: {
-      en: 'n8n vs Activepieces: License, Sharing & Flat Pricing',
+      en: 'n8n vs Activepieces: License, Sharing & Team Pricing',
       zh: 'n8n 对比 Activepieces：许可与价格',
     },
     metaDescription: {
@@ -585,12 +582,12 @@ const ALL_VS_RAW: VsPairRaw[] = [
     },
     title: { en: 'n8n vs Activepieces', zh: 'n8n 对比 Activepieces' },
     subtitle: {
-      en: 'n8n wins for deep technical self-hosted internal pipelines; Activepieces wins on true MIT core licensing and $200/mo flat 25-user Team SSO.',
-      zh: '重度技术流内部自建选 n8n；需要真正 MIT 开源核心、或不想为多人共享工作流与 SSO 付 €667/月大额年费选 Activepieces。',
+      en: 'n8n wins for deep technical self-hosted internal pipelines; Activepieces wins on true MIT core licensing and $200/mo 25-user Team SSO (capped at 50,000 credits/mo).',
+      zh: '重度技术流内部自建选 n8n；需要真正 MIT 开源核心、或不想为多人共享工作流与 SSO 付 €667/月大额年费选 Activepieces（Team $200/月，每月 5 万积分封顶）。',
     },
     winnerTag: { en: 'MIT & Team cost: Activepieces', zh: 'MIT 与 25 人团队价看 Activepieces' },
     pricingHighlight: { en: 'SUL (€667/mo Biz) vs MIT ($200/mo 25-seat Team)', zh: 'n8n SUL（€667/月）对 MIT 核心（$200/月包 25 人）' },
-    starsBadge: 'n8n 50k+ SUL · Activepieces 25,540 ★ MIT',
+    starsBadge: 'n8n 211k+ ★ SUL · Activepieces 25,540 ★ MIT',
     stickyWinnerBadge: { en: 'SUL vs MIT · €667 vs $200 Team', zh: '协议与团队成本差异极大' },
     stickyCtaLabel: { en: 'Check n8n Review', zh: '查看 n8n 五项核对' },
     stickyCtaUrl: '/oss/n8n/',
@@ -646,34 +643,34 @@ const ALL_VS_RAW: VsPairRaw[] = [
       winnerBadge: { en: 'Winner: MIT core & Team SSO value', zh: 'MIT 商业自由度 & 团队平价胜出' },
       tagline: { en: 'MIT Expat core + commercial packages/ee/', zh: 'MIT Expat 开源核心 + packages/ee 商业目录' },
       pricePills: {
-        en: ['MIT core $0', 'Plus $20 ($16 ann, 5u)', 'Team $200 ($166 ann, 25u)'],
-        zh: ['MIT 核心自建 $0', 'Plus $20/月(年付$16,5人)', 'Team $200/月(年付$166,25人)'],
+        en: ['MIT core $0', 'Plus $20 ($16.67 ann, 5u)', 'Team $200 ($166.67 ann, 25u)'],
+        zh: ['MIT 核心自建 $0', 'Plus $20/月(年付$16.67,5人)', 'Team $200/月(年付$166.67,25人)'],
       },
       chooseIf: {
         en: [
           'You require true OSI-approved MIT core licensing outside enterprise directories.',
-          'A 5–25 person team wants shared projects, SSO & standard roles at $200/mo flat.',
-          'You want clean AI Agents, Tables & MCPs bundled inside flat Plus ($20/mo) or Team plans.',
+          'A 5–25 person team wants shared projects, SSO & standard roles at $200/mo (Cloud or on-prem, 50,000 credits/mo included).',
+          'You want clean AI Agents, Tables & MCPs bundled inside Plus ($20/mo) or Team plans.',
         ],
         zh: [
           '法务要求 OSI 认证的 MIT 宽松开源核心（剥离 packages/ee/ 商业目录）。',
-          '5–25 人团队需要共享项目、标准角色与 SSO，且预算锁定在 $200/月固定封顶价。',
+          '5–25 人团队需要共享项目、标准角色与 SSO，预算锁定在 $200/月（云端或自建同价，每月含 5 万积分）。',
           '希望在一个后台顺带用上 AI Agents、Tables 与 MCP 协议接口。',
         ],
       },
       watchOut: {
         en: [
-          'packages/ee/ & SCIM/Git Sync require paid Enterprise; white-label Embed starts at $36k/year.',
+          'Team is capped at 50,000 credits/mo (+$0.007/credit overage), not unlimited flat; audit logs, custom RBAC, SCIM & Git Sync need custom Ultimate; production self-hosting requires S3 object storage; white-label Embed starts at $36k/year.',
         ],
         zh: [
-          'packages/ee/ 下的 SCIM 与 Git 同步需企业付费，SaaS 贴牌 Embed 年度合同 $36,000 起。',
+          'Team 每月封顶 5 万积分（超出 $0.007/积分），并非无限扁平价；审计日志、自定义 RBAC、SCIM 与 Git 同步需 Ultimate 定制报价；生产自建强依赖 S3 对象存储；SaaS 贴牌 Embed 年度合同 $36,000 起。',
         ],
       },
       ctaLabel: { en: 'View Activepieces Pricing', zh: '查看 Activepieces 官方报价' },
       ctaUrl: 'https://www.activepieces.com/pricing',
       ctaSponsored: false,
-      secondaryLabel: { en: 'GitHub Repository', zh: 'GitHub 仓库' },
-      secondaryUrl: 'https://github.com/activepieces/activepieces',
+      secondaryLabel: { en: 'BuilderStack Activepieces Audit', zh: '看 Activepieces 五项核对' },
+      secondaryUrl: '/oss/activepieces/',
       disclosure: {
         en: 'Standard reference link · Checked against activepieces.com/pricing (2026-11-15).',
         zh: '普通参考链接 · 核对自 activepieces.com/pricing（2026-11-15）。',
@@ -685,14 +682,14 @@ const ALL_VS_RAW: VsPairRaw[] = [
         zh: '最关键分水岭：多人共享流程 + SSO 的断崖式定价（€667 对 $200）',
       },
       body: {
-        en: 'Most teams start self-hosting n8n Community for $0, then discover two walls: Community omits Projects, workflow/credential sharing, Git & SSO (jumping to €667/month annual Business), AND Sustainable Use License 1.0 forbids external clients editing workflows. Activepieces separates MIT core cleanly and bundles 25 users + SSO on its $200/mo flat Team tier.',
-        zh: '很多团队 $0 自建 n8n 社区版后才发现两个坎：一是社区版没有跨成员项目隔离、凭据共享与 SSO，一跨过这个需求自建 Business 就跳到每月 667 欧元（年付）；二是 SUL 禁止外部客户自己登录配置流程。而 Activepieces 核心代码是正宗 MIT，云端 $200/月封顶即可含 25 人、共享项目与 SSO。',
+        en: 'Most teams start self-hosting n8n Community for $0, then discover two walls: Community omits Projects, workflow/credential sharing, Git & SSO (jumping to €667/month annual Business, or about €333.50/month on the Startup Plan for companies under 20 staff), AND Sustainable Use License 1.0 forbids external clients editing workflows. Activepieces separates MIT core cleanly and bundles 25 users + SSO on its $200/mo Team tier (Cloud or on-prem), capped at 50,000 credits/mo with $0.007/credit overage; production self-hosting also needs S3 object storage.',
+        zh: '很多团队 $0 自建 n8n 社区版后才发现两个坎：一是社区版没有跨成员项目隔离、凭据共享与 SSO，一跨过这个需求自建 Business 就跳到每月 667 欧元（年付；员工少于 20 人可申请 Startup Plan，约每月 333.50 欧元）；二是 SUL 禁止外部客户自己登录配置流程。而 Activepieces 核心代码是正宗 MIT，Team $200/月（云端或自建同价）即可含 25 人、共享项目与 SSO，但每月封顶 5 万积分、超出 $0.007/积分，生产自建另需 S3 对象存储。',
       },
       citation: {
         label: 'n8n Community vs Activepieces',
         url: 'https://docs.n8n.io/deploy/host-n8n/community-edition-features',
         date: '2026-11-15',
-        quote: 'n8n Community leaves out Projects, workflow/credential sharing, SAML SSO and Git version control (unlocked on Business at €667/mo annual). Activepieces Team is $200 flat/mo for 25 users with SSO.',
+        quote: 'n8n Community leaves out Projects, workflow/credential sharing, SAML SSO and Git version control (unlocked on Business at €667/mo annual). Activepieces Team is $200/mo for 25 users with SSO, including 50,000 credits/mo.',
       },
     },
     calcMeta: {
@@ -788,8 +785,8 @@ const ALL_VS_RAW: VsPairRaw[] = [
         rightVerdict: 'good',
         rightHeadline: { en: 'Included in $200/mo 25-user Team', zh: '$200/月 Team 版直接包含项目共享' },
         rightDetail: {
-          en: 'Unlimited projects, global connections and standard roles bundle into the flat $200/mo Team plan.',
-          zh: '无限项目空间、全局凭据复用与标准角色包含在 $200/月封顶套餐内。',
+          en: 'Unlimited projects, global connections and standard roles bundle into the $200/mo Team plan (50,000 credits/mo included, $0.007/credit overage).',
+          zh: '无限项目空间、全局凭据复用与标准角色包含在 $200/月 Team 套餐内（每月含 5 万积分，超出 $0.007/积分）。',
         },
       },
       {
@@ -800,7 +797,7 @@ const ALL_VS_RAW: VsPairRaw[] = [
             label: 'Activepieces Pricing',
             url: 'https://www.activepieces.com/pricing',
             date: '2026-11-15',
-            quote: 'Activepieces Free $0 (1k credits, 5u), Plus $20/mo ($16 ann, 5u), Team $200/mo ($166 ann, 25u + SSO).',
+            quote: 'Activepieces Free $0 (1k credits, 5u), Plus $20/mo ($16.67 ann, 10k credits, 5u), Team $200/mo ($166.67 ann, 50k credits + $0.007/credit overage, 25u + SSO).',
           },
         ],
         leftVerdict: 'good',
@@ -812,8 +809,8 @@ const ALL_VS_RAW: VsPairRaw[] = [
         rightVerdict: 'good',
         rightHeadline: { en: '$0 Free / $20 Plus / $200 Team (25u)', zh: '$0 免费 / $20 Plus / $200 Team (25人)' },
         rightDetail: {
-          en: 'Flat monthly plan prices ($16 / $166 billed annually) with BYO AI keys on Plus+ and 25 seats + SSO bundled at $200/mo.',
-          zh: '支持自带 AI Key；Plus 仅 $20/月（年付 $16）封顶 5 人，Team $200/月（年付 $166）涵盖 25 席与 SSO。',
+          en: 'Monthly plan prices ($16.67 / $166.67 billed annually) with BYO AI keys on Plus+; Team bundles 25 seats + SSO at $200/mo but caps usage at 50,000 credits/mo ($0.007/credit overage).',
+          zh: '支持自带 AI Key；Plus $20/月（年付 $16.67）封顶 5 人，Team $200/月（年付 $166.67）涵盖 25 席与 SSO，但每月封顶 5 万积分（超出 $0.007/积分）。',
         },
       },
       {
@@ -824,7 +821,7 @@ const ALL_VS_RAW: VsPairRaw[] = [
             label: 'n8n Docker Docs',
             url: 'https://docs.n8n.io/deploy/host-n8n/install-options/install-using-docker-compose',
             date: '2026-11-15',
-            quote: 'Official n8n Docker Compose guide specifies minimum 2 vCPUs and 4 GB of RAM with PostgreSQL.',
+            quote: 'n8n’s Docker Compose guide lists 2 vCPUs and 4 GB of RAM for a stack that includes the AI Assistant sandbox-runner-1 (Docker-in-Docker, dev/test); BuilderStack still recommends 4 GB in production for Node.js + Postgres + Queue Mode headroom.',
           },
         ],
         leftVerdict: 'good',
@@ -833,11 +830,11 @@ const ALL_VS_RAW: VsPairRaw[] = [
           en: 'Single Docker command boots locally on SQLite; production Compose template uses Postgres + Redis workers.',
           zh: '本地一条命令即可跑起，生产环境推荐 Postgres 与队列 Worker 模式。',
         },
-        rightVerdict: 'good',
-        rightHeadline: { en: 'Node + Postgres + Redis Docker Compose', zh: '轻量 Node + Postgres + Redis 容器' },
+        rightVerdict: 'caution',
+        rightHeadline: { en: 'Postgres + Redis + S3 (production)', zh: 'Postgres + Redis + S3（生产必需）' },
         rightDetail: {
-          en: 'Runs smoothly on a 2 vCPU / 4 GB Linux VPS via official Docker Compose template.',
-          zh: '同样可在 2 核 4 GB 主机上以 Docker Compose 快速拉起自建实例。',
+          en: 'A hobby container boots on a 2 vCPU / 4 GB VPS, but the official Production Setup requires PostgreSQL, Redis and S3-compatible object storage (billed outside the VPS).',
+          zh: '体验单容器可在 2 核 4 GB 主机拉起，但官方 Production Setup 要求 PostgreSQL、Redis 与 S3 兼容对象存储（存储费用另计）。',
         },
       },
       {
@@ -858,10 +855,10 @@ const ALL_VS_RAW: VsPairRaw[] = [
           zh: 'SAML/LDAP SSO 与 Git 版本控制于 Business（€667/月年付）解锁；外部密钥库（External secrets）、日志流推送与多主节点高可用则须联系销售采购 n8n Enterprise。',
         },
         rightVerdict: 'caution',
-        rightHeadline: { en: '$200/mo SSO · SCIM/Git Custom · Embed $36k/yr', zh: '$200/月含 SSO · Git 定制 · OEM 嵌入 $3.6万/年' },
+        rightHeadline: { en: '$200/mo SSO · Audit/SCIM/Git: Ultimate · Embed $36k/yr', zh: '$200/月含 SSO · 审计/SCIM/Git 需 Ultimate · OEM 嵌入 $3.6万/年' },
         rightDetail: {
-          en: 'Standard SSO unlocks early at $200/mo Team; SCIM and Git Sync move to Ultimate; Embed starts at $36k/year.',
-          zh: '普通 SSO $200/月即得；但 SCIM 与 Git 同步需定制 Ultimate，OEM 嵌入年度合同 $3.6 万美元起。',
+          en: 'Standard roles + SSO unlock early at $200/mo Team; audit logs, custom RBAC, SCIM and Git Sync move to custom-quoted Ultimate; Embed starts at $36k/year.',
+          zh: '标准角色与 SSO $200/月 Team 即得；审计日志、自定义 RBAC、SCIM 与 Git 同步需定制报价的 Ultimate，OEM 嵌入年度合同 $3.6 万美元起。',
         },
       },
       {
@@ -900,8 +897,8 @@ const ALL_VS_RAW: VsPairRaw[] = [
       {
         q: { en: 'Which is cheaper for a 10-person team needing shared workflows and SSO?', zh: '10 人团队需要工作流共享和 SSO 时谁更便宜？' },
         a: {
-          en: 'Activepieces is far cheaper: its flat Team plan is $200/month including 25 users, unlimited shared projects, global connections and SSO. n8n Community omits project sharing and SSO, requiring Business at €667/month billed annually.',
-          zh: 'Activepieces 便宜得多：云端 Team 档固定 $200/月即含 25 人、无限共享项目与 SSO；而 n8n 社区版不支持跨人流程共享与 SSO，自建或上 Business 需每月 667 欧元（年付）。',
+          en: 'Activepieces is far cheaper: its Team plan is $200/month (Cloud or on-prem) including 25 users, unlimited shared projects, global connections and SSO, capped at 50,000 credits/month with $0.007/credit overage. n8n Community omits project sharing and SSO, requiring Business at €667/month billed annually (about €333.50/month on the Startup Plan for companies under 20 staff).',
+          zh: 'Activepieces 便宜得多：Team 档 $200/月（云端或自建同价）即含 25 人、无限共享项目与 SSO，但每月封顶 5 万积分、超出 $0.007/积分；而 n8n 社区版不支持跨人流程共享与 SSO，自建或上 Business 需每月 667 欧元（年付；员工少于 20 人可申请 Startup Plan，约每月 333.50 欧元）。',
         },
       },
       {
@@ -914,8 +911,8 @@ const ALL_VS_RAW: VsPairRaw[] = [
       {
         q: { en: 'What hardware does self-hosted n8n need vs Activepieces?', zh: '自建 n8n 和 Activepieces 对服务器配置要求一样吗？' },
         a: {
-          en: 'Both fit comfortably on a 2 vCPU, 4 GB RAM Linux VPS running Docker Compose and PostgreSQL + Redis once deployed for production.',
-          zh: '两者生产环境均建议至少 2 核 4 GB 内存的 Linux 服务器（Docker Compose 配 PostgreSQL 与 Redis）。',
+          en: 'n8n fits on a 2 vCPU, 4 GB RAM Linux VPS running Docker Compose with PostgreSQL (plus Redis for Queue Mode). Activepieces’ official Production Setup additionally makes S3-compatible object storage mandatory alongside PostgreSQL and Redis.',
+          zh: 'n8n 生产环境建议至少 2 核 4 GB 内存的 Linux 服务器（Docker Compose 配 PostgreSQL，Queue Mode 再加 Redis）；Activepieces 官方 Production Setup 则在 PostgreSQL 与 Redis 之外强制要求 S3 兼容对象存储。',
         },
       },
     ],
@@ -944,11 +941,11 @@ const ALL_VS_RAW: VsPairRaw[] = [
     },
     winnerTag: { en: 'Value & custom domain: Papermark Cloud', zh: '性价比首选 Papermark 云端' },
     pricingHighlight: { en: '€24–€99/mo vs DocSend $45–$180+/mo', zh: '€24–€99/月 对 $45–$180+/月' },
-    starsBadge: 'mfts/papermark · 9,367 ★ AGPLv3 + ee/',
+    starsBadge: 'papermark/papermark · 9,367 ★ AGPLv3 + ee/',
     stickyWinnerBadge: { en: 'Papermark Cloud ~45–60% lower', zh: 'Papermark 云端总价显著更低' },
     stickyCtaLabel: { en: 'Check Papermark Pricing', zh: '查看 Papermark 方案' },
     stickyCtaUrl: 'https://www.papermark.com/pricing',
-    stickyCtaSponsored: true,
+    stickyCtaSponsored: false,
     linkedProjectIds: ['papermark'],
     left: {
       id: 'papermark',
@@ -984,12 +981,12 @@ const ALL_VS_RAW: VsPairRaw[] = [
       },
       ctaLabel: { en: 'Try Papermark Pricing', zh: '查看 Papermark 定价' },
       ctaUrl: 'https://www.papermark.com/pricing',
-      ctaSponsored: true,
+      ctaSponsored: false,
       secondaryLabel: { en: 'GitHub Repository', zh: 'GitHub 仓库' },
-      secondaryUrl: 'https://github.com/mfts/papermark',
+      secondaryUrl: 'https://github.com/papermark/papermark',
       disclosure: {
-        en: 'Partner link (rel="sponsored") · Annual rates checked against papermark.com/pricing (2026-11-15).',
-        zh: '合作链接（rel="sponsored"）· 按年计费价格核对自 papermark.com/pricing（2026-11-15）。',
+        en: 'Standard reference link (no affiliate tracking) · Annual rates checked against papermark.com/pricing (2026-11-15).',
+        zh: '普通参考链接（无返佣追踪）· 按年计费价格核对自 papermark.com/pricing（2026-11-15）。',
       },
     },
     right: {
@@ -1044,7 +1041,7 @@ const ALL_VS_RAW: VsPairRaw[] = [
       },
       citation: {
         label: 'Papermark README',
-        url: 'https://github.com/mfts/papermark#readme',
+        url: 'https://github.com/papermark/papermark#readme',
         date: '2026-11-15',
         quote: 'Prerequisites: Node.js >=18.17, PostgreSQL, AWS S3 or Vercel Blob, Resend email, plus Tinybird CLI datasources.',
       },
@@ -1096,15 +1093,15 @@ const ALL_VS_RAW: VsPairRaw[] = [
         citations: [
           {
             label: 'Papermark LICENSE',
-            url: 'https://github.com/mfts/papermark/blob/main/LICENSE',
+            url: 'https://github.com/papermark/papermark/blob/main/LICENSE',
             date: '2026-11-15',
-            quote: 'Files under ee/ and app/(ee) are licensed under ee/LICENSE; core outside those directories is AGPLv3.',
+            quote: 'Files under ee/ and app/(ee) are licensed under ee/LICENSE.md; core outside those directories is AGPLv3.',
           },
         ],
         leftVerdict: 'caution',
         leftHeadline: { en: 'AGPLv3 core + commercial ee/', zh: 'AGPLv3 核心 + ee/ 商业目录' },
         leftDetail: {
-          en: 'Inspectable core under AGPLv3; enterprise white-labeling & gated features sit under ee/LICENSE.',
+          en: 'Inspectable core under AGPLv3; enterprise white-labeling & gated features sit under ee/LICENSE.md.',
           zh: '核心 AGPLv3 可审校，但商业与企业白标模块位于 ee/ 商业协议目录下。',
         },
         rightVerdict: 'bad',
@@ -1120,7 +1117,7 @@ const ALL_VS_RAW: VsPairRaw[] = [
         citations: [
           {
             label: 'Papermark README',
-            url: 'https://github.com/mfts/papermark#readme',
+            url: 'https://github.com/papermark/papermark#readme',
             date: '2026-11-15',
             quote: 'Needs Node.js >=18.17, PostgreSQL, S3/Vercel Blob, Resend email and Tinybird CLI analytics setup.',
           },
@@ -1147,7 +1144,6 @@ const ALL_VS_RAW: VsPairRaw[] = [
             url: 'https://www.papermark.com/pricing',
             date: '2026-11-15',
             quote: 'Papermark Free €0 (50 docs/links); Pro €24/mo (1 user, unlimited links, branding removed). DocSend Standard $45/u annual removes branding.',
-            sponsored: true,
           },
         ],
         leftVerdict: 'good',
@@ -1172,7 +1168,6 @@ const ALL_VS_RAW: VsPairRaw[] = [
             url: 'https://www.papermark.com/pricing',
             date: '2026-11-15',
             quote: 'Papermark Business €59/mo includes 3 users (+€20/seat), 1,000 docs, custom domain, webhooks, MCP, API & CLI.',
-            sponsored: true,
           },
         ],
         leftVerdict: 'good',
@@ -1197,7 +1192,6 @@ const ALL_VS_RAW: VsPairRaw[] = [
             url: 'https://www.papermark.com/pricing',
             date: '2026-11-15',
             quote: 'Papermark Data Rooms Base Plus €99/mo (3 seats + €33/seat) includes NDA, dynamic watermark and granular permissions vs DocSend Advanced Data Rooms $180/mo (3 seats).',
-            sponsored: true,
           },
         ],
         leftVerdict: 'good',
@@ -1222,7 +1216,6 @@ const ALL_VS_RAW: VsPairRaw[] = [
             url: 'https://www.papermark.com/pricing',
             date: '2026-11-15',
             quote: 'Business and Data Rooms include webhooks, REST API, CLI and MCP access.',
-            sponsored: true,
           },
         ],
         leftVerdict: 'good',
@@ -1298,7 +1291,7 @@ const ALL_VS_RAW: VsPairRaw[] = [
     stickyWinnerBadge: { en: 'Zero per-user cost on Appsmith CE', zh: 'Appsmith CE 自建零按人头税' },
     stickyCtaLabel: { en: 'Check Appsmith Plans', zh: '查看 Appsmith 方案' },
     stickyCtaUrl: 'https://www.appsmith.com/pricing',
-    stickyCtaSponsored: true,
+    stickyCtaSponsored: false,
     linkedProjectIds: ['appsmith'],
     left: {
       id: 'appsmith',
@@ -1334,12 +1327,12 @@ const ALL_VS_RAW: VsPairRaw[] = [
       },
       ctaLabel: { en: 'Try Appsmith Pricing', zh: '查看 Appsmith 官方定价' },
       ctaUrl: 'https://www.appsmith.com/pricing',
-      ctaSponsored: true,
+      ctaSponsored: false,
       secondaryLabel: { en: 'Docker Install Docs', zh: 'Docker 安装指南' },
       secondaryUrl: 'https://docs.appsmith.com/getting-started/setup/installation-guides/docker',
       disclosure: {
-        en: 'Partner link (rel="sponsored") · Checked against appsmith.com/pricing (2026-11-15).',
-        zh: '合作链接（rel="sponsored"）· 核对自 appsmith.com/pricing（2026-11-15）。',
+        en: 'Standard reference link (no affiliate tracking) · Checked against appsmith.com/pricing (2026-11-15).',
+        zh: '普通参考链接（无返佣追踪）· 核对自 appsmith.com/pricing（2026-11-15）。',
       },
     },
     right: {
@@ -1537,7 +1530,6 @@ const ALL_VS_RAW: VsPairRaw[] = [
             url: 'https://www.appsmith.com/pricing',
             date: '2026-11-17',
             quote: 'Appsmith Free includes 3 Git repos; Business ($15/u) unlocks unlimited Git, audit logs, custom roles & white-label.',
-            sponsored: true,
           },
           {
             label: 'Retool Permissions Quickstart',
@@ -1568,7 +1560,6 @@ const ALL_VS_RAW: VsPairRaw[] = [
             url: 'https://www.appsmith.com/pricing',
             date: '2026-11-15',
             quote: 'Appsmith SAML/OIDC SSO & SCIM start at Enterprise ($2,500/month for 100 users); Retool lists SSO/SCIM under Enterprise.',
-            sponsored: true,
           },
         ],
         leftVerdict: 'caution',
@@ -2181,38 +2172,38 @@ export function evaluateVsCalculator(
       apCostLabel = zh ? '$24/月 (VPS)' : '$24/mo (VPS)';
       apCopyLabel = zh ? '$24/月 ($24 VPS)' : '$24/mo ($24 VPS)';
       apNote = zh
-        ? '剥离 packages/ee 后采用纯 MIT Expat；可自由部署内部商业流程。'
-        : 'OSI MIT core outside packages/ee; unlimited internal workflows on your 4 GB host.';
+        ? '剥离 packages/ee 后采用纯 MIT Expat；可自由部署内部商业流程（生产环境另需 S3 对象存储）。'
+        : 'OSI MIT core outside packages/ee; unlimited internal workflows on your 4 GB host (production also needs S3 object storage).';
     } else if (apOver25) {
       apCost = 200; // bar baseline only; labels never print exact $200/mo
       apPlan = zh ? '企业定制 Custom ($200+/月 · 超25人)' : 'Custom ($200+/mo · >25u)';
       apCostLabel = zh ? 'Custom ($200+/月)' : 'Custom ($200+/mo)';
       apCopyLabel = zh ? 'Custom ($200+/月，超25人)' : 'Custom ($200+/mo, >25 users)';
       apNote = zh
-        ? 'Team 每月 $200（年付 $166）最多包干 25 人；第 26 人起须联系销售签企业定制 Custom 合同。'
-        : 'Team ($200/mo monthly · $166 annual) caps at 25 users; 26+ users require Custom Enterprise pricing.';
+        ? 'Team 每月 $200（年付 $166.67）最多包干 25 人、每月 5 万积分；第 26 人起须联系销售签企业定制 Custom 合同。'
+        : 'Team ($200/mo monthly · $166.67 annual) caps at 25 users and 50k credits/mo; 26+ users require Custom Enterprise pricing.';
     } else if (sharing || users > 5) {
       apCost = 200 + (selfhost ? vpsCost : 0);
       apPlan = selfhost
         ? zh ? 'Team 自建 ($200/月 + VPS)' : 'Team Self-Hosted ($200/mo + VPS)'
-        : zh ? 'Team ($200/月 · 年付 $166)' : 'Team ($200/mo · $166 ann)';
+        : zh ? 'Team ($200/月 · 年付 $166.67)' : 'Team ($200/mo · $166.67 ann)';
       apCostLabel = selfhost
         ? zh ? `$${apCost}/月（含 $${vpsCost} VPS）` : `$${apCost}/mo (incl. $${vpsCost} VPS)`
-        : zh ? '$200/月 (年付 $166)' : '$200/mo ($166 ann)';
+        : zh ? '$200/月 (年付 $166.67)' : '$200/mo ($166.67 ann)';
       apCopyLabel = selfhost
         ? `${apPlan} ${apCostLabel}`
-        : zh ? 'Team $200/月 (年付 $166/月)' : 'Team $200/mo ($166/mo annual)';
+        : zh ? 'Team $200/月 (年付 $166.67/月)' : 'Team $200/mo ($166.67/mo annual)';
       apNote = zh
-        ? 'Team 每月 $200（年付 $166）包干 25 用户、无限共享项目、标准角色与 SSO；超出 25 人须谈企业定制。'
-        : 'Team $200/mo monthly ($166/mo annual) covers up to 25 users, shared projects & SSO before Custom pricing.';
+        ? 'Team 每月 $200（年付 $166.67）含 25 用户、无限共享项目、标准角色与 SSO，每月封顶 5 万积分（超出 $0.007/积分）；自建另需 S3 存储，超出 25 人须谈企业定制。'
+        : 'Team $200/mo monthly ($166.67/mo annual) covers up to 25 users, shared projects & SSO, capped at 50k credits/mo ($0.007/credit overage); self-hosting also needs S3 storage. Custom pricing above 25 users.';
     } else {
       apCost = 20;
-      apPlan = zh ? 'Plus ($20/月 · 年付 $16 · 5人)' : 'Plus ($20/mo · $16 ann · 5u)';
-      apCostLabel = zh ? '$20/月 (年付 $16)' : '$20/mo ($16 ann)';
-      apCopyLabel = zh ? 'Plus $20/月 (年付 $16/月)' : 'Plus $20/mo ($16/mo annual)';
+      apPlan = zh ? 'Plus ($20/月 · 年付 $16.67 · 5人)' : 'Plus ($20/mo · $16.67 ann · 5u)';
+      apCostLabel = zh ? '$20/月 (年付 $16.67)' : '$20/mo ($16.67 ann)';
+      apCopyLabel = zh ? 'Plus $20/月 (年付 $16.67/月)' : 'Plus $20/mo ($16.67/mo annual)';
       apNote = zh
-        ? '云端 Plus 每月 $20（年付 $16）封顶 5 用户，支持自带 AI Key。'
-        : 'Cloud Plus is $20/mo monthly ($16/mo annual) flat for 5 users with BYO AI key.';
+        ? '云端 Plus 每月 $20（年付 $16.67）封顶 5 用户、每月 1 万积分，支持自带 AI Key。'
+        : 'Cloud Plus is $20/mo monthly ($16.67/mo annual) for up to 5 users and 10k credits/mo with BYO AI key.';
     }
 
     const maxVal = Math.max(n8nCost ?? 0, apCost, 220);

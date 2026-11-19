@@ -9,7 +9,7 @@ import { OssCategoryView, OssCta } from '@/components/OssParts';
 import { Badge } from '@/components/ui/badge';
 import { FadeUp } from '@/components/motion/MotionPrimitives';
 import { useI18n, localePath, type Language } from '@/lib/i18n';
-import { SITE_URL, webPageNode } from '@/lib/schema';
+import { pageGraph, SITE_URL, webPageNode } from '@/lib/schema';
 
 export interface OssCategoryGroup {
   id: string;
@@ -22,24 +22,21 @@ export const OssIndustriesPage: React.FC<{ groups: OssCategoryGroup[] }> = ({ gr
   const { lang, t } = useI18n();
   const o = t.oss;
   const pagePath = localePath(lang, '/oss/');
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: o.crumb, item: `${SITE_URL}${localePath(lang, '/')}` },
-          { '@type': 'ListItem', position: 2, name: t.nav.industries, item: `${SITE_URL}${pagePath}` },
-        ],
-      },
-      webPageNode({
-        path: pagePath,
-        name: o.industriesTitle,
-        description: o.industriesSub,
-        lang: lang as Language,
-      }),
-    ],
-  };
+  const jsonLd = pageGraph([
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: o.crumb, item: `${SITE_URL}${localePath(lang, '/')}` },
+        { '@type': 'ListItem', position: 2, name: t.nav.industries, item: `${SITE_URL}${pagePath}` },
+      ],
+    },
+    webPageNode({
+      path: pagePath,
+      name: o.industriesTitle,
+      description: o.industriesSub,
+      lang: lang as Language,
+    }),
+  ]);
 
   return (
     <div className="flex flex-1 flex-col text-[15px] leading-[1.6]">

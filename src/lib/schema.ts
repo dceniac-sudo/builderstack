@@ -11,6 +11,8 @@ export interface OfficialChannel {
   roleEn: string;
   roleZh: string;
   url: string;
+  /** Whether the channel is emitted in Organization.sameAs (defaults to true). */
+  includeInSameAs?: boolean;
 }
 
 export const OFFICIAL_CHANNELS: OfficialChannel[] = [
@@ -55,8 +57,13 @@ export const OFFICIAL_CHANNELS: OfficialChannel[] = [
     roleEn: 'OSS & self-hosting dispatch',
     roleZh: '自托管与商业许可通讯',
     url: 'https://builderstackoss.substack.com',
+    // Temporarily excluded from sameAs while Substack serves <meta name="robots" content="noindex">.
+    // Still listed on /about/ as an official channel; flip back to true once the publication is indexable.
+    includeInSameAs: false,
   },
 ];
+
+export const SAME_AS_URLS: string[] = OFFICIAL_CHANNELS.filter((c) => c.includeInSameAs !== false).map((c) => c.url);
 
 export const ORGANIZATION_NODE = {
   '@type': 'Organization',
@@ -71,7 +78,7 @@ export const ORGANIZATION_NODE = {
   },
   email: 'sponsor@dceniac.com',
   publishingPrinciples: PRINCIPLES_URL,
-  sameAs: OFFICIAL_CHANNELS.map((c) => c.url),
+  sameAs: SAME_AS_URLS,
 };
 
 export const WEBSITE_NODE = {
@@ -81,6 +88,25 @@ export const WEBSITE_NODE = {
   url: `${SITE_URL}/`,
   publisher: { '@id': ORG_ID },
 };
+
+/**
+ * Wraps page-level JSON-LD nodes in a single @graph that always defines the
+ * #organization and #website nodes locally, so every `{ '@id': ORG_ID }` /
+ * `{ '@id': WEBSITE_ID }` reference on the page resolves without relying on
+ * another page's markup.
+ */
+export function pageGraph(nodes: Record<string, unknown>[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [ORGANIZATION_NODE, WEBSITE_NODE, ...nodes],
+  };
+}
+
+function absoluteImageUrl(image?: string): string {
+  if (!image) return `${SITE_URL}/og.png`;
+  if (image.startsWith('http')) return image;
+  return `${SITE_URL}${image.startsWith('/') ? image : `/${image}`}`;
+}
 
 export function webPageNode({
   path,
@@ -121,6 +147,7 @@ export function articleNode({
   dateModified,
   lang,
   aboutUrls = [],
+  image,
 }: {
   path: string;
   headline: string;
@@ -129,15 +156,18 @@ export function articleNode({
   dateModified: string;
   lang: Language;
   aboutUrls?: string[];
+  image?: string;
 }) {
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
   const fullUrl = `${SITE_URL}${cleanPath}`;
+  const resolvedImage = absoluteImageUrl(image);
   return {
     '@type': 'TechArticle',
     '@id': `${fullUrl}#article`,
     url: fullUrl,
     headline,
     description,
+    image: resolvedImage,
     inLanguage: lang === 'zh' ? 'zh-CN' : 'en-US',
     datePublished,
     dateModified,

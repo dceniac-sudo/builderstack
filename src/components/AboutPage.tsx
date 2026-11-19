@@ -11,9 +11,16 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { localePath, SPONSOR_EMAIL, useI18n, X_HANDLE, type Language } from '@/lib/i18n';
-import { OFFICIAL_CHANNELS, ORG_ID, ORGANIZATION_NODE, SITE_URL, webPageNode } from '@/lib/schema';
+import { OFFICIAL_CHANNELS, ORG_ID, pageGraph, SITE_URL, webPageNode } from '@/lib/schema';
+import { OSS_PROJECTS } from '@/data/oss';
+import { guideSummaries } from '@/data/guides';
 import type { OssVerdict } from '@/types/oss';
 import { cn } from '@/lib/utils';
+
+// Live counts so /about/ never drifts from the actual directory size.
+const PROJECT_COUNT = OSS_PROJECTS.length;
+const GUIDE_COUNT = guideSummaries('en').length;
+const SPEC_UPDATED = '2026-11-19';
 
 interface AboutPageProps {
   pageTitle: string;
@@ -82,8 +89,8 @@ const EN_COPY: AboutCopy = {
   kicker: 'Technical Specification · Verification & Commercial Disclosure',
   h1: 'How BuilderStack Audits Software & Discloses Revenue',
   abstract:
-    'BuilderStack (dceniac.com) is an independent open-source software audit directory operated under a strict primary-source specification. Every verdict across our 25 evaluated projects and 5 head-to-head TCO calculators is grounded in repository files and official docs—never vendor marketing copy—and commercial links remain isolated from editorial ratings.',
-  railMeta: { doc: 'EDITORIAL-SPEC', updated: '2026-11-16', status: 'NORMATIVE' },
+    `BuilderStack (dceniac.com) is an independent open-source software audit directory operated under a strict primary-source specification. Every verdict across our ${PROJECT_COUNT} evaluated projects, ${GUIDE_COUNT} flagship guides and 5 head-to-head TCO calculators is grounded in repository files and official docs—never vendor marketing copy—and any commercial link stays isolated from editorial ratings.`,
+  railMeta: { doc: 'EDITORIAL-SPEC', updated: SPEC_UPDATED, status: 'NORMATIVE' },
   railNavTitle: 'Specification',
   quickCardTitle: 'Entity Quick-Card',
   sections: [
@@ -226,12 +233,12 @@ const EN_COPY: AboutCopy = {
     },
   ],
   sec4Intro:
-    'BuilderStack keeps all technical evaluations and cost calculators free without intrusive tracking ads. Revenue comes exclusively from two transparent channels walled off from editorial ratings.',
-  sec4FirewallTitle: 'Active Revenue Channels & Editorial Firewall',
+    'BuilderStack keeps all technical evaluations and cost calculators free without intrusive tracking ads. As of November 19, 2026 no paid or affiliate link is live on the site; any future revenue may only come from the two transparent channels below, walled off from editorial ratings.',
+  sec4FirewallTitle: 'Revenue Channels & Editorial Firewall',
   sec4FirewallPoints: [
     {
-      label: 'Managed-Cloud Affiliate Partnerships',
-      text: 'Outbound referral links to official managed Cloud plans—such as n8n Cloud and Chatwoot Cloud—may earn an affiliate commission. Every commercial referral link explicitly carries rel="sponsored" in HTML.',
+      label: 'Managed-Cloud Partner Programs (none live today)',
+      text: 'Every outbound pricing link today is a plain, non-affiliate URL with zero tracking parameters. BuilderStack may join official managed-Cloud partner programs (such as n8n Cloud or Chatwoot Cloud) in the future; whenever a tracked referral link is added, it will carry rel="sponsored" in HTML and a visible disclosure.',
     },
     {
       label: 'Direct Commercial Sponsorships',
@@ -248,7 +255,7 @@ const EN_COPY: AboutCopy = {
     {
       project: 'n8n',
       href: '/oss/n8n/',
-      partnerStatus: 'Official Cloud affiliate (30% commission)',
+      partnerStatus: 'No active paid/affiliate link live (eligible for future official Cloud partner program; rel="sponsored" applies whenever a tracked link is added)',
       verdict: 'caution',
       verdictLabel: 'Caution',
       publishedCaveat:
@@ -257,7 +264,7 @@ const EN_COPY: AboutCopy = {
     {
       project: 'Chatwoot',
       href: '/oss/chatwoot/',
-      partnerStatus: 'Official Cloud affiliate (20% commission)',
+      partnerStatus: 'No active paid/affiliate link live (eligible for future official Cloud partner program; rel="sponsored" applies whenever a tracked link is added)',
       verdict: 'caution',
       verdictLabel: 'Caution',
       publishedCaveat:
@@ -285,8 +292,8 @@ const ZH_COPY: AboutCopy = {
   kicker: '技术编辑规范 · 一手核验口径与商业披露',
   h1: 'BuilderStack 如何核验开源软件与披露商业关系',
   abstract:
-    'BuilderStack（dceniac.com）是由独立工程编辑实体维护的开源商业软件核验目录。全站 25 个已核验项目与 5 组 SaaS 成本裁决台均直接对照仓库许可证原文、提交记录与官方部署文档撰写——拒绝搬运厂商宣传页，并将联盟返佣与内容裁决物理隔离。',
-  railMeta: { doc: 'EDITORIAL-SPEC', updated: '2026-11-16', status: '现行规范' },
+    `BuilderStack（dceniac.com）是由独立工程编辑实体维护的开源商业软件核验目录。全站 ${PROJECT_COUNT} 个已核验项目、${GUIDE_COUNT} 篇旗舰指南与 5 组 SaaS 成本裁决台均直接对照仓库许可证原文、提交记录与官方部署文档撰写——拒绝搬运厂商宣传页，任何商业链接都与内容裁决物理隔离。`,
+  railMeta: { doc: 'EDITORIAL-SPEC', updated: SPEC_UPDATED, status: '现行规范' },
   railNavTitle: '规范目录',
   quickCardTitle: '发布主体联络',
   sections: [
@@ -429,12 +436,12 @@ const ZH_COPY: AboutCopy = {
     },
   ],
   sec4Intro:
-    '为保证所有项目核验与成本试算器免费开放且不植入广告追踪脚本，BuilderStack 通过以下两类透明渠道维持运营，并与内容判断彻底隔离。',
+    '为保证所有项目核验与成本试算器免费开放且不植入广告追踪脚本，截至 2026 年 11 月 19 日站内没有任何付费或返佣链接在线；未来如有营收，只会来自以下两类透明渠道，并与内容判断彻底隔离。',
   sec4FirewallTitle: '营收渠道与编辑独立防火墙',
   sec4FirewallPoints: [
     {
-      label: '官方托管 Cloud 联盟返佣',
-      text: '指向部分官方托管服务（例如 n8n Cloud、Chatwoot Cloud）的出站链接可能包含联盟返佣参数；所有商业推广链接均在 HTML 中显式标注 rel="sponsored"。',
+      label: '官方托管 Cloud 合作计划（目前未上线）',
+      text: '目前所有出站定价链接都是不带任何追踪参数的普通链接。未来 BuilderStack 可能加入官方托管服务（例如 n8n Cloud、Chatwoot Cloud）的合作计划；一旦加入带追踪参数的推广链接，将在 HTML 中显式标注 rel="sponsored" 并给出可见披露。',
     },
     {
       label: '显式标注的商业赞助位',
@@ -451,7 +458,7 @@ const ZH_COPY: AboutCopy = {
     {
       project: 'n8n',
       href: '/oss/n8n/',
-      partnerStatus: '官方 Cloud 返佣通道（30% 分成）',
+      partnerStatus: '目前无付费/返佣链接在线（可申请未来官方 Cloud 合作计划；一旦加入追踪链接即标注 rel="sponsored"）',
       verdict: 'caution',
       verdictLabel: '有条件',
       publishedCaveat:
@@ -460,7 +467,7 @@ const ZH_COPY: AboutCopy = {
     {
       project: 'Chatwoot',
       href: '/oss/chatwoot/',
-      partnerStatus: '官方 Cloud 返佣通道（20% 分成）',
+      partnerStatus: '目前无付费/返佣链接在线（可申请未来官方 Cloud 合作计划；一旦加入追踪链接即标注 rel="sponsored"）',
       verdict: 'caution',
       verdictLabel: '有条件',
       publishedCaveat:
@@ -507,30 +514,26 @@ export const AboutPage: React.FC<AboutPageProps> = ({ pageTitle, pageDescription
     return () => observer.disconnect();
   }, [copy.sections]);
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: o.crumb, item: `${SITE_URL}${localePath(lang, '/')}` },
-          { '@type': 'ListItem', position: 2, name: copy.crumb, item: `${SITE_URL}${localePath(lang, '/about/')}` },
-        ],
-      },
-      ORGANIZATION_NODE,
-      {
-        ...webPageNode({
-          path: localePath(lang, '/about/'),
-          name: pageTitle,
-          description: pageDescription,
-          lang: lang as Language,
-          dateModified: '2026-11-16',
-          type: 'AboutPage',
-        }),
-        mainEntity: { '@id': ORG_ID },
-      },
-    ],
-  };
+  const jsonLd = pageGraph([
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: o.crumb, item: `${SITE_URL}${localePath(lang, '/')}` },
+        { '@type': 'ListItem', position: 2, name: copy.crumb, item: `${SITE_URL}${localePath(lang, '/about/')}` },
+      ],
+    },
+    {
+      ...webPageNode({
+        path: localePath(lang, '/about/'),
+        name: pageTitle,
+        description: pageDescription,
+        lang: lang as Language,
+        dateModified: SPEC_UPDATED,
+        type: 'AboutPage',
+      }),
+      mainEntity: { '@id': ORG_ID },
+    },
+  ]);
 
   return (
     <div className="flex flex-1 flex-col text-[15px] leading-[1.6]">

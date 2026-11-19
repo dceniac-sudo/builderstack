@@ -32,7 +32,7 @@ export const SiteFooter: React.FC = () => {
           <a href={`mailto:${SPONSOR_EMAIL}`} className="hover:text-[#141414]">
             {SPONSOR_EMAIL}
           </a>
-          <a href={`https://twitter.com/${X_HANDLE}`} target="_blank" rel="noopener noreferrer" className="hover:text-[#141414]">
+          <a href={`https://x.com/${X_HANDLE}`} target="_blank" rel="noopener noreferrer" className="hover:text-[#141414]">
             X @{X_HANDLE}
           </a>
         </div>

@@ -13,7 +13,7 @@ import { Card } from '@/components/ui/card';
 import { FadeUp, ReadingProgressBar } from '@/components/motion/MotionPrimitives';
 import type { GuideArticleView, GuideSummary } from '@/types/guide';
 import { localePath, useI18n, type Language } from '@/lib/i18n';
-import { articleNode, SITE_URL, webPageNode } from '@/lib/schema';
+import { articleNode, pageGraph, SITE_URL, webPageNode } from '@/lib/schema';
 import { cn } from '@/lib/utils';
 
 interface GuideArticlePageProps {
@@ -49,9 +49,7 @@ export const GuideArticlePage: React.FC<GuideArticlePageProps> = ({ guide, peers
     ...guide.relatedVsSlugs.map((slug) => `${SITE_URL}/oss/vs/${slug}/`),
   ];
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@graph': [
+  const jsonLd = pageGraph([
       {
         '@type': 'BreadcrumbList',
         itemListElement: [
@@ -75,6 +73,7 @@ export const GuideArticlePage: React.FC<GuideArticlePageProps> = ({ guide, peers
         dateModified: guide.updatedAt,
         lang: lang as Language,
         aboutUrls,
+        image: guide.slug === 'self-hosting-n8n-vps-ram-benchmark' ? '/oss/shots/n8n.jpg' : '/og.png',
       }),
       ...(guide.faqs.length > 0
         ? [
@@ -91,8 +90,7 @@ export const GuideArticlePage: React.FC<GuideArticlePageProps> = ({ guide, peers
             },
           ]
         : []),
-    ],
-  };
+  ]);
 
   return (
     <div className="flex flex-1 flex-col text-[15px] leading-[1.65]">
@@ -134,9 +132,18 @@ export const GuideArticlePage: React.FC<GuideArticlePageProps> = ({ guide, peers
 
           {/* 5-Column Horizontal Spec Dossier + Index Jump Bar */}
           <FadeUp delay={0.05} className="mt-8 overflow-hidden rounded-[10px] border border-[var(--line)] bg-white">
-            <div className="grid grid-cols-2 divide-y divide-[var(--line)] sm:grid-cols-3 lg:grid-cols-5 lg:divide-x lg:divide-y-0">
-              {guide.specCells.map((cell) => (
-                <div key={cell.label} className="px-5 py-4">
+            <div className="grid grid-cols-2 gap-px bg-[var(--line)] sm:grid-cols-3 lg:grid-cols-5">
+              {guide.specCells.map((cell, idx) => (
+                <div
+                  key={cell.label}
+                  className={cn(
+                    'bg-white px-5 py-4',
+                    // 末格补齐：2 列移动端奇数个时跨 2 列；sm 3 列时 5 格的末格同样跨 2 列，避免灰色空格
+                    idx === guide.specCells.length - 1 &&
+                      guide.specCells.length % 2 === 1 &&
+                      (guide.specCells.length % 3 === 2 ? 'col-span-2 lg:col-span-1' : 'col-span-2 sm:col-span-1')
+                  )}
+                >
                   <div className="font-mono text-[10.5px] font-medium uppercase tracking-[0.06em] text-[#737370]">
                     {cell.label}
                   </div>
@@ -149,6 +156,10 @@ export const GuideArticlePage: React.FC<GuideArticlePageProps> = ({ guide, peers
                       >
                         {cell.value}
                       </Link>
+                    ) : /^\d{4}-\d{2}-\d{2}$/.test(cell.value) ? (
+                      <time dateTime={cell.value} className="font-mono tabular-nums">
+                        {cell.value}
+                      </time>
                     ) : (
                       <span>{cell.value}</span>
                     )}
@@ -161,16 +172,11 @@ export const GuideArticlePage: React.FC<GuideArticlePageProps> = ({ guide, peers
               <span className="mr-2 font-mono text-[11px] font-medium uppercase tracking-[0.06em] text-[#737370]">
                 {g.indexJump}
               </span>
-              {guide.indexLinks.map((lnk, i) => (
+              {guide.indexLinks.map((lnk) => (
                 <a
                   key={lnk.id}
                   href={`#${lnk.id}`}
-                  className={cn(
-                    'rounded-[6px] border px-3 py-1 font-mono text-[11.5px] font-medium transition-colors',
-                    i === 1
-                      ? 'border-[var(--ink)] bg-[var(--ink)] text-white'
-                      : 'border-[var(--line)] bg-white text-[var(--sub)] hover:border-[var(--ink)]/40 hover:text-[var(--ink)]'
-                  )}
+                  className="rounded-[6px] border border-[var(--line)] bg-white px-3 py-1 font-mono text-[11.5px] font-medium text-[var(--sub)] transition-colors hover:border-[var(--ink)] hover:text-[var(--ink)] focus-visible:border-[var(--ink)] focus-visible:text-[var(--ink)]"
                 >
                   {lnk.label}
                 </a>
@@ -180,7 +186,7 @@ export const GuideArticlePage: React.FC<GuideArticlePageProps> = ({ guide, peers
         </div>
       </section>
 
-      <main className="mx-auto w-full max-w-[1140px] flex-1 px-6 pb-16 pt-12 sm:px-10">
+      <main className="mx-auto w-full min-w-0 max-w-[1140px] flex-1 px-6 pb-16 pt-12 sm:px-10">
         {/* Section 01 — Executive Verdicts */}
         <section id="verdicts" className="scroll-mt-24">
           <div className="flex flex-wrap items-baseline justify-between gap-3">
@@ -353,7 +359,7 @@ export const GuideArticlePage: React.FC<GuideArticlePageProps> = ({ guide, peers
                           <div className="font-mono text-[13px] font-medium tabular-nums text-[var(--ink)]">
                             {row.minStackTitle}
                           </div>
-                          <div className="mt-1 font-mono text-[12px] text-[var(--sub)]">{row.minStackNote}</div>
+                          <div className="mt-1 font-mono text-[12px] tabular-nums text-[var(--sub)]">{row.minStackNote}</div>
                         </td>
 
                         <td className="px-5 py-4 align-top">
@@ -365,7 +371,7 @@ export const GuideArticlePage: React.FC<GuideArticlePageProps> = ({ guide, peers
                           >
                             {row.paidFloorTitle}
                           </div>
-                          <div className="mt-1 font-mono text-[12px] text-[var(--sub)]">{row.paidFloorNote}</div>
+                          <div className="mt-1 font-mono text-[12px] tabular-nums text-[var(--sub)]">{row.paidFloorNote}</div>
                         </td>
 
                         <td className="px-5 py-4 text-right align-top">
@@ -428,45 +434,97 @@ export const GuideArticlePage: React.FC<GuideArticlePageProps> = ({ guide, peers
                     {guide.tcoSection.summary}
                   </p>
 
-                  {/* Stacked Horizontal Bars */}
-                  <div className="mt-6 space-y-5">
-                    {guide.tcoSection.bars.map((bar) => (
-                      <div key={bar.id}>
-                        <div className="flex flex-wrap items-baseline justify-between gap-2">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <span className="text-[14px] font-semibold text-[var(--ink)]">{bar.title}</span>
-                            {bar.savingsBadge && (
-                              <span className="rounded-[5px] border border-[#BBF7D0] bg-[#F0FDF4] px-2 py-0.5 font-mono text-[11px] font-medium text-[#15803D]">
-                                {bar.savingsBadge}
-                              </span>
-                            )}
-                          </div>
-                          <span className="font-mono text-[15px] font-semibold tabular-nums text-[var(--ink)]">
-                            {bar.totalLabel}
-                          </span>
+                  {/* Stacked Horizontal Bars — 真实比例宽度 + 常驻图例（窄段在 UI 与 SSR HTML 中均可读） */}
+                  {(() => {
+                    const bars = guide.tcoSection.bars;
+                    const isShare = bars.every(
+                      (b) => Math.abs(b.segments.reduce((sum, s) => sum + s.percent, 0) - 100) <= 1.5
+                    );
+                    const scaleCue = isShare
+                      ? lang === 'zh'
+                        ? '成本构成占比（100% 堆叠）'
+                        : 'Cost share (100% stacked)'
+                      : lang === 'zh'
+                        ? '按最高月度档位等比缩放'
+                        : 'Scaled to highest monthly tier';
+                    return (
+                      <div className="mt-6">
+                        <div className="font-mono text-[10.5px] font-medium uppercase tracking-[0.06em] text-[#737370]">
+                          {scaleCue}
                         </div>
+                        <div className="mt-3 space-y-5">
+                          {bars.map((bar) => (
+                            <div key={bar.id}>
+                              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <span className="text-[14px] font-semibold text-[var(--ink)]">{bar.title}</span>
+                                  {bar.savingsBadge && (
+                                    <span className="rounded-[5px] border border-[#BBF7D0] bg-[#F0FDF4] px-2 py-0.5 font-mono text-[11px] font-medium text-[#15803D]">
+                                      {bar.savingsBadge}
+                                    </span>
+                                  )}
+                                </div>
+                                <span className="font-mono text-[15px] font-semibold tabular-nums text-[var(--ink)]">
+                                  {bar.totalLabel}
+                                </span>
+                              </div>
 
-                        <div className="mt-2 flex h-7 w-full overflow-hidden rounded-[6px] border border-[var(--line)] bg-white">
-                          {bar.segments.map((seg) => (
-                            <div
-                              key={seg.label}
-                              style={{ width: `${Math.max(4, seg.percent)}%` }}
-                              className={cn(
-                                'flex items-center justify-center truncate px-2 font-mono text-[11px] font-medium',
-                                seg.tone === 'ink' && 'bg-[#141414] text-white',
-                                seg.tone === 'good' && 'bg-[#15803D] text-white',
-                                seg.tone === 'warn' && 'bg-[#F59E0B] text-[#141414]'
-                              )}
-                              title={seg.label}
-                            >
-                              {seg.percent >= 16 ? seg.label : ''}
+                              <div
+                                className="mt-2 flex h-7 w-full overflow-hidden rounded-[6px] border border-[var(--line)] bg-white"
+                                aria-hidden="true"
+                              >
+                                {bar.segments.map((seg) => {
+                                  const pct = Math.max(0, Math.min(100, seg.percent));
+                                  return (
+                                    <div
+                                      key={seg.label}
+                                      style={{ width: `${pct}%`, minWidth: '6px' }}
+                                      className={cn(
+                                        'flex items-center justify-center overflow-hidden whitespace-nowrap font-mono text-[11px] font-medium tabular-nums',
+                                        pct >= 22 ? 'px-2' : 'px-0',
+                                        seg.tone === 'ink' && 'bg-[#141414] text-white',
+                                        seg.tone === 'good' && 'bg-[#15803D] text-white',
+                                        seg.tone === 'warn' && 'bg-[#F59E0B] text-[#141414]'
+                                      )}
+                                      title={seg.label}
+                                    >
+                                      {pct >= 22 ? <span className="truncate">{seg.label}</span> : null}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+
+                              <ul className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[11.5px] tabular-nums text-[var(--ink)]">
+                                {bar.segments.map((seg) => {
+                                  const pctText = `${seg.percent}%`;
+                                  return (
+                                    <li key={seg.label} className="inline-flex items-center gap-1.5">
+                                      <span
+                                        aria-hidden="true"
+                                        className={cn(
+                                          'h-2 w-2 shrink-0 rounded-full',
+                                          seg.tone === 'ink' && 'bg-[#141414]',
+                                          seg.tone === 'good' && 'bg-[#15803D]',
+                                          seg.tone === 'warn' && 'bg-[#F59E0B]'
+                                        )}
+                                      />
+                                      <span>
+                                        {seg.label}
+                                        {seg.label.includes(pctText) ? null : (
+                                          <span className="text-[var(--sub)]"> ({pctText})</span>
+                                        )}
+                                      </span>
+                                    </li>
+                                  );
+                                })}
+                              </ul>
+                              <p className="mt-1.5 font-mono text-[11.5px] text-[var(--sub)]">{bar.caption}</p>
                             </div>
                           ))}
                         </div>
-                        <p className="mt-1.5 font-mono text-[11.5px] text-[var(--sub)]">{bar.caption}</p>
                       </div>
-                    ))}
-                  </div>
+                    );
+                  })()}
 
                   {/* Generously Spaced 4-Column Breakdown Table */}
                   <div className="mt-7 overflow-x-auto rounded-[8px] border border-[var(--line)] bg-white">
@@ -562,24 +620,28 @@ export const GuideArticlePage: React.FC<GuideArticlePageProps> = ({ guide, peers
         {/* Editorial Prose & Benchmark Deep-Dive Sections */}
         {guide.proseSections.map((sec) => (
           <section key={sec.id} id={sec.id} className="mt-14 scroll-mt-24 border-t border-[var(--line)] pt-12">
-            <div className="max-w-[780px]">
+            <div className="min-w-0 max-w-[780px]">
               <div className="font-mono text-[11px] font-medium uppercase tracking-[0.06em] text-[#737370]">
                 {sec.kicker}
               </div>
               <h2 className="mt-2 text-[22px] font-semibold leading-[1.3] tracking-[-0.018em] text-[var(--ink)]">
                 {sec.heading}
               </h2>
-              {sec.intro && <p className="mt-3 text-[15.5px] leading-[1.7] text-[var(--sub)]">{sec.intro}</p>}
+              {sec.intro && (
+                <p className="mt-3 min-w-0 break-words text-[15.5px] leading-[1.7] text-[var(--sub)] [overflow-wrap:anywhere]">
+                  {sec.intro}
+                </p>
+              )}
 
               {sec.bullets && sec.bullets.length > 0 && (
                 <ul className="mt-5 space-y-4">
                   {sec.bullets.map((b) => (
                     <li
                       key={b.lead}
-                      className="rounded-[8px] border border-[var(--line)] bg-white px-5 py-4 text-[14.5px] leading-[1.65]"
+                      className="min-w-0 break-words rounded-[8px] border border-[var(--line)] bg-white px-5 py-4 text-[14.5px] leading-[1.65] [overflow-wrap:anywhere]"
                     >
                       <strong className="font-semibold text-[var(--ink)]">{b.lead}: </strong>
-                      <span className="text-[var(--sub)]">{b.text}</span>
+                      <span className="break-words text-[var(--sub)] [overflow-wrap:anywhere]">{b.text}</span>
                     </li>
                   ))}
                 </ul>
@@ -612,14 +674,14 @@ export const GuideArticlePage: React.FC<GuideArticlePageProps> = ({ guide, peers
               {sec.callout && (
                 <div
                   className={cn(
-                    'mt-6 rounded-[8px] border p-5 text-[14px] leading-[1.65]',
+                    'mt-6 min-w-0 break-words rounded-[8px] border p-5 text-[14px] leading-[1.65] [overflow-wrap:anywhere]',
                     sec.callout.tone === 'warn'
                       ? 'border-[#FDE68A] bg-[#FFFBEB] text-[var(--ink)]'
                       : 'border-[#BBF7D0] bg-[#F0FDF4] text-[var(--ink)]'
                   )}
                 >
                   <div className="font-semibold">{sec.callout.title}</div>
-                  <p className="mt-1 text-[var(--sub)]">{sec.callout.body}</p>
+                  <p className="mt-1 min-w-0 break-words text-[var(--sub)] [overflow-wrap:anywhere]">{sec.callout.body}</p>
                 </div>
               )}
             </div>
@@ -646,14 +708,16 @@ export const GuideArticlePage: React.FC<GuideArticlePageProps> = ({ guide, peers
               <div className="divide-y divide-[var(--line)]">
                 {guide.faqs.map((item, idx) => (
                   <details key={item.q} className="group px-6 py-5" open={idx === 0}>
-                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[15.5px] font-semibold text-[var(--ink)] marker:hidden">
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 break-words text-[15.5px] font-semibold text-[var(--ink)] [overflow-wrap:anywhere] marker:hidden">
                       {item.q}
                       <ChevronDown
                         aria-hidden="true"
                         className="h-4 w-4 shrink-0 text-[var(--sub)] transition-transform duration-200 group-open:rotate-180"
                       />
                     </summary>
-                    <p className="mt-3 max-w-[780px] text-[14.5px] leading-[1.7] text-[var(--sub)]">{item.a}</p>
+                    <p className="mt-3 min-w-0 max-w-[780px] break-words text-[14.5px] leading-[1.7] text-[var(--sub)] [overflow-wrap:anywhere]">
+                      {item.a}
+                    </p>
                   </details>
                 ))}
               </div>

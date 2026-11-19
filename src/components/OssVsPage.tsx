@@ -36,7 +36,7 @@ import {
   type VsSideView,
 } from '@/data/oss-vs';
 import { localePath, useI18n, type Language } from '@/lib/i18n';
-import { SITE_URL, webPageNode } from '@/lib/schema';
+import { pageGraph, SITE_URL, webPageNode } from '@/lib/schema';
 import { cn } from '@/lib/utils';
 
 interface OssVsPageProps {
@@ -85,48 +85,64 @@ export const OssVsPage: React.FC<OssVsPageProps> = ({ data, peers }) => {
   const filteredRows = data.matrix.filter((r) => matrixTab === 'all' || r.group === matrixTab);
 
   const pageUrl = `${SITE_URL}${data.href}`;
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: o.crumb, item: `${SITE_URL}${localePath(lang, '/')}` },
+  const jsonLd = pageGraph([
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: o.crumb, item: `${SITE_URL}${localePath(lang, '/')}` },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: data.categoryLabel,
+          item: `${SITE_URL}${localePath(lang, `/oss/${data.categoryId}/`)}`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: t.nav.comparisons,
+          item: `${SITE_URL}${localePath(lang, '/oss/vs/')}`,
+        },
+        { '@type': 'ListItem', position: 4, name: data.title, item: pageUrl },
+      ],
+    },
+    webPageNode({
+      path: data.href,
+      name: data.title,
+      description: data.subtitle,
+      lang: lang as Language,
+      dateModified: data.checkedAt,
+    }),
+    {
+      '@type': 'FAQPage',
+      mainEntity: data.faqs.map((item) => ({
+        '@type': 'Question',
+        name: item.q,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: item.a,
+        },
+      })),
+    },
+  ]);
+
+  // Reciprocal internal links back to the GEO 2.0 flagship guide cluster.
+  const zh = lang === 'zh';
+  const flagshipGuides: { href: string; kicker: string; title: string }[] = [
+    {
+      href: localePath(lang, '/guides/open-core-paywall-matrix-2026/'),
+      kicker: 'BS-GUIDE-01',
+      title: zh ? '2026 Open-Core 付费墙横向矩阵（12 款工具）' : '2026 Open-Core Paywall Matrix (12 tools)',
+    },
+    ...(data.slug === 'n8n-vs-activepieces'
+      ? [
           {
-            '@type': 'ListItem',
-            position: 2,
-            name: data.categoryLabel,
-            item: `${SITE_URL}${localePath(lang, `/oss/${data.categoryId}/`)}`,
+            href: localePath(lang, '/guides/self-hosting-n8n-vps-ram-benchmark/'),
+            kicker: 'BS-GUIDE-02',
+            title: zh ? 'n8n 2.35.0 自建实测：VPS 内存与 Queue Mode' : 'Self-Hosting n8n: Hands-On VPS RAM Benchmark',
           },
-          {
-            '@type': 'ListItem',
-            position: 3,
-            name: t.nav.comparisons,
-            item: `${SITE_URL}${localePath(lang, '/oss/vs/')}`,
-          },
-          { '@type': 'ListItem', position: 4, name: data.title, item: pageUrl },
-        ],
-      },
-      webPageNode({
-        path: data.href,
-        name: data.title,
-        description: data.subtitle,
-        lang: lang as Language,
-        dateModified: data.checkedAt,
-      }),
-      {
-        '@type': 'FAQPage',
-        mainEntity: data.faqs.map((item) => ({
-          '@type': 'Question',
-          name: item.q,
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: item.a,
-          },
-        })),
-      },
-    ],
-  };
+        ]
+      : []),
+  ];
 
   const renderActionLink = (
     label: string,
@@ -405,7 +421,7 @@ export const OssVsPage: React.FC<OssVsPageProps> = ({ data, peers }) => {
                           onClick={() => applyPreset(p.id)}
                           aria-pressed={active}
                           className={cn(
-                            'rounded-md border px-2.5 py-1 font-mono text-[11.5px] font-medium transition-colors',
+                            'inline-flex min-h-[36px] items-center rounded-md border px-2.5 py-1 font-mono text-[11.5px] font-medium transition-colors',
                             active
                               ? 'border-[var(--ink)] bg-[var(--ink)] text-white'
                               : 'border-[var(--line)] bg-white text-[var(--sub)] hover:border-[var(--ink)]/40 hover:text-[var(--ink)]'
@@ -604,6 +620,32 @@ export const OssVsPage: React.FC<OssVsPageProps> = ({ data, peers }) => {
               </CardContent>
             </Card>
           </FadeUp>
+
+          {/* Reciprocal flagship guide links (GEO 2.0 cluster) */}
+          <section aria-labelledby={`guide-links-${data.slug}`} className="rounded-xl border border-[var(--line)] bg-[var(--wash)] px-4 py-3.5">
+            <h2 id={`guide-links-${data.slug}`} className="font-mono text-[11px] font-medium uppercase tracking-[0.06em] text-[#737370]">
+              {zh ? '延伸阅读 · 一手核验报告' : 'Related benchmark reports'}
+            </h2>
+            <ul className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
+              {flagshipGuides.map((guide) => (
+                <li key={guide.href}>
+                  <Link
+                    href={guide.href}
+                    className="group flex min-h-[36px] items-center justify-between gap-3 rounded-md border border-[var(--line)] bg-white px-3 py-2 text-[13.5px] font-medium text-[var(--ink)] transition-colors hover:border-[var(--ink)]/35"
+                  >
+                    <span className="min-w-0">
+                      <span className="mr-2 font-mono text-[11px] text-[#737370]">{guide.kicker}</span>
+                      {guide.title}
+                    </span>
+                    <ArrowRight
+                      aria-hidden="true"
+                      className="h-3.5 w-3.5 shrink-0 text-[var(--sub)] transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--ink)]"
+                    />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
 
           {/* Peer comparisons */}
           {peers.length > 0 && (

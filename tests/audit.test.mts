@@ -21,14 +21,17 @@ registerHooks({
   },
 });
 
-const { evaluateVsCalculator, ossVsComparison } = await import('@/data/oss-vs');
+const { evaluateVsCalculator, ossVsComparison, ossVsSlugs } = await import('@/data/oss-vs');
 const { OSS_PROJECTS, ossProject } = await import('@/data/oss');
 const { ossExtras } = await import('@/data/oss-extras');
 const { guideArticle, guideSummaries } = await import('@/data/guides');
 const { buildLlmsFullTxt, buildLlmsTxt } = await import('@/lib/llms');
 const { buildRssXml } = await import('@/lib/rss');
 const { pageMetadata } = await import('@/lib/site-meta');
-const { OFFICIAL_CHANNELS, ORGANIZATION_NODE } = await import('@/lib/schema');
+const { OFFICIAL_CHANNELS, ORGANIZATION_NODE, ORG_ID, WEBSITE_ID, articleNode, pageGraph, webPageNode } = await import('@/lib/schema');
+const { default: sitemap } = await import('@/app/sitemap');
+
+const FLAGSHIP_GUIDES = ['open-core-paywall-matrix-2026', 'self-hosting-n8n-vps-ram-benchmark'] as const;
 
 const CJK_RE = /[\u4e00-\u9fff]/;
 
@@ -375,4 +378,195 @@ test('GEO-05: Automation cluster (activepieces, windmill) and flagship guides ar
   }
   assert.equal(guideArticle('open-core-paywall-matrix-2026', 'en')?.matrixSection?.rows.length, 12);
   assert.equal(guideArticle('self-hosting-n8n-vps-ram-benchmark', 'en')?.auditBasis, 'hands-on');
+});
+
+// ---------------------------------------------------------------------------
+// Stage-2 adversarial audit regression shield (2026-11-19)
+// ---------------------------------------------------------------------------
+
+function collectStrings(value: unknown, out: string[] = []): string[] {
+  if (typeof value === 'string') out.push(value);
+  else if (Array.isArray(value)) value.forEach((v) => collectStrings(v, out));
+  else if (value && typeof value === 'object') Object.values(value).forEach((v) => collectStrings(v, out));
+  return out;
+}
+
+test('S2-01: every guide index link (EN + ZH) resolves to a rendered section, and ZH n8n guide ships matrix + TCO', () => {
+  for (const slug of FLAGSHIP_GUIDES) {
+    for (const lang of ['en', 'zh'] as const) {
+      const guide = guideArticle(slug, lang);
+      assert.ok(guide, `${slug} (${lang}) must exist`);
+      const sectionIds = new Set<string>([
+        'verdicts',
+        ...(guide.matrixSection ? [guide.matrixSection.id] : []),
+        ...(guide.tcoSection ? ['tco-model'] : []),
+        ...guide.proseSections.map((s) => s.id),
+        ...(guide.faqs.length > 0 ? ['faq'] : []),
+      ]);
+      for (const link of guide.indexLinks) {
+        assert.ok(sectionIds.has(link.id), `${slug} (${lang}) index link #${link.id} has no matching section`);
+      }
+    }
+  }
+  const zhN8n = guideArticle('self-hosting-n8n-vps-ram-benchmark', 'zh')!;
+  assert.ok(zhN8n.matrixSection && zhN8n.matrixSection.rows.length > 0, 'ZH n8n guide must include matrixSection');
+  assert.ok(zhN8n.tcoSection && zhN8n.tcoSection.tableRows.length > 0, 'ZH n8n guide must include tcoSection');
+});
+
+test('S2-02: guide fact guardrails (no "2 of 12" free SSO claim, no S3 for free CE Queue Mode, honest bar percentages)', () => {
+  for (const slug of FLAGSHIP_GUIDES) {
+    for (const lang of ['en', 'zh'] as const) {
+      const guide = guideArticle(slug, lang)!;
+      const text = collectStrings(guide).join('\n');
+
+      // 1) Retired claim: "2 of 12" tools include free self-hosted SSO.
+      assert.doesNotMatch(text, /\b2 of 12\b/, `${slug} (${lang}) still contains the retired "2 of 12" SSO claim`);
+      for (const card of guide.verdictCards) {
+        assert.equal(
+          card.metricPrimary.trim() === '2' && /12/.test(card.metricSub ?? '') && /SSO/i.test(card.title),
+          false,
+          `${slug} (${lang}) verdict card still claims 2 of 12 free SSO: ${card.title}`,
+        );
+      }
+
+      // 2) Stacked bars: every segment > 0, <= 100, segments sum <= 100, and any "(xx%)" label matches its width.
+      for (const bar of guide.tcoSection?.bars ?? []) {
+        const total = bar.segments.reduce((sum, s) => sum + s.percent, 0);
+        assert.ok(total <= 100.5, `${slug} (${lang}) bar ${bar.id} segments sum to ${total}%`);
+        for (const seg of bar.segments) {
+          assert.ok(seg.percent > 0 && seg.percent <= 100, `${slug} (${lang}) bar ${bar.id} segment "${seg.label}" percent ${seg.percent}`);
+          const stated = seg.label.match(/(\d+(?:\.\d+)?)\s*%/);
+          if (stated) {
+            assert.ok(
+              Math.abs(Number(stated[1]) - seg.percent) <= 0.5,
+              `${slug} (${lang}) bar ${bar.id} label says ${stated[1]}% but renders ${seg.percent}%`,
+            );
+          }
+        }
+      }
+    }
+  }
+
+  // 3) Inflated single-segment widths on the $24 VPS / €50 (~$54) Cloud Pro bars must stay retired.
+  for (const lang of ['en', 'zh'] as const) {
+    const n8nGuide = guideArticle('self-hosting-n8n-vps-ram-benchmark', lang)!;
+    for (const bar of n8nGuide.tcoSection?.bars ?? []) {
+      if (/\$24|\$54|€50/.test(bar.totalLabel)) {
+        for (const seg of bar.segments) {
+          assert.ok(![18, 26].includes(seg.percent), `n8n (${lang}) ${bar.id} reintroduced inflated ${seg.percent}% width`);
+          assert.ok(seg.percent < 15, `n8n (${lang}) ${bar.id} width ${seg.percent}% is not proportional to the $744 Business bar`);
+        }
+      }
+    }
+
+    // 4) S3 external binary storage is a paid n8n feature: any S3 mention must carry a paid/never-on-CE caveat.
+    for (const s of collectStrings(n8nGuide)) {
+      if (/\bS3\b|=s3\b|\bs3\b/.test(s)) {
+        assert.match(
+          s,
+          /paid|licen[cs]e|Enterprise|Never|not on CE|付费|授权|企业|切勿/i,
+          `n8n guide (${lang}) recommends S3 binary storage without a paid-license caveat: ${s}`,
+        );
+      }
+    }
+  }
+});
+
+test('S2-03: every sponsored CTA/citation in oss-vs points to a tracked affiliate URL (never a bare pricing page)', () => {
+  const TRACKING_PARAM = /[?&](ref|via|aff|aff_id|affiliate|partner|partner_id|fpr|ref_id|referral|utm_source|utm_medium|utm_campaign|campaign|coupon)=/i;
+  const isTracked = (url: string) => TRACKING_PARAM.test(url);
+
+  for (const slug of ossVsSlugs()) {
+    for (const lang of ['en', 'zh'] as const) {
+      const view = ossVsComparison(slug, lang)!;
+      if (view.stickyCtaSponsored) {
+        assert.ok(isTracked(view.stickyCtaUrl), `${slug} (${lang}) stickyCtaSponsored=true but URL is untracked: ${view.stickyCtaUrl}`);
+      }
+      for (const side of [view.left, view.right]) {
+        if (side.ctaSponsored) {
+          assert.ok(isTracked(side.ctaUrl), `${slug} (${lang}) ${side.name} ctaSponsored=true but URL is untracked: ${side.ctaUrl}`);
+        }
+      }
+      const citations = [view.trap.citation, ...view.matrix.flatMap((r) => r.citations)];
+      for (const c of citations) {
+        if (c.sponsored) {
+          assert.ok(isTracked(c.url), `${slug} (${lang}) citation "${c.label}" sponsored=true but URL is untracked: ${c.url}`);
+        }
+      }
+    }
+  }
+});
+
+test('S2-04: schema integrity — pageGraph defines #organization/#website, articleNode has image, sameAs skips noindex Substack', () => {
+  const graph = pageGraph([webPageNode({ path: '/oss/vs/', name: 'Test', description: 'Test', lang: 'en' })]);
+  assert.equal(graph['@context'], 'https://schema.org');
+  const ids = graph['@graph'].map((n) => (n as Record<string, unknown>)['@id']);
+  assert.ok(ids.includes(ORG_ID), 'pageGraph must define #organization');
+  assert.ok(ids.includes(WEBSITE_ID), 'pageGraph must define #website');
+
+  // Every @id reference in the graph resolves to a node defined in the same graph (or the page's own #webpage/#article).
+  const defined = new Set(ids);
+  const refs = JSON.stringify(graph).match(/"@id":"[^"]+"/g) ?? [];
+  for (const ref of refs) {
+    const id = ref.slice('"@id":"'.length, -1);
+    assert.ok(defined.has(id), `unresolved @id reference: ${id}`);
+  }
+
+  const base = { path: '/guides/x/', headline: 'h', description: 'd', datePublished: '2026-11-19', dateModified: '2026-11-19', lang: 'en' as const };
+  assert.equal(articleNode(base).image, 'https://dceniac.com/og.png');
+  assert.equal(articleNode({ ...base, image: '/oss/shots/n8n.jpg' }).image, 'https://dceniac.com/oss/shots/n8n.jpg');
+  assert.equal(articleNode({ ...base, image: 'oss/shots/n8n.jpg' }).image, 'https://dceniac.com/oss/shots/n8n.jpg');
+  assert.equal(articleNode({ ...base, image: 'https://cdn.example.com/a.png' }).image, 'https://cdn.example.com/a.png');
+
+  assert.ok(OFFICIAL_CHANNELS.some((c) => c.url.includes('builderstackoss.substack.com')), '/about/ must still list Substack');
+  assert.equal(
+    ORGANIZATION_NODE.sameAs.some((u) => u.includes('builderstackoss.substack.com')),
+    false,
+    'sameAs must exclude Substack while it serves noindex',
+  );
+  for (const c of OFFICIAL_CHANNELS.filter((ch) => ch.includeInSameAs !== false)) {
+    assert.ok(ORGANIZATION_NODE.sameAs.includes(c.url), `sameAs missing ${c.url}`);
+  }
+});
+
+test('S2-05: llms-full.txt carries the paywall matrix, n8n telemetry and calculator deep links while staying compact', () => {
+  const full = buildLlmsFullTxt();
+  const bytes = Buffer.byteLength(full, 'utf8');
+  assert.ok(bytes >= 20_000 && bytes <= 55_000, `llms-full.txt is ${bytes} bytes (expected 20k–55k)`);
+
+  assert.match(full, /\| Tool \| License \| Locked in ee\/ \| Min Stack \| Self-Hosted Paid Floor \| Source \|/);
+  for (const tool of ['| n8n |', '| Zammad |', '| Windmill |']) {
+    assert.ok(full.includes(tool), `llms-full.txt missing paywall matrix row ${tool}`);
+  }
+  const matrixRows = full.split('\n').filter((l) => /^\| (n8n|Activepieces|Windmill|Cal\.com|Appsmith|Papermark|Chatwoot|Twenty CRM|Zammad|Medusa|Odoo|Invoice Ninja) \|/.test(l));
+  assert.equal(matrixRows.length, 12, 'paywall matrix must render all 12 tools');
+
+  assert.match(full, /395(\.1)? MB/, 'n8n idle working-set telemetry missing');
+  assert.match(full, /491 MB/, 'n8n peak working-set telemetry missing');
+  assert.match(full, /505 MB/, 'n8n private-commit telemetry missing');
+  assert.ok(full.includes('https://dceniac.com/oss/vs/n8n-vs-activepieces/#tco-section'));
+  for (const slug of ossVsSlugs()) {
+    assert.ok(full.includes(`https://dceniac.com/oss/vs/${slug}/#tco-section`), `missing TCO deep link for ${slug}`);
+  }
+  for (const calc of ['chatwoot', 'jupyterhub', 'livekit']) {
+    assert.ok(full.includes(`https://dceniac.com/oss/${calc}/#calculator`), `missing calculator deep link for ${calc}`);
+  }
+  assert.ok(full.includes('https://dceniac.com/rss.xml'));
+});
+
+test('S2-06: all 60 sitemap entries emit lastModified derived from data', () => {
+  const entries = sitemap();
+  assert.equal(entries.length, 60, `expected 60 EN sitemap URLs, got ${entries.length}`);
+  const urls = new Set(entries.map((e) => e.url));
+  assert.equal(urls.size, entries.length, 'sitemap URLs must be unique');
+  for (const e of entries) {
+    assert.ok(e.lastModified, `${e.url} is missing lastModified`);
+    assert.match(String(e.lastModified), /^\d{4}-\d{2}-\d{2}$/, `${e.url} lastModified is not YYYY-MM-DD`);
+    assert.ok(!e.url.includes('/zh/'), `${e.url} must not be in the EN sitemap`);
+  }
+  for (const project of OSS_PROJECTS) {
+    const entry = entries.find((e) => e.url === `https://dceniac.com/oss/${project.id}/`);
+    assert.ok(entry, `sitemap missing ${project.id}`);
+    assert.ok(String(entry.lastModified) >= project.checkedAt, `${project.id} lastModified older than checkedAt`);
+  }
 });

@@ -246,7 +246,8 @@ function agpl(licenseUrl: string): OssFact {
 
 // 按最近一次推送距离核对日的天数给结论：90 天内算在更新，一年内算放缓，更久算停滞
 function alive(lastPush: string, repo: string, archived = false, checkedAt = CHECKED_AT): OssFact {
-  const days = Math.round((Date.parse(checkedAt) - Date.parse(lastPush)) / 86400000);
+  // 推送日期晚于核对日时按 0 天算，避免出现负天数
+  const days = Math.max(0, Math.round((Date.parse(checkedAt) - Date.parse(lastPush)) / 86400000));
   const verdict = archived || days > 365 ? 'bad' : days <= 90 ? 'good' : 'caution';
   return {
     verdict,
@@ -446,7 +447,7 @@ const ALL_PROJECTS: OssProject[] = [
         labelEn: 'Hard',
         detail: '要一台干净的 Ubuntu 22.04 专用服务器，不能和别的网站共用 80、443 端口；要有域名和有效的 SSL 证书，否则浏览器不给摄像头和麦克风权限；还要放开 UDP 16384 到 32768。官方用 bbb-install.sh 脚本安装。',
         detailEn: 'It needs a clean, dedicated Ubuntu 22.04 server that does not share ports 80 and 443 with another site, a domain with a valid SSL certificate (browsers will not grant camera and microphone access without one), and UDP ports 16384 to 32768 open. Installation is through the official bbb-install.sh script.',
-        sources: [src('安装文档（3.0）', 'Install guide (3.0)', 'https://docs.bigbluebutton.org/administration/install/')],
+        sources: [src('安装文档（3.0）', 'Install guide (3.0)', 'https://docs.bigbluebutton.org/3.0/administration/install/')],
       },
       cost: {
         verdict: 'bad',
@@ -454,7 +455,7 @@ const ALL_PROJECTS: OssProject[] = [
         labelEn: 'High',
         detail: '软件免费，钱花在服务器上。官方的生产环境最低要求是 8 核、16GB 内存、250Mbps 上下行对等带宽；要录课的话磁盘 500GB，不录是 50GB。',
         detailEn: 'The software is free; the server is the cost. The stated production minimum is 8 cores, 16 GB RAM and 250 Mbps symmetrical bandwidth, with 500 GB of disk if you record sessions or 50 GB if you do not.',
-        sources: [src('安装文档（3.0）', 'Install guide (3.0)', 'https://docs.bigbluebutton.org/administration/install/')],
+        sources: [src('安装文档（3.0）', 'Install guide (3.0)', 'https://docs.bigbluebutton.org/3.0/administration/install/')],
       },
       caveats: {
         verdict: 'caution',
@@ -462,7 +463,7 @@ const ALL_PROJECTS: OssProject[] = [
         labelEn: 'Bandwidth is the big item',
         detail: '250Mbps 对等带宽在国内云上的价格还没有核对，下结论之前要先问一下云厂商的报价。官方文档还要求服务器同时有 IPv4 和 IPv6 地址。',
         detailEn: 'What 250 Mbps of symmetrical bandwidth costs on a Chinese cloud has not been checked here; get a quote before deciding. The docs also ask for both an IPv4 and an IPv6 address.',
-        sources: [src('安装文档（3.0）', 'Install guide (3.0)', 'https://docs.bigbluebutton.org/administration/install/')],
+        sources: [src('安装文档（3.0）', 'Install guide (3.0)', 'https://docs.bigbluebutton.org/3.0/administration/install/')],
       },
     },
     checkedAt: CHECKED_AT,
@@ -552,7 +553,7 @@ const ALL_PROJECTS: OssProject[] = [
           src('插件说明', 'Plugin readme', `${GH}woocommerce/woocommerce/blob/trunk/plugins/woocommerce/readme.txt`),
         ],
       },
-      alive: alive('2026-10-13', 'woocommerce/woocommerce'),
+      alive: alive('2026-10-13', 'woocommerce/woocommerce', false, '2026-10-13'),
       deploy: {
         verdict: 'good',
         label: '容易',
@@ -613,7 +614,7 @@ const ALL_PROJECTS: OssProject[] = [
           src('项目的许可说明', 'Project license guideline', 'https://www.prestashop-project.org/maintainers-guide/general-guidelines/license/'),
         ],
       },
-      alive: alive('2026-10-12', 'PrestaShop/PrestaShop'),
+      alive: alive('2026-10-12', 'PrestaShop/PrestaShop', false, '2026-10-13'),
       deploy: {
         verdict: 'good',
         label: '容易',
@@ -669,7 +670,7 @@ const ALL_PROJECTS: OssProject[] = [
         detailEn: 'MIT. Commercial use, modification and closed-source use are all allowed; keep the copyright notice.',
         sources: [license(`${GH}bagisto/bagisto/blob/2.5/LICENSE`)],
       },
-      alive: alive('2026-10-12', 'bagisto/bagisto'),
+      alive: alive('2026-10-12', 'bagisto/bagisto', false, '2026-10-13'),
       deploy: {
         verdict: 'good',
         label: '容易',
@@ -732,7 +733,7 @@ const ALL_PROJECTS: OssProject[] = [
           src('企业版许可', 'Enterprise license', `${GH}medusajs/medusa/blob/develop/ENTERPRISE-LICENSE.md`),
         ],
       },
-      alive: alive('2026-10-10', 'medusajs/medusa'),
+      alive: alive('2026-10-10', 'medusajs/medusa', false, '2026-10-13'),
       deploy: {
         verdict: 'caution',
         label: '中等',
@@ -790,7 +791,7 @@ const ALL_PROJECTS: OssProject[] = [
         detailEn: 'BSD-3-Clause. Commercial use, modification and closed-source use are all allowed; keep the copyright notice, and do not use the project’s or contributors’ names to endorse your product. The README says there is a single version, with no feature fragmentation or commercial limitations.',
         sources: [license(`${GH}saleor/saleor/blob/main/LICENSE`), readme('saleor/saleor')],
       },
-      alive: alive('2026-10-12', 'saleor/saleor'),
+      alive: alive('2026-10-12', 'saleor/saleor', false, '2026-10-13'),
       deploy: {
         verdict: 'bad',
         label: '门槛高',
@@ -854,7 +855,7 @@ const ALL_PROJECTS: OssProject[] = [
           src('公平使用政策', 'Fair Usage Policy', 'https://www.shopware.com/en/news/fair-usage-policy-community-edition/'),
         ],
       },
-      alive: alive('2026-10-12', 'shopware/shopware'),
+      alive: alive('2026-10-12', 'shopware/shopware', false, '2026-10-13'),
       deploy: {
         verdict: 'caution',
         label: '中等',
@@ -905,7 +906,7 @@ const ALL_PROJECTS: OssProject[] = [
     what: '网页版的收银系统，带库存、进货、客户、报表和小票打印。',
     whatEn: 'A web-based point of sale with inventory, receivings, customers, reports and receipt printing.',
     repoUrl: `${GH}opensourcepos/opensourcepos`,
-    homepage: 'http://www.opensourcepos.org',
+    homepage: 'https://opensourcepos.org',
     logo: '/oss/logos/opensourcepos.png',
     facts: {
       commercial: {
@@ -916,14 +917,14 @@ const ALL_PROJECTS: OssProject[] = [
         detailEn: 'MIT terms with an addition: the footer signature carrying the version, commit hash and a link to opensourcepos.org must be kept, must be visible on every page and cannot be modified, and you cannot claim ownership of the software. Running it in your own shop is unrestricted. Reselling it under your own brand is ruled out by that clause.',
         sources: [license(`${GH}opensourcepos/opensourcepos/blob/master/LICENSE`), src('README 的许可说明', 'License section of the README', `${GH}opensourcepos/opensourcepos#-license`)],
       },
-      alive: alive('2026-10-12', 'opensourcepos/opensourcepos'),
+      alive: alive('2026-10-12', 'opensourcepos/opensourcepos', false, '2026-10-13'),
       deploy: {
         verdict: 'good',
         label: '容易',
         labelEn: 'Easy',
         detail: '下载发布包、建一个 MySQL 数据库、把文件传到服务器、在 .env 里填数据库账号，浏览器打开后表结构自动建好。环境是 PHP 8.2 到 8.4、MySQL 5.7 或 MariaDB 10.x、Apache 2.4（Nginx 也行）。正式使用必须在 .env 里写上允许访问的域名，不写程序起不来。官方说自带的 Docker 配置不适合直接用于生产。',
         detailEn: 'Download a release, create a MySQL database, upload the files, put the database credentials in .env, and open it in a browser; the schema is created on first access. It needs PHP 8.2 to 8.4, MySQL 5.7 or MariaDB 10.x, and Apache 2.4 (Nginx works too). For production you must list the allowed hostnames in .env or the app will not start. The bundled Docker Compose setup is described as not suited for production.',
-        sources: [src('安装文档', 'Install guide', `${GH}opensourcepos/opensourcepos/blob/master/INSTALL.md`)],
+        sources: [src('README（安装说明）', 'README (installation)', `${GH}opensourcepos/opensourcepos#readme`)],
       },
       cost: {
         verdict: 'good',
@@ -931,7 +932,7 @@ const ALL_PROJECTS: OssProject[] = [
         labelEn: 'Low',
         detail: '软件免费。官方给的最低配置是 512MB 内存、建议 1GB 以上，程序本身占 1GB 磁盘，树莓派 3 和 4 也能跑。另外要买扫码枪和小票打印机。',
         detailEn: 'The software is free. The stated minimum is 512 MB of RAM with 1 GB or more recommended, plus 1 GB of disk for the application; Raspberry Pi 3 and 4 are supported. You also buy a barcode scanner and a receipt printer.',
-        sources: [src('最低服务器要求', 'Minimum server requirements', `${GH}opensourcepos/opensourcepos/wiki/Minimum-Server-Requirements`)],
+        sources: [src('README（运行要求）', 'README (requirements)', `${GH}opensourcepos/opensourcepos#readme`)],
       },
       caveats: {
         verdict: 'caution',
@@ -964,7 +965,7 @@ const ALL_PROJECTS: OssProject[] = [
         detailEn: 'MIT. Commercial use, modification and closed-source use are all allowed; keep the copyright notice.',
         sources: [license(`${GH}tastyigniter/TastyIgniter/blob/4.x/LICENSE.md`)],
       },
-      alive: alive('2026-10-12', 'tastyigniter/TastyIgniter'),
+      alive: alive('2026-10-12', 'tastyigniter/TastyIgniter', false, '2026-10-13'),
       deploy: {
         verdict: 'good',
         label: '容易',
@@ -1017,7 +1018,7 @@ const ALL_PROJECTS: OssProject[] = [
         detailEn: 'MIT. Commercial use, modification and closed-source use are all allowed; keep the copyright notice. The exception is the code under the enterprise/ directory of the repository, which has its own Enterprise license: production use requires a paid subscription for the right number of seats. See the caveat below.',
         sources: [license(`${GH}chatwoot/chatwoot/blob/develop/LICENSE`), src('企业版协议', 'Enterprise license', `${GH}chatwoot/chatwoot/blob/develop/enterprise/LICENSE`)],
       },
-      alive: alive('2026-10-13', 'chatwoot/chatwoot'),
+      alive: alive('2026-11-09', 'chatwoot/chatwoot', false, '2026-11-09'),
       deploy: {
         verdict: 'good',
         label: '容易',
@@ -1045,7 +1046,7 @@ const ALL_PROJECTS: OssProject[] = [
         sources: [src('自托管价格', 'Self-hosted pricing', 'https://www.chatwoot.com/pricing/self-hosted-plans'), src('企业版协议', 'Enterprise license', `${GH}chatwoot/chatwoot/blob/develop/enterprise/LICENSE`), src('Docker 安装', 'Docker guide', 'https://developers.chatwoot.com/self-hosted/deployment/docker')],
       },
     },
-    checkedAt: '2026-10-13',
+    checkedAt: '2026-11-09',
     confirmed: true,             // 作者 2026-10-13 确认
   },
   {
@@ -1067,7 +1068,7 @@ const ALL_PROJECTS: OssProject[] = [
         detailEn: 'AGPL-3.0. Running it unmodified adds no obligations. If you change the code and let customers or staff use it over a network, you must offer those users your modified source. The README states that the code is owned by the Zammad Foundation, which is independent of the commercial provider Zammad GmbH.',
         sources: [license(`${GH}zammad/zammad/blob/develop/LICENSE`), readme('zammad/zammad')],
       },
-      alive: alive('2026-10-13', 'zammad/zammad'),
+      alive: alive('2026-10-13', 'zammad/zammad', false, '2026-10-13'),
       deploy: {
         verdict: 'caution',
         label: '中等',
@@ -1080,9 +1081,15 @@ const ALL_PROJECTS: OssProject[] = [
         verdict: 'caution',
         label: '中等',
         labelEn: 'Moderate',
-        detail: '软件免费。官方给的最低配置是 2 核、6 GB 内存，Elasticsearch 装在同一台机器上再加 4 GB；40 个坐席以内的参考配置是 6 核、6 GB，同机装 Elasticsearch 再加 6 GB。磁盘官方没有给建议。不想自己部署，官方托管版 2026 年 10 月的标价（按年付、不含增值税）：每坐席每月 7 欧元（最多 5 个坐席）、16 欧元（最多 35 个）、25 欧元（不限）。',
-        detailEn: 'The software is free. The stated minimum is 2 cores and 6 GB of RAM, plus 4 GB if Elasticsearch runs on the same server; the example for up to 40 agents is 6 cores and 6 GB, plus 6 GB for Elasticsearch. The docs make no disk recommendation. If you would rather not self-host, the hosted plans in October 2026, billed annually and excluding VAT, are €7 per agent a month (up to 5 agents), €16 (up to 35) and €25 (unlimited).',
-        sources: [src('硬件要求', 'Hardware requirements', 'https://docs.zammad.org/en/latest/prerequisites/hardware.html'), src('价格', 'Pricing', 'https://zammad.com/en/pricing')],
+        detail: '软件免费。官方给的最低配置是 2 核、6 GB 内存，Elasticsearch 装在同一台机器上再加 4 GB；40 个坐席以内的参考配置是 6 核、6 GB，同机装 Elasticsearch 再加 6 GB。磁盘官方没有给建议。免费自建版不按坐席锁功能：管理文档里的 SAML 2.0 与 OpenID Connect 单点登录、SLA 规则都直接可用，不限人数。不想自己部署，官方托管版 2026 年 10 月的标价（按年付、不含增值税）：每坐席每月 7 欧元（最多 5 个坐席）、16 欧元（最多 35 个）、25 欧元（不限）。',
+        detailEn: 'The software is free. The stated minimum is 2 cores and 6 GB of RAM, plus 4 GB if Elasticsearch runs on the same server; the example for up to 40 agents is 6 cores and 6 GB, plus 6 GB for Elasticsearch. The docs make no disk recommendation. The free self-hosted edition has no per-seat feature locks: the admin docs cover SAML 2.0 and OpenID Connect single sign-on and SLA rules, all available with no user cap. If you would rather not self-host, the hosted plans in October 2026, billed annually and excluding VAT, are €7 per agent a month (up to 5 agents), €16 (up to 35) and €25 (unlimited).',
+        sources: [
+          src('硬件要求', 'Hardware requirements', 'https://docs.zammad.org/en/latest/prerequisites/hardware.html'),
+          src('价格', 'Pricing', 'https://zammad.com/en/pricing'),
+          src('SAML 单点登录', 'SAML SSO', 'https://admin-docs.zammad.org/en/latest/settings/security/third-party/saml.html'),
+          src('OpenID Connect 单点登录', 'OpenID Connect SSO', 'https://admin-docs.zammad.org/en/latest/settings/security/third-party/openid-connect.html'),
+          src('SLA 设置', 'SLAs', 'https://admin-docs.zammad.org/en/latest/manage/slas.html'),
+        ],
       },
       caveats: {
         verdict: 'caution',
@@ -1118,7 +1125,7 @@ const ALL_PROJECTS: OssProject[] = [
         detailEn: 'The Community edition is LGPL-3.0. You can host it and use it commercially without restriction; if you modify its own code and distribute it, those changes must be open. Enterprise is under a separate license: it can only be used with a valid Enterprise subscription for the correct number of users, and cannot be redistributed.',
         sources: [license(`${GH}odoo/odoo/blob/20.0/LICENSE`), src('许可证说明', 'Licenses', 'https://www.odoo.com/documentation/20.0/legal/licenses.html')],
       },
-      alive: alive('2026-10-13', 'odoo/odoo'),
+      alive: alive('2026-10-13', 'odoo/odoo', false, '2026-10-13'),
       deploy: {
         verdict: 'caution',
         label: '中等',
@@ -1174,7 +1181,7 @@ const ALL_PROJECTS: OssProject[] = [
         detailEn: 'Apache-2.0, so commercial use and modification are allowed. The README adds a statement: videos made with it and published on platforms such as Bilibili, WeChat Channels or Douyin must carry the LiveTalking watermark and logo.',
         sources: [license(`${GH}lipku/LiveTalking/blob/main/LICENSE`), src('README 声明', 'Statement in the README', `${GH}lipku/LiveTalking#readme`)],
       },
-      alive: alive('2026-10-09', 'lipku/LiveTalking'),
+      alive: alive('2026-10-09', 'lipku/LiveTalking', false, '2026-10-13'),
       deploy: {
         verdict: 'caution',
         label: '中等',
@@ -1243,7 +1250,7 @@ const ALL_PROJECTS: OssProject[] = [
           src('FlashHead 各组件的许可', 'FlashHead component licenses', 'https://huggingface.co/Soul-AILab/SoulX-FlashHead-1_3B'),
         ],
       },
-      alive: alive('2026-07-31', 'HumanAIGC-Engineering/OpenAvatarChat'),
+      alive: alive('2026-07-31', 'HumanAIGC-Engineering/OpenAvatarChat', false, '2026-10-13'),
       deploy: {
         verdict: 'caution',
         label: '中等',
@@ -1318,7 +1325,7 @@ const ALL_PROJECTS: OssProject[] = [
           src('Agents 的许可证', 'Agents license', `${GH}livekit/agents/blob/main/LICENSE`),
         ],
       },
-      alive: alive('2026-10-15', 'livekit/livekit'),
+      alive: alive('2026-10-15', 'livekit/livekit', false, '2026-10-16'),
       deploy: {
         verdict: 'caution',
         label: '中等',
@@ -1326,9 +1333,9 @@ const ALL_PROJECTS: OssProject[] = [
         detail: 'LiveKit Server：官方有配置生成器（livekit/generate 镜像），一次生成 Caddy、Redis、docker compose 和启动脚本，在一台 Linux 云主机上跑这个脚本就能起来。前提是有自己的域名：主域名和 TURN 用的域名都要指到这台机器，证书不能自签（Caddy 会自动申请）。防火墙要开 80、443、7881（TCP）、3478（UDP）和 50000 到 60000 一整段 UDP 端口。Egress：生成器不管它，要另起一个 Docker 服务（livekit/egress），配上 Server 的地址和 API 密钥，连到和 Server 同一个 Redis。录整间会议靠容器里的 Chrome，容器要加 SYS_ADMIN 权限，否则 Chrome 起不来。录好的文件存到 S3、Azure 或谷歌云存储。两样都有官方的 Helm 包，可以部署到 Kubernetes。',
         detailEn: 'LiveKit Server: an official config generator (the livekit/generate image) produces Caddy, Redis, docker compose and a startup script in one go; run the script on a Linux VM and it is up. You need your own domain: the main domain and the TURN domain must both point at the machine, and self-signed certificates do not work (Caddy obtains them automatically). Open ports 80, 443, 7881 (TCP), 3478 (UDP) and the whole UDP range 50000 to 60000. Egress: the generator does not cover it. Run it as a separate Docker service (livekit/egress) with the server’s URL and API key, connected to the same Redis as the server. Full-room recording runs Chrome inside the container, which needs the SYS_ADMIN capability or Chrome fails to start. Recordings go to S3, Azure or Google Cloud Storage. Both have official Helm charts for Kubernetes.',
         sources: [
-          src('云主机部署', 'Deploying to a VM', 'https://docs.livekit.io/home/self-hosting/vm/'),
-          src('Server 部署说明', 'Server deployment guide', 'https://docs.livekit.io/home/self-hosting/deployment/'),
-          src('Egress 的部署', 'Self-hosting Egress', 'https://docs.livekit.io/home/self-hosting/egress/'),
+          src('云主机部署', 'Deploying to a VM', 'https://docs.livekit.io/transport/self-hosting/vm'),
+          src('Server 部署说明', 'Server deployment guide', 'https://docs.livekit.io/transport/self-hosting/deployment'),
+          src('Egress 的部署', 'Self-hosting Egress', 'https://docs.livekit.io/transport/self-hosting/egress'),
         ],
       },
       cost: {
@@ -1340,7 +1347,7 @@ const ALL_PROJECTS: OssProject[] = [
         detail: '自己部署不收费，钱花在两类机器上。LiveKit Server 的瓶颈是 CPU 和带宽：官方压测里，一台 16 核的谷歌云 c2-standard-16 撑 150 人互相看视频的大会议，CPU 到 85%；官方建议生产环境用计算优化型的机器和万兆网卡。Egress 每个实例建议至少 4 核 4 GB，录整间会议要占 2 到 6 核，一个实例同时只录一间，要同时录几间就得开几个实例。不想自己运维可以用官方的 LiveKit Cloud：免费档每月 5,000 参会人分钟、50 GB 流量；付费档每月 50 美元起，超出部分每参会人分钟 0.0005 美元，流量每 GB 0.12 美元。',
         detailEn: 'Self-hosting is free; the money goes on two kinds of machines. LiveKit Server is bound by CPU and bandwidth: in the official benchmark, one 16-core Google Cloud c2-standard-16 handled a 150-person video meeting where everyone sees everyone, at 85% CPU, and the docs recommend compute-optimized machines and 10 Gbps networking for production. Each Egress instance should have at least 4 CPUs and 4 GB; a full-room recording takes 2 to 6 CPUs, and one instance records one room at a time, so you need as many instances as rooms you record at once. If you would rather not run it all, LiveKit Cloud has a free tier with 5,000 participant minutes and 50 GB of transfer a month; paid plans start at $50 a month, with overage at $0.0005 per participant minute and $0.12 per GB.',
         sources: [
-          src('官方压测', 'Benchmarks', 'https://docs.livekit.io/home/self-hosting/benchmark/'),
+          src('官方压测', 'Benchmarks', 'https://docs.livekit.io/transport/self-hosting/benchmark'),
           src('LiveKit Cloud 价格', 'LiveKit Cloud pricing', 'https://livekit.com/pricing'),
         ],
       },
@@ -1352,7 +1359,7 @@ const ALL_PROJECTS: OssProject[] = [
         detailEn: 'The meeting interface, login and permissions are for your own developers to build. The official sample app, LiveKit Meet, is open source, but its README only covers local development, not production. The Chrome inside Egress runs with its sandbox off by default; turning it on takes an extra setting and a seccomp profile.',
         sources: [
           src('LiveKit Meet', 'LiveKit Meet', `${GH}livekit-examples/meet#readme`),
-          src('Egress 的部署', 'Self-hosting Egress', 'https://docs.livekit.io/home/self-hosting/egress/'),
+          src('Egress 的部署', 'Self-hosting Egress', 'https://docs.livekit.io/transport/self-hosting/egress'),
         ],
       },
     },
@@ -1363,9 +1370,9 @@ const ALL_PROJECTS: OssProject[] = [
       detail: 'LiveKit Server 必装，负责房间和音视频转发。Redis 生产环境推荐，装 Egress 就必须有，两边要连同一个。Egress 负责把会议录成 MP4 或 HLS，或者用 RTMP 推到 YouTube Live、Twitch 这类平台直播，录好的文件要一个 S3、Azure 或谷歌云的存储桶。另外还要一个自己的域名。Ingress（把外面的 RTMP 推流接进房间）和 Agents（AI 语音对话）按需要再装，只开会用不上。',
       detailEn: 'LiveKit Server is required: it runs the rooms and routes the media. Redis is recommended for production and required once you add Egress; both must use the same one. Egress records meetings to MP4 or HLS, or live-streams them over RTMP to platforms like YouTube Live and Twitch; recordings need an S3, Azure or Google Cloud bucket. You also need a domain of your own. Ingress (bringing outside RTMP streams into a room) and Agents (voice AI) are optional and not needed for meetings alone.',
       sources: [
-        src('Server 部署说明', 'Server deployment guide', 'https://docs.livekit.io/home/self-hosting/deployment/'),
-        src('Egress 介绍', 'Egress overview', 'https://docs.livekit.io/home/egress/overview/'),
-        src('Egress 的部署', 'Self-hosting Egress', 'https://docs.livekit.io/home/self-hosting/egress/'),
+        src('Server 部署说明', 'Server deployment guide', 'https://docs.livekit.io/transport/self-hosting/deployment'),
+        src('Egress 介绍', 'Egress overview', 'https://docs.livekit.io/transport/media/ingress-egress/egress'),
+        src('Egress 的部署', 'Self-hosting Egress', 'https://docs.livekit.io/transport/self-hosting/egress'),
       ],
     },
     checkedAt: '2026-10-16',
@@ -1379,7 +1386,7 @@ const ALL_PROJECTS: OssProject[] = [
     logo: '/oss/logos/n8n.png',
     use: 'automation',
     industries: [],
-    what: '把软件接口、定时任务和 AI 步骤连成自动流程的工具。社区版可免费自建供内部使用，Business 每月 667 欧元，按年计费。报价核验于 2026 年 11 月 9 日。',
+    what: '把软件接口、定时任务和 AI 步骤连成自动流程的工具。社区版可免费自建供内部使用，Business 每月 667 欧元，按年计费。报价核验于 2026 年 11 月 19 日。',
     whatEn: 'A node-based workflow automation platform that chains app APIs, webhooks, schedules and AI steps into automated flows. Source-available (fair-code) rather than OSI open source, with a free self-hosted Community edition.',
     repoUrl: `${GH}n8n-io/n8n`,
     homepage: 'https://n8n.io/',
@@ -1394,13 +1401,13 @@ const ALL_PROJECTS: OssProject[] = [
         detailEn: 'The Sustainable Use License 1.0 covers the core, with a separate Enterprise license for .ee code. An agency may build and run workflows on its own instance for clients. Clients can receive outputs or connect their accounts while the agency alone edits the workflow logic. A commercial license is required when external clients can configure workflows through any interface, API, or agent, or when the agency offers hosting or white-labels n8n. Keep copyright notices intact.',
         sources: [license(`${GH}n8n-io/n8n/blob/master/LICENSE.md`), src('官方许可问答', 'Official license FAQ', 'https://support.n8n.io/article/can-i-use-your-license-for-my-use-case')],
       },
-      alive: alive('2026-11-04', 'n8n-io/n8n', false, '2026-11-04'),
+      alive: alive('2026-11-19', 'n8n-io/n8n', false, '2026-11-19'),
       deploy: {
         verdict: 'caution',
         label: '中等',
         labelEn: 'Moderate',
-        detail: '单容器一条 Docker 命令就能在 5678 端口跑起来（默认用 SQLite）；正式上线官方提供 Docker Compose 模板，建议换用 PostgreSQL 并配好反向代理和 HTTPS。官方的 Docker Compose 部署指南要求机器至少 2 核 CPU、4 GB 内存。我们在 2026-11-19 实跑 n8n 2.35.0（Node.js v22 + 内置 JS Task Runner 双进程）测得：空载即占 395 MB 工作集 / 413 MB 私有内存，跑完 6 次共 22,500 条 JSON Webhook 批处理后驻留升至 491 MB / 505 MB 且 SQLite 迅速涨至 5.3 MB。',
-        detailEn: 'A single Docker command starts n8nio/n8n on port 5678 using SQLite by default. For production, official Docker Compose templates pair it with PostgreSQL behind a reverse proxy and HTTPS. The official Docker Compose guide requires at least 2 vCPUs and 4 GB of RAM. In our 2026-11-19 hands-on run of n8n 2.35.0 (Node.js v22 + internal JS Task Runner), idle memory already sat at 395 MB working set (413 MB private) before any database or reverse proxy, climbing and staying at 491 MB (505 MB private) after six webhook batches totaling 22,500 JSON items while SQLite grew to 5.3 MB.',
+        detail: '单容器一条 Docker 命令就能在 5678 端口跑起来（默认用 SQLite）；正式上线官方提供 Docker Compose 模板，建议换用 PostgreSQL 并配好反向代理和 HTTPS。官方 Docker Compose 部署指南写的 2 核 CPU、4 GB 内存，针对的是包含 AI Assistant sandbox-runner-1（Docker-in-Docker，开发/测试用途）容器的整套栈；即便不跑这个容器，我们仍建议生产环境给 4 GB，为 Node.js + Postgres + Queue Mode 留余量。我们在 2026-11-19 于本地 Windows 主机实跑 n8n 2.35.0（2026-08-11 发布，截至 2026 年 11 月已有更新的 2.48.x 稳定版；Node.js v22.23.1 + 内置 JS Task Runner 双进程，读取 Windows 内存计数器）测得：空载工作集 395 MB，跑完 6 次共 22,500 条 JSON Webhook 批处理后升至 491 MB（+96 MB；私有提交口径为 413 → 505 MB，+92 MB），SQLite 迅速涨至 5.3 MB。',
+        detailEn: 'A single Docker command starts n8nio/n8n on port 5678 using SQLite by default. For production, official Docker Compose templates pair it with PostgreSQL behind a reverse proxy and HTTPS. The official Docker Compose guide lists 2 vCPUs and 4 GB of RAM for a stack that includes the AI Assistant sandbox-runner-1 Docker-in-Docker container (dev/test); even without it we still recommend 4 GB in production for Node.js + Postgres + Queue Mode headroom. In our 2026-11-19 hands-on run of n8n 2.35.0 (released 2026-08-11; newer 2.48.x stable releases exist as of Nov 2026) on a local Windows host (Node.js v22.23.1 + internal JS Task Runner, Windows memory counters), idle working set sat at 395 MB before any database or reverse proxy and rose to 491 MB (+96 MB) after six webhook batches totaling 22,500 JSON items; on the private-commit counter the same climb was 413 → 505 MB (+92 MB). SQLite grew to 5.3 MB.',
         sources: [
           src('Docker Compose 安装', 'Docker Compose guide', 'https://docs.n8n.io/deploy/host-n8n/install-options/install-using-docker-compose'),
           src('Docker 安装', 'Docker guide', 'https://docs.n8n.io/deploy/host-n8n/install-options/install-with-docker'),
@@ -1413,11 +1420,13 @@ const ALL_PROJECTS: OssProject[] = [
         labelEn: 'Free Community edition. Business is €667/month billed annually',
         short: '团队版贵',
         shortEn: 'Paid tiers',
-        detail: '自己部署社区版免费，不限工作流数量、执行次数和用户数，服务器至少 2 核、4 GB 内存。2026 年 11 月核对的官网欧元报价，自建 Business 每月 667 欧元，适用于 100 人以下公司，含每月 40,000 次执行。官方云 Starter 和 Pro 分别每月 20 和 50 欧元，含 2,500 和 10,000 次工作流执行。以上均按年计费，Enterprise 另行报价。',
-        detailEn: 'Self-hosting Community is free with unlimited workflows, executions and users. The server needs at least 2 vCPUs and 4 GB of RAM. The official euro prices checked in November 2026 were €667 per month for self-hosted Business (under 100 employees, 40,000 monthly workflow executions), and €20 or €50 per month for Cloud Starter and Pro (2,500 or 10,000 monthly executions). Those rates are billed annually. Enterprise is quoted separately.',
+        detail: '自己部署社区版免费，不限工作流数量、执行次数和用户数，生产环境建议至少 2 核、4 GB 内存。2026 年 11 月 19 日核对的官网欧元报价，自建 Business 每月 667 欧元，适用于 100 人以下公司，含每月 40,000 次执行；员工少于 20 人的公司可申请 Startup Plan，自建 Business 五折（约每月 333.50 欧元）。官方云 Starter 和 Pro 分别每月 20 和 50 欧元，含 2,500 和 10,000 次工作流执行。以上均按年计费，Enterprise 另行报价。注意：S3 等外部二进制存储属于付费授权功能，社区版 Queue Mode 应使用默认的 database 存储或共享 NFS 卷。',
+        detailEn: 'Self-hosting Community is free with unlimited workflows, executions and users; we recommend at least 2 vCPUs and 4 GB of RAM in production. The official euro prices checked on November 19, 2026 were €667 per month for self-hosted Business (under 100 employees, 40,000 monthly workflow executions) — companies under 20 staff can apply for the Startup Plan at 50% off self-hosted Business (about €333.50/month) — and €20 or €50 per month for Cloud Starter and Pro (2,500 or 10,000 monthly executions). Those rates are billed annually. Enterprise is quoted separately. Note that S3/external binary storage is a paid-license feature; Community Queue Mode should keep the default database binary storage or a shared NFS volume.',
         sources: [
           src('价格', 'Pricing', 'https://n8n.io/pricing/'),
           src('Docker Compose 安装', 'Docker Compose guide', 'https://docs.n8n.io/deploy/host-n8n/install-options/install-using-docker-compose'),
+          src('外部二进制存储', 'External binary storage', 'https://docs.n8n.io/deploy/host-n8n/configure-n8n/scaling/use-external-storage'),
+          src('队列模式', 'Queue mode', 'https://docs.n8n.io/deploy/host-n8n/configure-n8n/scaling/enable-queue-mode'),
         ],
       },
       caveats: {
@@ -1533,12 +1542,12 @@ const ALL_PROJECTS: OssProject[] = [
       },
       cost: {
         verdict: 'caution',
-        label: '自建功能全免，去客户侧品牌标每年 40 美元',
-        labelEn: 'All features free when self-hosted; $40 a year to remove client branding',
-        short: '去标年付',
-        shortEn: '$40/yr logo',
-        detail: '自己部署不锁功能，官方托管版里的 Pro 和企业版功能在自建包里全部免费开放，也不限客户数、账单数和员工账号数。唯一的官方收费项是去品牌（White Label）：去掉发给客户的 PDF 账单和付款门户上的“Created by Invoice Ninja”标识，每套自建实例每年 40 美元（2026 年 1 月 1 日起从 30 美元上调至 40 美元）。不想自己管服务器，官方托管版最多 5 个客户免费；Ninja Pro 每月 14 美元（年付 140 美元，1 个用户、不限客户数），Enterprise 按人数从每月 18 美元（1–2 人，年付 180 美元）到每月 300 美元（51–100 人）。',
-        detailEn: 'Self-hosting unlocks all Pro and Enterprise features for $0, with unlimited clients, invoices and team users. The one paid add-on is a $40-a-year White-Label license per self-hosted install (raised from $30 on January 1, 2026) to remove “Created by Invoice Ninja” from client-facing PDFs and payment portals. Official hosted plans are free up to 5 clients, $14 a month ($140 a year) for 1-user Ninja Pro with unlimited clients, and $18 to $300 a month ($180 to $3,000 a year) for multi-user Enterprise tiers.',
+        label: '自建基础开票全免，白标授权每年 40 美元（去品牌 + 电子发票）',
+        labelEn: 'Core invoicing free when self-hosted; $40/yr white-label key removes branding and enables e-invoicing',
+        short: '白标年付',
+        shortEn: '$40/yr WL',
+        detail: '自己部署基础开票功能 100% 免费，官方托管版里的 Pro 和企业版功能在自建包里开放，不限客户数、账单数和员工账号数，也自带不限人数的通用 OIDC 单点登录。官方收费项是白标（White Label）LICENSE_KEY：每套自建实例每年 40 美元（2026 年 1 月 1 日起从 30 美元上调至 40 美元），去掉发给客户的 PDF 账单和付款门户上的“Created by Invoice Ninja”标识，同时也是开启电子发票（e-invoicing）所需的授权。不想自己管服务器，官方托管版最多 5 个客户免费；Ninja Pro 每月 14 美元（年付 140 美元，1 个用户、不限客户数），Enterprise 按人数从每月 18 美元（1–2 人，年付 180 美元）到每月 300 美元（51–100 人）。',
+        detailEn: 'Basic invoicing is 100% free when self-hosted: Pro and Enterprise hosted features are unlocked with unlimited clients, invoices and team users, plus built-in generic OIDC sign-in with no user cap. The paid add-on is a $40-a-year White-Label LICENSE_KEY per self-hosted install (raised from $30 on January 1, 2026): it removes “Created by Invoice Ninja” from client-facing PDFs and payment portals and is also the license that enables e-invoicing. Official hosted plans are free up to 5 clients, $14 a month ($140 a year) for 1-user Ninja Pro with unlimited clients, and $18 to $300 a month ($180 to $3,000 a year) for multi-user Enterprise tiers.',
         sources: [
           readme('invoiceninja/invoiceninja'),
           src('去品牌说明', 'White-labeling docs', 'https://invoiceninja.github.io/docs/self-host/self-host-white-labeling'),
@@ -1696,7 +1705,7 @@ const ALL_PROJECTS: OssProject[] = [
     industries: [],
     what: '带逐页阅读分析、密码保护和自定义域名的文档分享与虚拟资料室（VDR），主打替代 DocSend。核心 AGPLv3 搭配 ee 商业目录。',
     whatEn: 'Open-source document sharing and virtual data room platform with page-by-page viewer analytics and custom domains, built as a DocSend alternative under AGPLv3 + commercial ee/.',
-    repoUrl: `${GH}mfts/papermark`,
+    repoUrl: `${GH}papermark/papermark`,
     homepage: 'https://www.papermark.com/',
     facts: {
       commercial: {
@@ -1705,14 +1714,15 @@ const ALL_PROJECTS: OssProject[] = [
         labelEn: 'AGPLv3 core + commercial ee/ directory',
         short: 'AGPL+商业',
         shortEn: 'AGPL + ee/',
-        detail: '仓库根目录 LICENSE 声明双轨制：ee/ 与 app/(ee) 目录受商业协议 ee/LICENSE 约束；其余部分采用 AGPLv3。未修改核心代码直接部署内部使用可行，但若修改 AGPL 部分代码并对外部访客提供网络访问，需向用户公开改动源码。',
-        detailEn: 'The repository LICENSE sets a dual split: everything under ee/ and app/(ee) is governed by the commercial ee/LICENSE, while the remaining codebase is under AGPLv3. Running unmodified code avoids extra sharing duties, whereas modifying AGPL code served to external viewers triggers AGPL source disclosure.',
+        detail: '仓库根目录 LICENSE 声明双轨制：ee/ 与 app/(ee) 目录受商业协议 ee/LICENSE.md 约束；其余部分采用 AGPLv3。未修改核心代码直接部署内部使用可行，但若修改 AGPL 部分代码并对外部访客提供网络访问，需向用户公开改动源码。',
+        detailEn: 'The repository LICENSE sets a dual split: everything under ee/ and app/(ee) is governed by the commercial ee/LICENSE.md, while the remaining codebase is under AGPLv3. Running unmodified code avoids extra sharing duties, whereas modifying AGPL code served to external viewers triggers AGPL source disclosure.',
         sources: [
-          license(`${GH}mfts/papermark/blob/main/LICENSE`),
-          readme('mfts/papermark'),
+          license(`${GH}papermark/papermark/blob/main/LICENSE`),
+          src('企业目录许可', 'Enterprise LICENSE', `${GH}papermark/papermark/blob/main/ee/LICENSE.md`),
+          readme('papermark/papermark'),
         ],
       },
-      alive: alive('2026-08-28', 'mfts/papermark', false, '2026-11-15'),
+      alive: alive('2026-08-28', 'papermark/papermark', false, '2026-11-15'),
       deploy: {
         verdict: 'bad',
         label: '门槛高',
@@ -1720,7 +1730,7 @@ const ALL_PROJECTS: OssProject[] = [
         detail: '官方 README 没有一键打包的轻量自建脚本：除 Node.js >=18.17 和 PostgreSQL 外，还依赖外部对象存储（AWS S3 或 Vercel Blob）、Resend 邮件服务，以及通过 Python pipenv 和 tinybird-cli 推送数据源的 Tinybird 实时分析环境。',
         detailEn: 'README lists a multi-vendor architecture rather than a standalone single container: alongside Node.js >=18.17 and PostgreSQL, self-hosting depends on AWS S3 or Vercel Blob storage, Resend for emails, and provisioning Tinybird analytics pipelines via Python pipenv and tinybird-cli.',
         sources: [
-          readme('mfts/papermark'),
+          readme('papermark/papermark'),
         ],
       },
       cost: {
@@ -1729,11 +1739,11 @@ const ALL_PROJECTS: OssProject[] = [
         labelEn: 'Cloud €24–€99/mo; self-hosting adds external cloud dependencies',
         short: '云端更省心',
         shortEn: 'Cloud deps',
-        detail: '自建 AGPL 核心免软件授权费，但仍需支付数据库、对象存储、Resend 和 Tinybird 用量。2026 年 11 月官网云端报价（欧元，按年计费）：Free 0 欧元（1 人/50 份文档）；Pro 24 欧元/月（1 人/去官方标）；Business 59 欧元/月（含 3 人，加席 20 欧元/人，含自定义域名与防截屏）；Data Rooms Base Plus 99 欧元/月（含 3 人，加席 33 欧元/人，含动态水印、NDA 与精细权限）。',
-        detailEn: 'Self-hosting avoids license fees on the AGPL core while still requiring paid/managed PostgreSQL, S3/Vercel Blob, Resend and Tinybird capacity. Official Papermark Cloud pricing (checked November 15, 2026; annual billing): Free €0/mo (1 user, 50 docs), Pro €24/mo (1 user, custom branding), Business €59/mo (3 seats included, +€20/extra seat, custom domain & API/webhooks), and Data Rooms Base Plus €99/mo (3 seats, +€33/extra seat, NDA gating & dynamic watermarks).',
+        detail: '自建 AGPL 核心免软件授权费，但仍需支付数据库、对象存储、Resend 和 Tinybird 用量；自建要合法启用 ee/ 目录里的白标与企业功能，需向官方单独申请 Enterprise 报价。2026 年 11 月官网云端报价（欧元，按年计费）：Free 0 欧元（1 人/50 份文档）；Pro 24 欧元/月（1 人/去官方标）；Business 59 欧元/月（含 3 人，加席 20 欧元/人，含自定义域名与防截屏）；Data Rooms Base Plus 99 欧元/月（含 3 人，加席 33 欧元/人，含动态水印、NDA 与精细权限）。',
+        detailEn: 'Self-hosting avoids license fees on the AGPL core while still requiring paid/managed PostgreSQL, S3/Vercel Blob, Resend and Tinybird capacity; legally enabling the ee/ white-label and enterprise modules on your own server requires a separate Enterprise quote. Official Papermark Cloud pricing (checked November 15, 2026; annual billing): Free €0/mo (1 user, 50 docs), Pro €24/mo (1 user, custom branding), Business €59/mo (3 seats included, +€20/extra seat, custom domain & API/webhooks), and Data Rooms Base Plus €99/mo (3 seats, +€33/extra seat, NDA gating & dynamic watermarks).',
         sources: [
           src('官方定价', 'Pricing', 'https://www.papermark.com/pricing'),
-          readme('mfts/papermark'),
+          readme('papermark/papermark'),
         ],
       },
       caveats: {
@@ -1743,7 +1753,7 @@ const ALL_PROJECTS: OssProject[] = [
         detail: '逐页停留时长统计完全建立在 Tinybird 数据管线之上，且白标与企业高级功能位于 ee/ 商业目录。小团队如果只是融资阶段想替代按人头收费的 DocSend，直接用每月 59 或 99 欧元的 Papermark Cloud 通常比自建维护 S3 + Tinybird 更省总成本。',
         detailEn: 'Page-by-page viewer analytics depend on Tinybird pipelines, and full enterprise white-labeling/SSO sits inside the commercial ee/ directory. Small fundraising or sales teams looking strictly to cut DocSend bills often save more time on Papermark Cloud (€59–€99/mo) than managing four external SaaS backends themselves.',
         sources: [
-          readme('mfts/papermark'),
+          readme('papermark/papermark'),
           src('官方定价', 'Pricing', 'https://www.papermark.com/pricing'),
         ],
       },
@@ -1757,8 +1767,8 @@ const ALL_PROJECTS: OssProject[] = [
     logo: '/oss/logos/activepieces.png',
     use: 'automation',
     industries: [],
-    what: 'MIT 开源核心的流程与 AI 自动化工具，用 TypeScript 写插件生态，主打低门槛替代 Zapier 且团队版按扁平月费封顶。',
-    whatEn: 'MIT-core workflow and AI automation builder with TypeScript pieces, positioned as a flat-rate team alternative to Zapier and n8n.',
+    what: 'MIT 开源核心的流程与 AI 自动化工具，用 TypeScript 写插件生态，主打低门槛替代 Zapier，团队版 200 美元/月（每月 5 万积分封顶）。',
+    whatEn: 'MIT-core workflow and AI automation builder with TypeScript pieces, positioned as a lower-cost team alternative to Zapier and n8n ($200/mo Team, capped at 50,000 credits/mo).',
     repoUrl: `${GH}activepieces/activepieces`,
     homepage: 'https://www.activepieces.com/',
     facts: {
@@ -1790,12 +1800,12 @@ const ALL_PROJECTS: OssProject[] = [
       },
       cost: {
         verdict: 'good',
-        label: '社区版自建 0 美元；Team 扁平 200 美元/月含 25 人与 SSO',
-        labelEn: '$0 self-hosted CE; $200/mo flat Team tier (25 users + SSO)',
-        short: '扁平团队价',
-        shortEn: 'Flat team tier',
-        detail: '自建开源 MIT 社区版免软件许可费（无运行次数限制，仅承担服务器开销）。2026 年 11 月官方定价：Cloud Free 免费（1,000 credits/月，最多 5 人）；Plus 20 美元/月扁平价（10,000 credits，最多 5 人，可自带 AI Key）；Team 200 美元/月扁平价（年付约 166 美元/月，含 50,000 credits、无限项目、25 个用户席位、SSO 与标准角色权限）；Ultimate 定制报价。',
-        detailEn: 'Self-hosting the MIT Community edition carries $0 software license fees (only VPS/database costs). Official pricing checked November 19, 2026: Cloud Free $0 (1,000 credits/mo, up to 5 users), Plus $20/mo flat (10,000 credits, up to 5 users, BYO AI keys), Team $200/mo flat (save 2 months billed annually; 50,000 credits, unlimited projects, 25 users, SSO and standard roles), and custom Ultimate for dedicated workers and SCIM.',
+        label: '社区版自建 0 美元；Team 200 美元/月含 25 人与 SSO（每月 5 万积分封顶）',
+        labelEn: '$0 self-hosted CE; $200/mo Team tier (25 users + SSO, 50k credits/mo cap)',
+        short: '团队价封顶',
+        shortEn: 'Capped team tier',
+        detail: '自建开源 MIT 社区版免软件许可费（无运行次数限制，仅承担服务器开销；生产环境另需 S3 对象存储）。2026 年 11 月官方定价：Cloud Free 免费（1,000 credits/月，最多 5 人）；Plus 20 美元/月（10,000 credits，最多 5 人，可自带 AI Key）；Team 200 美元/月，云端或自建（on-prem）同价（年付相当于省 2 个月，约 166.67 美元/月），含 25 个用户席位、无限项目、SSO 与标准角色权限，但每月封顶 50,000 credits，超出按每 credit 0.007 美元计费，并非无限扁平价；Ultimate 定制报价，才包含审计日志、自定义 RBAC、SCIM 与 Git Sync；白标 Embed 约 36,000 美元/年。',
+        detailEn: 'Self-hosting the MIT Community edition carries $0 software license fees (only VPS/database costs, plus mandatory S3 object storage in production). Official pricing checked November 19, 2026: Cloud Free $0 (1,000 credits/mo, up to 5 users), Plus $20/mo (10,000 credits, up to 5 users, BYO AI keys), Team $200/mo on Cloud or on-prem (save 2 months billed annually ≈ $166.67/mo; 25 users, unlimited projects, SSO and standard roles) capped at 50,000 credits/mo with $0.007/credit overage — not unlimited flat. Audit logs, custom RBAC, SCIM and Git Sync need custom-quoted Ultimate, and white-label Embed runs about $36k/yr.',
         sources: [
           src('官方定价', 'Pricing', 'https://www.activepieces.com/pricing'),
         ],
@@ -1804,11 +1814,12 @@ const ALL_PROJECTS: OssProject[] = [
         verdict: 'caution',
         label: '多项目协作、SSO、白标嵌入位于 ee 商业目录，生产强依赖 S3',
         labelEn: 'Multi-project RBAC, SSO and white-label embed live under ee/; production requires S3',
-        detail: '两项实操边界：1) 免费 MIT 社区版不含多项目隔离、SSO、审计日志与白标 Embed SDK，需要商业授权（Team $200/月覆盖 25 人常规 SSO，Embed 白标另行商务报价）；2) 生产环境 S3 对象存储是硬性依赖而非可选项，缺失会导致流程包和日志堆积在应用容器里。',
-        detailEn: 'Two practical boundaries: (1) multi-project isolation, SSO, audit logs and white-label Embed SDK live under proprietary ee/ paths (Team $200/mo covers 25-user SSO, while Embed is enterprise-quoted); (2) S3-compatible object storage is a documented hard requirement in production rather than optional.',
+        detail: '两项实操边界：1) 免费 MIT 社区版不含多项目隔离、SSO、审计日志与白标 Embed SDK，需要商业授权（Team $200/月覆盖 25 人标准角色与 SSO，每月 5 万积分封顶；审计日志、自定义 RBAC、SCIM 与 Git Sync 需 Ultimate 定制报价；Embed 白标约 $36k/年）；2) 生产环境 S3 对象存储是硬性依赖而非可选项，缺失会导致流程包和日志堆积在应用容器里。',
+        detailEn: 'Two practical boundaries: (1) multi-project isolation, SSO, audit logs and white-label Embed SDK live under proprietary ee/ paths (Team $200/mo covers standard roles and SSO for 25 users with a 50,000-credit monthly cap; audit logs, custom RBAC, SCIM and Git Sync need custom-quoted Ultimate; Embed is about $36k/yr); (2) S3-compatible object storage is a documented hard requirement in production rather than optional.',
         sources: [
           src('企业目录许可', 'Enterprise LICENSE', `${GH}activepieces/activepieces/blob/main/packages/ee/LICENSE`),
           src('生产部署架构', 'Production Setup', 'https://www.activepieces.com/docs/install/configure-operate/production-setup'),
+          src('官方定价', 'Pricing', 'https://www.activepieces.com/pricing'),
         ],
       },
     },
@@ -1828,12 +1839,12 @@ const ALL_PROJECTS: OssProject[] = [
     facts: {
       commercial: {
         verdict: 'caution',
-        label: 'AGPLv3 核心 + Apache-2.0 SDK + 专有企业特性开关',
-        labelEn: 'AGPLv3 core + Apache-2.0 clients + proprietary enterprise flag',
-        short: 'AGPL+企业版',
-        shortEn: 'AGPL + EE',
-        detail: '仓库根目录 LICENSE 声明：backend/ 与 frontend/ 默认采用 AGPLv3（不改代码直接运行无开源义务；修改源码并对外提供网络访问须以 AGPLv3 公开改动），各语言客户端 SDK 与 OpenFlow 规范为 Apache-2.0；凡需编译标志 enterprise 或正版许可校验触发的企业代码受专有商业许可约束。',
-        detailEn: 'Root LICENSE defines a three-part split: backend/ and frontend/ are AGPLv3 (no source sharing when run unmodified; network copyleft if modified), client SDKs and the OpenFlow spec are Apache-2.0, and code gated by the "enterprise" compile flag or license check is proprietary.',
+        label: 'AGPLv3 源码 + 专有企业代码；官方 CE 镜像含非公开代码',
+        labelEn: 'AGPLv3 source + proprietary enterprise code; official CE builds bundle non-public code',
+        short: 'AGPL+专有构建',
+        shortEn: 'AGPL + proprietary',
+        detail: '仓库根目录 LICENSE 声明：backend/ 与 frontend/ 源码默认采用 AGPLv3（不改代码直接运行无开源义务；修改源码并对外提供网络访问须以 AGPLv3 公开改动），各语言客户端 SDK 与 OpenFlow 规范为 Apache-2.0；凡需编译标志 enterprise 或正版许可校验触发的企业代码受专有商业许可约束。关键细节：官方发布的 ghcr.io/windmill-labs/windmill 社区版 Docker 镜像与 GitHub 二进制包含非公开的专有代码，LICENSE 对其附加了禁止转售、禁止包装再分发、禁止修改等条款；想要纯 AGPLv3 的构建，必须自己从源码编译且不开启 enterprise 开关。',
+        detailEn: 'Root LICENSE defines a three-part split: backend/ and frontend/ source is AGPLv3 (no source sharing when run unmodified; network copyleft if modified), client SDKs and the OpenFlow spec are Apache-2.0, and code gated by the "enterprise" compile flag or license check is proprietary. Crucially, the official ghcr.io/windmill-labs/windmill Community Edition Docker images and GitHub release binaries contain proprietary non-public code, and the LICENSE attaches no-resale, no-wrapping and no-modification terms to them; a pure AGPLv3 build requires compiling from source without the enterprise flag.',
         sources: [
           license(`${GH}windmill-labs/windmill/blob/main/LICENSE`),
         ],
@@ -1851,23 +1862,24 @@ const ALL_PROJECTS: OssProject[] = [
         ],
       },
       cost: {
-        verdict: 'good',
-        label: '社区版 0 美元含最多 10 人 SSO；自建企业版 120 美元/月起',
-        labelEn: '$0 CE (up to 10 SSO users); Self-Hosted Enterprise from $120/mo',
-        short: '含 10 人 SSO',
-        shortEn: '10 free SSO',
-        detail: '2026 年 11 月官网定价：Free and Open-Source 自建 0 美元/月，不限执行次数，且自带最多 10 个 SSO 用户与 100 名免费应用访客（30 天内）。自建 Enterprise 120 美元/月起（含 1 名 Builder 20 美元/月 + 10 美元/月 Non-builder + Worker 配额），解锁审计日志、SAML 组同步、无上限 SSO、S3 分布式依赖缓存与商业授权。',
-        detailEn: 'Official pricing checked November 19, 2026: Free and Open-Source self-hosting is $0/month with unlimited executions, up to 10 SSO users and 100 free app guests per 30 days. Self-Hosted Enterprise starts from $120/month (scaling with $20/mo per builder, $10/mo per non-builder and worker compute units) to unlock audit logs, SAML group sync, uncapped SSO, S3 distributed dependency cache and commercial SLA.',
+        verdict: 'caution',
+        label: '社区版 0 美元但有用量上限（内置 OAuth SSO 限 10 人，无 SAML）；自建企业版 120 美元/月起',
+        labelEn: '$0 CE with caps (built-in OAuth SSO for 10 users, no SAML); Self-Hosted Enterprise from $120/mo',
+        short: '免费有上限',
+        shortEn: 'Free with caps',
+        detail: '2026 年 11 月官网定价：Free and Open-Source 自建 0 美元/月，不限执行次数，但社区版有硬上限：最多 3 个工作区、共 50 名用户、4 个用户组、10 GiB 存储、每天 100 次邮件触发、日志最多保留 30 天；内置 OAuth SSO 最多 10 名用户，且不含 SAML、SCIM 与自定义 OAuth（需企业版）。自建 Enterprise 120 美元/月起，即 1 名 Builder（20 美元/月）+ 2 个 Worker 计算单元（100 美元/月）；10 名工程师的团队按 Builder 人头计算实际为每月 300 美元以上。企业版解锁 SAML/SCIM、无上限 SSO、审计日志、S3 分布式依赖缓存与商业授权。',
+        detailEn: 'Official pricing checked November 19, 2026: Free and Open-Source self-hosting is $0/month with unlimited executions, but CE has hard caps: max 3 workspaces, 50 total users, 4 groups, 10 GiB storage, 100 email triggers/day and ≤30-day log retention; built-in OAuth SSO is capped at 10 users, with no SAML, SCIM or custom OAuth (Enterprise only). Self-Hosted Enterprise starts at $120/month = 1 builder ($20) + 2 worker compute units ($100); a 10-engineer team lands at $300+/month once every builder seat is counted. Enterprise unlocks SAML/SCIM, uncapped SSO, audit logs, S3 distributed dependency cache and a commercial license.',
         sources: [
           src('官方定价', 'Pricing', 'https://www.windmill.dev/pricing'),
+          src('套餐细则', 'Plan details', 'https://www.windmill.dev/docs/misc/plans_details/'),
         ],
       },
       caveats: {
         verdict: 'caution',
-        label: '偏代码工程师向；多人实时协作、审计日志与 SAML 组同步在企业版',
-        labelEn: 'Code-first learning curve; multiplayer IDE, audit logs and SAML group sync require EE',
-        detail: '与 n8n / Activepieces 的无代码连线思路不同，Windmill 核心优势在于写真实 Python / TypeScript / SQL 脚本，非技术运营人员上手门槛更高。另外虽然免费版慷慨给了 10 个基础 SSO 名额，但 SAML 组同步、完整审计日志、S3 依赖缓存和多人实时协同编辑（Multiplayer）仍锁定在自建企业版（$120/月起）。',
-        detailEn: 'Unlike no-code node builders such as n8n or Activepieces, Windmill shines when engineers write real Python, TypeScript and SQL—making it steeper for non-technical ops staff. While free CE uniquely includes up to 10 SSO users, SAML group sync, audit logs, S3 dependency caching and multiplayer editing require Enterprise ($120+/mo).',
+        label: '偏代码工程师向；SAML、SCIM、审计日志与多人协同在企业版',
+        labelEn: 'Code-first learning curve; SAML, SCIM, audit logs and multiplayer IDE require EE',
+        detail: '与 n8n / Activepieces 的无代码连线思路不同，Windmill 核心优势在于写真实 Python / TypeScript / SQL 脚本，非技术运营人员上手门槛更高。另外免费版的内置 OAuth SSO 只覆盖 10 名用户，SAML、SCIM、自定义 OAuth、完整审计日志、S3 依赖缓存和多人实时协同编辑（Multiplayer）仍锁定在自建企业版（$120/月起）；官方 CE 镜像本身也含专有代码。',
+        detailEn: 'Unlike no-code node builders such as n8n or Activepieces, Windmill shines when engineers write real Python, TypeScript and SQL—making it steeper for non-technical ops staff. Free CE includes built-in OAuth SSO for only up to 10 users; SAML, SCIM, custom OAuth, audit logs, S3 dependency caching and multiplayer editing require Enterprise ($120+/mo), and the official CE images themselves bundle proprietary code.',
         sources: [
           src('官方定价', 'Pricing', 'https://www.windmill.dev/pricing'),
           src('自托管文档', 'Self-host docs', 'https://www.windmill.dev/docs/advanced/self_host'),

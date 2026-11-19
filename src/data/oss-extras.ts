@@ -317,10 +317,10 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
       src: '/oss/shots/n8n.jpg',
       width: 1280,
       height: 800,
-      alt: 'n8n 2.35.0 社区版工作流执行历史界面：左侧列出 6 次成功的 Webhook 批处理记录，右侧画布展示 4 节点流程成功处理 10,000 条 JSON 记录。',
-      altEn: 'n8n 2.35.0 Community Edition Executions view: six succeeded webhook runs on the left and a four-node workflow canvas processing 10,000 JSON items in 249 ms (2 MB execution payload) on the right.',
-      caption: 'n8n 2.35.0 社区版实跑截图（2026-11-19）：10,000 条 JSON 批处理耗时 249 ms、单次记录 2 MB，左上角可见社区版仅提供 Personal 个人空间。',
-      captionEn: 'Hands-on capture of n8n 2.35.0 Community Edition (2026-11-19): 10,000-item JSON batch succeeded in 249 ms (2 MB saved execution); top-left shows Personal-only workspace scope.',
+      alt: 'n8n 2.35.0 社区版工作流执行历史界面：左侧列出 6 次成功的 Webhook 批处理记录，右侧画布中名为 Expand 2,500 Records 的节点成功处理第 6 次运行的 10,000 条压力负载。',
+      altEn: 'n8n 2.35.0 Community Edition Executions view: six succeeded webhook runs on the left and a four-node workflow canvas on the right, where the node titled Expand 2,500 Records processed Run #6’s 10,000-item stress payload in 249 ms (2 MB execution payload).',
+      caption: 'n8n 2.35.0 社区版实跑截图（2026-11-19，本地 Windows 主机，Node.js v22.23.1）：第 6 次运行把 10,000 条压力负载送入名为“Expand 2,500 Records”的节点（标题沿用默认批量），耗时 249 ms、单次记录 2 MB；左侧执行列表第 1 次运行为 340 ms 冷启动，之后热态 2,500 条批处理稳定在 105–117 ms。左上角可见社区版仅提供 Personal 个人空间。',
+      captionEn: 'Hands-on capture of n8n 2.35.0 Community Edition (2026-11-19, local Windows host, Node.js v22.23.1): Run #6 sent a 10,000-item stress payload through the node titled “Expand 2,500 Records” (title reflects the default batch size) in 249 ms (2 MB saved execution). Run #1 in the left execution rail shows the 340 ms cold start before warm 2,500-item runs settled to 105–117 ms. Top-left shows Personal-only workspace scope.',
       sourceUrl: 'https://github.com/n8n-io/n8n',
       sourceLabel: '查看上游仓库',
       sourceLabelEn: 'Upstream repo',
@@ -338,10 +338,10 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
   },
   invoiceninja: {
     fit: {
-      considerIf: '小团队或自由职业者想在自己的服务器上管报价单、账单、周期扣款和客户付款页，自建版功能全开、不按人数收费。',
-      considerIfEn: 'You are a small team or freelancer who wants quotes, invoices, recurring billing and a client payment portal on your own server, with every feature unlocked and no per-user fee.',
-      lookElsewhereIf: '想把它做成托管开票服务卖给别人（ELv2 不允许），或者一点 Invoice Ninja 标识都不能有：每年 40 美元的去品牌授权只管客户看到的部分，员工后台仍带官方标识。',
-      lookElsewhereIfEn: 'You plan to sell it as a hosted invoicing service (ELv2 does not allow it), or you cannot have any Invoice Ninja branding at all: the $40-a-year white-label license covers only what clients see, and the staff admin keeps the branding.',
+      considerIf: '小团队或自由职业者想在自己的服务器上管报价单、账单、周期扣款和客户付款页，自建版基础开票功能 100% 免费、不按人数收费（电子发票需 $40/年白标授权）。',
+      considerIfEn: 'You are a small team or freelancer who wants quotes, invoices, recurring billing and a client payment portal on your own server; core invoicing is 100% free with no per-user fee (e-invoicing needs the $40/yr white-label key).',
+      lookElsewhereIf: '想把它做成托管开票服务卖给别人（ELv2 不允许），或者一点 Invoice Ninja 标识都不能有：每年 40 美元的白标 LICENSE_KEY 只管客户看到的部分（同时解锁电子发票），员工后台仍带官方标识。',
+      lookElsewhereIfEn: 'You plan to sell it as a hosted invoicing service (ELv2 does not allow it), or you cannot have any Invoice Ninja branding at all: the $40-a-year white-label LICENSE_KEY covers only what clients see (and enables e-invoicing), and the staff admin keeps the branding.',
       confirmed: true,
     },
   },
@@ -383,19 +383,19 @@ const ALL_EXTRAS: Record<string, OssExtras> = {
   },
   activepieces: {
     fit: {
-      considerIf: '需要 MIT 核心开源且团队共享与 SSO 价格扁平可控（Team $200/月涵盖 25 人）的 Zapier/n8n 替代方案，团队熟悉 TypeScript 且愿意按需配置 Postgres + Redis + S3。',
-      considerIfEn: 'You want a permissive MIT-core workflow builder with flat-rate team pricing ($200/mo for 25 users + SSO) and TypeScript extensibility, and can run Postgres, Redis and S3 in production.',
-      lookElsewhereIf: '希望完全零外部对象存储单机运行大规模生产流，或要求免费自建版就内置多项目权限、白标 Embed SDK 与 SCIM。',
-      lookElsewhereIfEn: 'You want zero S3 object-storage dependencies in production, or expect free Community Edition to include multi-project isolation, white-label Embed SDK and SCIM.',
+      considerIf: '需要 MIT 核心开源且团队共享与 SSO 价格可控（Team $200/月涵盖 25 人、每月 5 万积分，超出 $0.007/积分）的 Zapier/n8n 替代方案，团队熟悉 TypeScript 且愿意按需配置 Postgres + Redis + S3。',
+      considerIfEn: 'You want a permissive MIT-core workflow builder with predictable team pricing ($200/mo Team for 25 users + SSO, capped at 50,000 credits/mo plus $0.007/credit overage) and TypeScript extensibility, and can run Postgres, Redis and S3 in production.',
+      lookElsewhereIf: '希望完全零外部对象存储单机运行大规模生产流，或要求免费自建版就内置多项目权限、白标 Embed SDK 与 SCIM（审计日志、自定义 RBAC、SCIM 与 Git Sync 在 Ultimate 另行报价，Embed 约 $36k/年）。',
+      lookElsewhereIfEn: 'You want zero S3 object-storage dependencies in production, or expect free Community Edition to include multi-project isolation, white-label Embed SDK and SCIM (audit logs, custom RBAC, SCIM and Git Sync sit in custom-priced Ultimate; Embed is about $36k/yr).',
       confirmed: true,
     },
   },
   windmill: {
     fit: {
-      considerIf: '工程团队希望直接用 Python / TypeScript / SQL 写可版本控制的自动化流和内部后台，想要仅靠 PostgreSQL（免装 Redis）的自托管架构，且看重免费版自带最多 10 个 SSO 名额。',
-      considerIfEn: 'Your engineers prefer writing versioned Python, TypeScript and SQL over dragging no-code boxes, want a Postgres-only stack without Redis, and value up to 10 free SSO users on CE.',
-      lookElsewhereIf: '主要由非技术运营人员拖拽搭自动化（n8n / Activepieces 更直观），或合规要求免费就提供审计日志与 SAML 组同步（这两项锁在 $120+/月企业版）。',
-      lookElsewhereIfEn: 'Non-technical ops staff will build most automations via visual drag-and-drop, or compliance requires free audit logs and SAML group sync (both sit in Enterprise from $120/mo).',
+      considerIf: '工程团队希望直接用 Python / TypeScript / SQL 写可版本控制的自动化流和内部后台，想要仅靠 PostgreSQL（免装 Redis）的自托管架构，且免费版内置 OAuth SSO 最多 10 人、3 个工作区、50 名用户的上限够用。',
+      considerIfEn: 'Your engineers prefer writing versioned Python, TypeScript and SQL over dragging no-code boxes, want a Postgres-only stack without Redis, and CE limits fit (built-in OAuth SSO for up to 10 users, 3 workspaces, 50 users).',
+      lookElsewhereIf: '主要由非技术运营人员拖拽搭自动化（n8n / Activepieces 更直观），或合规要求免费就提供 SAML、SCIM、自定义 OAuth 与审计日志（均需 $120+/月企业版），或必须使用纯 AGPL 二进制：官方 CE 镜像含非公开专有代码，纯 AGPL 需不带 enterprise 开关自行编译。',
+      lookElsewhereIfEn: 'Non-technical ops staff will build most automations via drag-and-drop, compliance needs free SAML, SCIM, custom OAuth or audit logs (all Enterprise from $120/mo), or you need pure-AGPL binaries: official CE images bundle proprietary code, so pure AGPL means building from source without the enterprise flag.',
       confirmed: true,
     },
   },
@@ -426,12 +426,12 @@ const SEARCH_SUMMARY_EN: Record<string, string> = {
   odoo: 'The Community edition is free under LGPL-3.0, but leaves out full accounting, barcode, shop floor, PLM and Quality. Enterprise is $31.10 per user a month.',
   n8n: 'Free to self-host for internal use. Hosting for others or letting clients configure workflows requires a commercial license. Cloud starts at €20 a month, billed annually.',
   twenty: 'Free to self-host under AGPL-3.0 on 2 GB of RAM. Row-level permissions and SSO are $19 per user a month. Twenty Cloud from $9 per user a month.',
-  invoiceninja: 'Free to self-host under ELv2 with every feature unlocked; no reselling as SaaS. Removing branding clients see is $40 a year. Hosted plans from $14 a month.',
+  invoiceninja: 'Free to self-host under ELv2 for core invoicing; no reselling as SaaS. A $40/yr white-label key removes client branding and enables e-invoicing.',
   'cal-com': 'Cal.com Cloud is $0 solo and $12/user/month for Teams ($28 for Org SSO). Public MIT repo cal.diy omits Teams/SSO and is recommended for personal use only.',
   appsmith: 'Appsmith Community Edition is free under Apache-2.0 with unlimited self-hosted users (needs 8 GB RAM Docker host). Business is $15/user/mo; SAML SSO is $2,500/mo.',
   papermark: 'Papermark Cloud starts at €24/mo Pro and €59–€99/mo for Business/Data Rooms. Self-hosting AGPL core requires Postgres, S3/Blob, Resend and Tinybird.',
-  activepieces: 'Activepieces core is free under MIT; production self-hosting requires Postgres, Redis and S3. Cloud Plus is $20/mo flat and Team is $200/mo for 25 users + SSO.',
-  windmill: 'Windmill Community is free under AGPLv3 on Postgres (no Redis) with up to 10 SSO users. Self-Hosted Enterprise starts from $120/mo for audit logs and SAML.',
+  activepieces: 'Activepieces core is free under MIT; production self-hosting needs Postgres, Redis and S3. Team is $200/mo for 25 users + SSO, capped at 50,000 credits/mo.',
+  windmill: 'Windmill source is AGPLv3, but official CE images bundle proprietary code. CE: OAuth SSO for 10 users, no SAML/SCIM. Enterprise from $120/mo.',
 };
 
 // 英文详情页的标题默认是“Is 项目名 free? Pricing, license and caveats”。名字里已经带 open source 的不适合这么问，在这里单独写。
@@ -440,7 +440,7 @@ const SEARCH_SUMMARY_EN: Record<string, string> = {
 const SEARCH_TITLE_EN: Record<string, string> = {
   moodle: 'Moodle pricing: is it free? MoodleCloud plans and caveats',
   opensourcepos: 'Open Source Point of Sale: pricing, license and caveats',
-  jupyterhub: 'What is JupyterHub? Is it free? Pricing, license and caveats',
+  jupyterhub: 'What is JupyterHub? Free? Pricing, license and caveats',
   medusa: 'Is the Medusa commerce platform free? Pricing and caveats',
   twenty: 'Is Twenty CRM free? Pricing, license and caveats',
 };
@@ -455,15 +455,15 @@ const PRICE_ANSWER_EN: Record<string, string> = {
   jupyterhub: 'Free under BSD-3-Clause; you pay only for the Linux server. It needs at least 1 GB of RAM to install, and memory scales as concurrent users × per-user memory limit + 128 MB (estimating 40% to 60% of class size online at once).',
   chatwoot: 'Community is free to self-host. The self-hosted Premium Support and Enterprise tiers cost US$19 and US$99 per agent per month, billed annually. Prices checked November 9, 2026.',
   medusa: 'The core is free under MIT (self-hosting needs a 2 GB+ RAM host, PostgreSQL and Redis). Managed Medusa Cloud plans start at $29, $99 and $299 a month with no fee on sales volume; staff roles (RBAC) and SSO require an Enterprise plan priced on request.',
-  n8n: 'Self-hosted Community is free for internal use. Business costs €667 a month with 40,000 monthly workflow executions. Cloud Starter and Pro cost €20 and €50 a month. All listed paid rates are billed annually. Prices checked November 9, 2026.',
+  n8n: 'Self-hosted Community is free for internal use. Business costs €667 a month with 40,000 monthly workflow executions (the Startup Plan halves self-hosted Business to about €333.50 a month for companies under 20 staff). Cloud Starter and Pro cost €20 and €50 a month. All listed paid rates are billed annually. Prices checked November 19, 2026.',
   twenty: 'Self-hosting is free under AGPL-3.0 for unlimited users and records (needs 2 GB+ RAM, PostgreSQL and Redis). Row-level permissions and SSO on your own server are $19 per user a month billed yearly ($25 monthly). Twenty Cloud is $9 or $39 per user a month billed yearly.',
-  invoiceninja: 'Self-hosting is free with every feature unlocked and unlimited clients and users. Removing “Created by Invoice Ninja” from client PDFs and the portal is $40 a year per install. Hosted plans are free up to 5 clients, then $14 a month for Ninja Pro or from $18 a month for Enterprise.',
+  invoiceninja: 'Self-hosting is free for core invoicing with unlimited clients and users, including built-in generic OIDC sign-in. The $40-a-year white-label LICENSE_KEY per install removes “Created by Invoice Ninja” from client PDFs and the portal and also enables e-invoicing. Hosted plans are free up to 5 clients, then $14 a month for Ninja Pro or from $18 a month for Enterprise.',
   zammad: 'Free to self-host under AGPL-3.0; you pay for the server (minimum 2 cores and 6 GB of RAM, plus 4 GB if Elasticsearch runs on the same host). Official hosted plans start at €7 per agent a month (up to 5 agents), €16 (up to 35) and €25 (unlimited), billed annually before VAT.',
   'cal-com': 'Cal.com Cloud lists Individuals at $0/month (unlimited event types), Teams at $12/user/month billed yearly ($15 monthly), and Organizations at $28/user/month ($37 monthly, adding SAML SSO and SCIM). The public MIT repo cal.diy is free to self-host for personal, non-production use but omits Teams and SSO. Prices checked November 15, 2026.',
   appsmith: 'Self-hosting the Apache-2.0 Community edition (appsmith-ce) is free for unlimited users on an 8 GB+ RAM host. Appsmith Cloud Free covers up to 5 users; Business costs $15 per user a month (up to 99 users) and Enterprise starts at $2,500 a month for 100 users (required for SAML / OIDC SSO and SCIM). Prices checked November 15, 2026.',
   papermark: 'Self-hosting the AGPLv3 core has no license fee, though you pay for PostgreSQL, S3/Vercel Blob storage, Resend emails and Tinybird analytics pipelines. Official Papermark Cloud lists Free at €0/mo (1 user, 50 docs), Pro at €24/mo (1 user), Business at €59/mo (3 seats, +€20/extra seat) and Data Rooms Base Plus at €99/mo (3 seats, +€33/extra seat) billed annually. Prices checked November 15, 2026.',
-  activepieces: 'Self-hosting the MIT Community edition costs $0 in software fees (production architecture uses PostgreSQL, Redis and S3). Official pricing lists Free at $0/mo (1,000 credits, up to 5 users), Plus at $20/mo flat (10,000 credits, up to 5 users) and Team at $200/mo flat (50,000 credits, 25 users, unlimited projects and SSO). Prices checked November 19, 2026.',
-  windmill: 'Self-hosting the AGPLv3 Community edition is $0/month with unlimited executions and up to 10 SSO users on a Postgres-only stack (2 GB RAM per worker container). Self-Hosted Enterprise starts from $120/month ($20/builder, $10/non-builder plus workers) to unlock audit logs, SAML group sync and uncapped SSO. Prices checked November 19, 2026.',
+  activepieces: 'Self-hosting the MIT Community edition costs $0 in software fees (production architecture requires PostgreSQL, Redis and S3 object storage). Official pricing lists Free at $0/mo (1,000 credits, up to 5 users), Plus at $20/mo (10,000 credits, up to 5 users) and Team at $200/mo on Cloud or on-prem ($166.67/mo billed annually; 25 users, unlimited projects, standard roles and SSO), capped at 50,000 credits/mo with $0.007/credit overage. Audit logs, custom RBAC, SCIM and Git Sync need Ultimate (custom quote); white-label Embed is about $36k/yr. Prices checked November 19, 2026.',
+  windmill: 'Windmill source is AGPLv3, but the official ghcr.io/windmill-labs/windmill CE images and GitHub binaries bundle proprietary non-public code (no resale, wrapping or modification); pure AGPL means building from source without the enterprise flag. CE is $0/month on a Postgres-only stack (2 GB RAM per worker) with caps: 3 workspaces, 50 users, 4 groups, 10 GiB storage, 100 email triggers/day, ≤30-day logs, built-in OAuth SSO for up to 10 users and no SAML, SCIM or custom OAuth. Self-Hosted Enterprise starts at $120/month (1 builder at $20 + 2 workers at $100); a 10-engineer team runs $300+/month. Prices checked November 19, 2026.',
 };
 
 export function ossSearchSummaryEn(id: string): string | undefined {

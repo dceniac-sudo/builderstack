@@ -2,17 +2,16 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, SlidersHorizontal } from 'lucide-react';
+import { ArrowRight, ChevronDown, SlidersHorizontal } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { SiteFooter } from '@/components/SiteFooter';
 import { OssCta } from '@/components/OssParts';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FadeUp } from '@/components/motion/MotionPrimitives';
 import type { VsComparisonSummary } from '@/data/oss-vs';
 import { localePath, useI18n, type Language } from '@/lib/i18n';
-import { SITE_URL, webPageNode } from '@/lib/schema';
+import { pageGraph, SITE_URL, webPageNode } from '@/lib/schema';
 
 interface OssVsHubPageProps {
   pairs: VsComparisonSummary[];
@@ -23,9 +22,7 @@ export const OssVsHubPage: React.FC<OssVsHubPageProps> = ({ pairs }) => {
   const o = t.oss;
   const pagePath = localePath(lang, '/oss/vs/');
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@graph': [
+  const jsonLd = pageGraph([
       {
         '@type': 'BreadcrumbList',
         itemListElement: [
@@ -40,8 +37,7 @@ export const OssVsHubPage: React.FC<OssVsHubPageProps> = ({ pairs }) => {
         lang: lang as Language,
         dateModified: '2026-11-15',
       }),
-    ],
-  };
+  ]);
 
   const methodItems =
     lang === 'zh'
@@ -134,14 +130,20 @@ export const OssVsHubPage: React.FC<OssVsHubPageProps> = ({ pairs }) => {
               <CardTitle className="text-[16px]">{o.vsMethodTitle}</CardTitle>
             </CardHeader>
             <CardContent>
-              <Accordion type="single" collapsible defaultValue="m1">
-                {methodItems.map((m) => (
-                  <AccordionItem key={m.id} value={m.id}>
-                    <AccordionTrigger>{m.q}</AccordionTrigger>
-                    <AccordionContent>{m.a}</AccordionContent>
-                  </AccordionItem>
+              <div className="divide-y divide-[var(--line)] border-t border-[var(--line)]">
+                {methodItems.map((m, idx) => (
+                  <details key={m.id} id={m.id} className="group py-4" open={idx === 0}>
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[14.5px] font-medium text-[var(--ink)] marker:hidden [&::-webkit-details-marker]:hidden">
+                      {m.q}
+                      <ChevronDown
+                        aria-hidden="true"
+                        className="h-4 w-4 shrink-0 text-[var(--sub)] transition-transform duration-200 group-open:rotate-180"
+                      />
+                    </summary>
+                    <p className="mt-2.5 text-[14px] leading-[1.7] text-[var(--sub)]">{m.a}</p>
+                  </details>
                 ))}
-              </Accordion>
+              </div>
             </CardContent>
           </Card>
         </FadeUp>

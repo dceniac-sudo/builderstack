@@ -12,9 +12,13 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { FadeUp } from '@/components/motion/MotionPrimitives';
 import type { CategoryMatrixView } from '@/data/category-matrices';
+import { guideSummaries } from '@/data/guides';
 import { localePath, useI18n, type Language } from '@/lib/i18n';
-import { itemListNode, ORGANIZATION_NODE, SITE_URL, webPageNode, WEBSITE_NODE } from '@/lib/schema';
+import { itemListNode, pageGraph, SITE_URL, webPageNode } from '@/lib/schema';
 import { cn } from '@/lib/utils';
+
+// 首页旗舰一手实证报告（SSR 中距首页 1 次点击）
+const FLAGSHIP_GUIDE_SLUGS = ['open-core-paywall-matrix-2026', 'self-hosting-n8n-vps-ram-benchmark'];
 
 interface OssDirectoryProps {
   title: string; // 首页的大标题，“全部”且没选用途时用
@@ -30,7 +34,7 @@ interface OssDirectoryProps {
 }
 
 // 表头和每一行共用的列。宽屏上四个结论列是固定宽度，左边都留给名字和介绍；窄一些的屏幕上按比例分。
-const COLS = 'md:grid-cols-[minmax(0,2.2fr)_repeat(4,minmax(0,1fr))_24px] lg:grid-cols-[minmax(0,1fr)_repeat(4,116px)_24px]';
+const COLS = 'md:grid-cols-[minmax(0,2.2fr)_repeat(4,minmax(0,1fr))_36px] lg:grid-cols-[minmax(0,1fr)_repeat(4,116px)_36px]';
 // 点开后的列表，一行一件事：问题、结论、依据。手机上依据另起一行。
 const FACT_ROW = 'grid grid-cols-[1fr_auto] items-baseline gap-x-4 gap-y-1 py-2.5 md:grid-cols-[140px_116px_minmax(0,1fr)]';
 const TEXT_LINK = 'py-1 underline decoration-[#CFCFCA] underline-offset-[3px] transition-colors hover:decoration-[var(--ink)]';
@@ -56,6 +60,12 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({
   const [open, setOpen] = useState<Record<string, boolean>>({});
   const [touched, setTouched] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
+  const flagshipGuides = useMemo(() => {
+    const all = guideSummaries(lang as Language);
+    return FLAGSHIP_GUIDE_SLUGS.map((slug) => all.find((gs) => gs.slug === slug)).filter(
+      (gs): gs is NonNullable<typeof gs> => Boolean(gs)
+    );
+  }, [lang]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -83,11 +93,30 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({
       setUse(u);
     });
     const next = pageFor(ind, u);
+    if (ind !== 'all' && ind === industry) {
+      // 行业页内的二级用途筛选：同步到 ?use=<slug>，刷新 / 分享都能保留筛选状态
+      const params = new URLSearchParams(window.location.search);
+      if (u === 'all') params.delete('use');
+      else params.set('use', u);
+      const qs = params.toString();
+      window.history.replaceState(null, '', `${next.href}${qs ? `?${qs}` : ''}`);
+      return;
+    }
     if (next.href !== pageFor(industry, use).href) {
       window.history.replaceState(null, '', next.href);
       document.title = `${next.title} — BuilderStack`;
     }
   };
+
+  // 行业页挂载时读取 ?use=<slug>
+  useEffect(() => {
+    if (initialIndustry === 'all') return;
+    const fromUrl = new URLSearchParams(window.location.search).get('use');
+    if (!fromUrl) return;
+    const valid = projects.some((p) => p.industries.includes(initialIndustry) && p.use === fromUrl);
+    if (valid) setUse(fromUrl);
+    // 仅挂载时执行一次
+  }, []);
 
   const inIndustry = useMemo(() => {
     if (industry === 'all') return projects;
@@ -98,6 +127,23 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({
 
   const uses = useMemo(() => allUses.filter((u) => inIndustry.some((p) => p.use === u.id)), [allUses, inIndustry]);
 
+  // 搜索索引：名称、简介、用途、行业场景 + 全部事实卡（商用 / 部署 / 成本 / 注意事项 / 额外依赖）的结论与依据。
+  // 视图数据已按当前语言（EN / ZH）本地化，因此 lang === 'zh' 时自动检索中文字段。
+  const searchIndex = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const p of projects) {
+      const parts: (string | undefined)[] = [p.name, p.what, p.useLabel];
+      for (const s of p.scenarios) parts.push(s.label, s.text);
+      for (const key of Object.keys(p.facts) as (keyof typeof p.facts)[]) {
+        const f = p.facts[key];
+        parts.push(f.label, f.detail, f.short);
+      }
+      if (p.needs) parts.push(p.needs.label, p.needs.detail, p.needs.short);
+      map.set(p.id, parts.filter(Boolean).join(' \n ').toLowerCase());
+    }
+    return map;
+  }, [projects]);
+
   const shown = useMemo(() => {
     const q = query.trim().toLowerCase();
     const pool = q ? projects : inIndustry;
@@ -105,23 +151,16 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({
       (p) =>
         (q || use === 'all' || p.use === use) &&
         (!onlyCommercial || p.facts.commercial.verdict === 'good') &&
-        (!q ||
-          p.name.toLowerCase().includes(q) ||
-          p.what.toLowerCase().includes(q) ||
-          p.useLabel.toLowerCase().includes(q) ||
-          p.scenarios.some((s) => s.text.toLowerCase().includes(q) || s.label.toLowerCase().includes(q)))
+        (!q || (searchIndex.get(p.id) ?? '').includes(q))
     );
-  }, [projects, inIndustry, use, onlyCommercial, query]);
+  }, [projects, inIndustry, use, onlyCommercial, query, searchIndex]);
 
   const checkedAt = projects.map((p) => p.checkedAt).sort().pop() ?? '';
   const initialPage = pageFor(initialIndustry, initialUse);
   const isHome = initialIndustry === 'all' && initialUse === 'all';
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@graph': isHome
+  const jsonLd = pageGraph(
+    isHome
       ? [
-          ORGANIZATION_NODE,
-          WEBSITE_NODE,
           webPageNode({
             path: homeHref,
             name: title,
@@ -154,8 +193,8 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({
                 }),
               ]
             : []),
-        ],
-  };
+        ]
+  );
 
   const tabs = [{ id: 'all', label: o.all, count: projects.length }, ...industries.filter((i) => i.count > 0)];
   const chipUses = industry !== 'all' ? uses : uses.filter((u) => u.id === use);
@@ -213,6 +252,8 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({
               <Search aria-hidden="true" className="h-4 w-4 shrink-0 text-[#8C8C88]" />
               <input
                 ref={searchRef}
+                id="oss-directory-search"
+                name="q"
                 type="search"
                 value={query}
                 onChange={(e) => change(() => setQuery(e.target.value))}
@@ -227,6 +268,16 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({
                 ⌘K
               </kbd>
             </label>
+            {query.trim() && (industry !== 'all' || use !== 'all') && (
+              <p role="status" className="mt-3 flex justify-center">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--wash)] px-3 py-1 font-mono text-[11.5px] text-[var(--sub)]">
+                  <Search aria-hidden="true" className="h-3 w-3" />
+                  {lang === 'zh'
+                    ? `正在全站 ${projects.length} 个项目中搜索`
+                    : `Searching all ${projects.length} projects across categories`}
+                </span>
+              </p>
+            )}
           </FadeUp>
 
           <FadeUp delay={0.18} className="relative mt-[22px] flex flex-wrap justify-center gap-x-[26px] gap-y-2 text-[13px] text-[var(--sub)]">
@@ -241,6 +292,39 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({
       </section>
 
       <main className="mx-auto w-full max-w-[1120px] flex-1 px-5 sm:px-10">
+        {industry === 'all' && use === 'all' && !query.trim() && flagshipGuides.length > 0 && (
+          <section aria-labelledby="flagship-audits-heading" className="mt-8">
+            <h2
+              id="flagship-audits-heading"
+              className="font-mono text-[11px] font-medium uppercase tracking-[0.06em] text-[#737370]"
+            >
+              {lang === 'zh' ? '旗舰一手实证报告' : 'Flagship Primary-Source Audits'}
+            </h2>
+            <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+              {flagshipGuides.map((fg) => (
+                <Link
+                  key={fg.slug}
+                  href={fg.href}
+                  className="group flex flex-col justify-between gap-3 rounded-[10px] border border-[#E6E6E2] bg-[#FAFAF8] px-5 py-4 transition-colors hover:border-[var(--ink)]/35"
+                >
+                  <div className="min-w-0">
+                    <div className="flex items-center justify-between gap-2 font-mono text-[11px] tabular-nums text-[#737370]">
+                      <span>{fg.docId}</span>
+                      <time dateTime={fg.updatedAt}>{fg.updatedAt}</time>
+                    </div>
+                    <div className="mt-1.5 text-[15.5px] font-semibold leading-[1.35] text-[var(--ink)] group-hover:underline group-hover:underline-offset-4">
+                      {fg.title}
+                    </div>
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[var(--ink)]">
+                    <span>{t.guides.readReport}</span>
+                    <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
         {categoryMatrix && use === initialUse && industry === 'all' && !query.trim() && (
           <section className="mt-8 overflow-hidden rounded-[10px] border border-[var(--line)] bg-white">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--line)] bg-[var(--wash)] px-5 py-4">
@@ -353,19 +437,19 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({
           <div className="flex flex-wrap items-stretch gap-x-6 border-b border-[var(--line)] px-3.5 md:px-[18px]">
             {tabs.map((i) => {
               const isSelected = i.id === industry;
+              const href = i.id === 'all' ? homeHref : 'href' in i ? i.href : homeHref;
               return (
-                <button
+                <Link
                   key={i.id}
-                  type="button"
-                  aria-pressed={isSelected}
-                  onClick={() => pick(i.id, 'all')}
+                  href={href}
+                  aria-current={isSelected ? 'page' : undefined}
                   className={cn(
                     'relative -mb-px inline-flex min-h-12 items-center gap-[7px] whitespace-nowrap text-[15px] transition-colors md:min-h-[52px]',
                     isSelected ? 'font-semibold text-[var(--ink)]' : 'text-[var(--sub)] hover:text-[var(--ink)]'
                   )}
                 >
                   {i.label}
-                  {i.count > 0 && <span className="text-[12.5px] font-normal text-[var(--sub)]">{i.count}</span>}
+                  {i.count > 0 && <span className="text-[12.5px] font-normal tabular-nums text-[var(--sub)]">{i.count}</span>}
                   {isSelected && (
                     <motion.span
                       layoutId="dir-industry-underline"
@@ -374,7 +458,7 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({
                       className="absolute bottom-0 left-0 right-0 h-[2px] bg-[var(--ink)]"
                     />
                   )}
-                </button>
+                </Link>
               );
             })}
           </div>
@@ -512,12 +596,12 @@ export const OssDirectory: React.FC<OssDirectoryProps> = ({
                       <button
                         type="button"
                         aria-expanded={isOpen}
-                        aria-label={p.name}
+                        aria-label={lang === 'zh' ? `展开 / 收起 ${p.name} 审计摘要` : `Toggle ${p.name} audit summary`}
                         onClick={(e) => {
                           e.stopPropagation();
                           toggle();
                         }}
-                        className="absolute right-3 top-[15px] grid h-6 w-6 place-items-center rounded-md text-[var(--sub)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)] md:static"
+                        className="absolute right-1 top-[9px] grid min-h-[36px] min-w-[36px] place-items-center rounded-md text-[var(--sub)] transition-colors hover:text-[var(--ink)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)] md:static"
                       >
                         <ChevronDown
                           aria-hidden="true"

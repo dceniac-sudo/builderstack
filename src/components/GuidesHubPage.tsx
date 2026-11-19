@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { FadeUp } from '@/components/motion/MotionPrimitives';
 import type { GuideSummary } from '@/types/guide';
 import { localePath, useI18n, type Language } from '@/lib/i18n';
-import { SITE_URL, webPageNode } from '@/lib/schema';
+import { pageGraph, SITE_URL, webPageNode } from '@/lib/schema';
 
 interface GuidesHubPageProps {
   guides: GuideSummary[];
@@ -23,25 +23,22 @@ export const GuidesHubPage: React.FC<GuidesHubPageProps> = ({ guides }) => {
   const pagePath = localePath(lang, '/guides/');
   const latestDate = guides.map((x) => x.updatedAt).sort().pop() ?? '2026-11-19';
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: o.crumb, item: `${SITE_URL}${localePath(lang, '/')}` },
-          { '@type': 'ListItem', position: 2, name: t.nav.guides, item: `${SITE_URL}${pagePath}` },
-        ],
-      },
-      webPageNode({
-        path: pagePath,
-        name: g.hubTitle,
-        description: g.hubSub,
-        lang: lang as Language,
-        dateModified: latestDate,
-      }),
-    ],
-  };
+  const jsonLd = pageGraph([
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: o.crumb, item: `${SITE_URL}${localePath(lang, '/')}` },
+        { '@type': 'ListItem', position: 2, name: t.nav.guides, item: `${SITE_URL}${pagePath}` },
+      ],
+    },
+    webPageNode({
+      path: pagePath,
+      name: g.hubTitle,
+      description: g.hubSub,
+      lang: lang as Language,
+      dateModified: latestDate,
+    }),
+  ]);
 
   return (
     <div className="flex flex-1 flex-col text-[15px] leading-[1.65]">

@@ -16,7 +16,7 @@ import { Card } from '@/components/ui/card';
 import { FadeUp, ReadingProgressBar } from '@/components/motion/MotionPrimitives';
 import type { GuideSummary } from '@/types/guide';
 import { useI18n, localePath, type Language } from '@/lib/i18n';
-import { ORG_ID, SITE_URL, webPageNode } from '@/lib/schema';
+import { pageGraph, SITE_URL, webPageNode } from '@/lib/schema';
 import { cn } from '@/lib/utils';
 
 export interface OssFitView {
@@ -74,7 +74,21 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({
   const o = t.oss;
   const g = t.guides;
   const hasInlineCalc = lang === 'en' && (p.id === 'livekit' || p.id === 'chatwoot' || p.id === 'jupyterhub');
-  const primaryGuide = relatedGuides[0];
+  // 主 CTA 优先指向本项目专属的实测报告（如 /oss/n8n/ → n8n RAM 基准），否则退回首个关联报告
+  const projectGuide =
+    relatedGuides.find((rg) => rg.slug.includes(p.id)) ??
+    relatedGuides.find((rg) => rg.relatedProjectIds.length === 1 && rg.relatedProjectIds[0] === p.id);
+  const primaryGuide = projectGuide ?? relatedGuides[0];
+  const orderedGuides = primaryGuide
+    ? [primaryGuide, ...relatedGuides.filter((rg) => rg.slug !== primaryGuide.slug)]
+    : relatedGuides;
+  const primaryGuideLabel = projectGuide
+    ? lang === 'zh'
+      ? `${p.name} 实测报告`
+      : `Read ${p.name} hands-on benchmark`
+    : lang === 'zh'
+      ? '阅读关联审计报告'
+      : 'Read related audit';
   const hasInSitePrimary = Boolean(p.compareHref || hasInlineCalc || primaryGuide);
   const rows = ALL_FACTS.flatMap((key) => {
     const row = { key: key as string, question: o.questions[key], fact: p.facts[key] };
@@ -85,9 +99,7 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({
   const licenseUrl = p.facts.commercial.sources[0]?.url;
   const image = shot ? `${SITE_URL}${shot.src}` : p.logo ? `${SITE_URL}${p.logo}` : undefined;
   const pageUrl = `${SITE_URL}${p.href}`;
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@graph': [
+  const jsonLd = pageGraph([
       {
         '@type': 'BreadcrumbList',
         itemListElement: [
@@ -104,14 +116,16 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({
         dateModified: p.checkedAt,
       }),
       {
+        // 第三方开源软件本体：不声明 BuilderStack 为 publisher，url 指向上游项目
         '@type': 'SoftwareApplication',
+        '@id': `${pageUrl}#software`,
         name: p.name,
         description: p.what,
-        url: pageUrl,
+        url: p.homepage ?? p.repoUrl,
         mainEntityOfPage: { '@id': `${pageUrl}#webpage` },
-        publisher: { '@id': ORG_ID },
         applicationCategory: 'BusinessApplication',
         applicationSubCategory: p.useLabel,
+        operatingSystem: 'Linux, Docker, Cross-platform',
         ...(image ? { image } : {}),
         ...(licenseUrl ? { license: licenseUrl } : {}),
         sameAs: Array.from(new Set([p.repoUrl, ...(p.homepage ? [p.homepage] : [])])),
@@ -122,8 +136,7 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({
           description: priceAnswer ?? p.facts.cost.detail ?? p.facts.cost.label,
         },
       },
-    ],
-  };
+  ]);
 
   return (
     <div className="flex flex-1 flex-col text-[15px] leading-[1.6]">
@@ -147,15 +160,17 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({
 
         <FadeUp className="flex items-center gap-4">
           <OssLogo project={p} size={52} />
-          <h1 className="min-w-0 text-[clamp(26px,4vw,40px)] font-semibold leading-[1.16] tracking-[-0.02em]">
-            {p.name}
+          <div className="flex min-w-0 flex-wrap items-center gap-2.5">
+            <h1 className="min-w-0 text-[clamp(26px,4vw,40px)] font-semibold leading-[1.16] tracking-[-0.02em]">
+              {p.name}
+            </h1>
             {p.handsOn && (
-              <Badge variant="good" className="ml-3 align-middle text-[13px]">
+              <Badge variant="good" className="text-[13px]">
                 {o.handsOn}
               </Badge>
             )}
             {!p.confirmed && draftTag}
-          </h1>
+          </div>
         </FadeUp>
 
         <FadeUp delay={0.04}>
@@ -193,7 +208,7 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({
             <Button asChild variant={!p.compareHref && !hasInlineCalc ? 'default' : 'secondary'}>
               <Link href={primaryGuide.href}>
                 <BookOpen aria-hidden="true" className="h-3.5 w-3.5" />
-                <span>{g.readGuideCta}</span>
+                <span>{primaryGuideLabel}</span>
                 <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
               </Link>
             </Button>
@@ -214,9 +229,9 @@ export const OssProjectPage: React.FC<OssProjectPageProps> = ({
           )}
         </FadeUp>
 
-        {relatedGuides.length > 0 && (
+        {orderedGuides.length > 0 && (
           <div className="mt-6 space-y-3">
-            {relatedGuides.map((guide) => (
+            {orderedGuides.map((guide) => (
               <Link
                 key={guide.slug}
                 href={guide.href}
